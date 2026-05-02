@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mumaa - Your AI Mama (Beta)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- STABLE: Reverted to r128 for maximum compatibility -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Puter.js for powerful client-side AI processing -->
+    <script src="https://js.puter.com/v2/"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Quicksand:wght@400;600;700&display=swap');
+        
+        :root {
+            --kids-yellow: #FFD93D;
+            --kids-pink: #FF6B6B;
+            --kids-blue: #6BCBFF;
+            --kids-green: #4D96FF;
+            --brand-purple: #8B5CF6;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            margin: 0;
+            overflow: hidden; /* App container handles internal scrolling */
+            background-color: #fdf4ff;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .kids-font { font-family: 'Fredoka', sans-serif; }
+
+        /* 3D Background */
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            transition: filter 1s ease;
+        }
+
+        /* LANDING PAGE STYLES */
+        #landing-page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 60; /* Above everything */
+            background: linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(220, 238, 255, 0.8) 100%);
+            backdrop-filter: blur(8px); /* Increased blur for readability */
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.5s ease;
+        }
+
+        .landing-hidden {
+            transform: translateY(-100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.7);
+            border: 2px solid white;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            border-radius: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .comparison-row {
+            transition: background-color 0.3s ease;
+        }
+        .comparison-row:hover {
+            background-color: rgba(255,255,255,0.6);
+        }
+
+        .app-ui {
+            opacity: 0;
+            transition: opacity 1s ease 0.5s; /* Delay appearance */
+            pointer-events: none;
+        }
+        .app-visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Glassmorphism Panels */
+        .kids-glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 3px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1), 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        /* Chat Bubbles */
+        .chat-bubble-ai {
+            background: #ffffff;
+            color: #333;
+            border-radius: 24px 24px 24px 4px;
+            border: 3px solid var(--kids-blue);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            max-width: 85%;
+        }
+
+        .chat-bubble-user {
+            background: var(--kids-pink);
+            color: white;
+            border-radius: 24px 24px 4px 24px;
+            border: 3px solid #ff4d4d;
+            box-shadow: 0 4px 6px rgba(255, 107, 107, 0.3);
+            max-width: 85%;
+            margin-left: auto;
+        }
+
+        /* Button Animations */
+        .btn-bubbly {
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+        .btn-bubbly:hover { transform: scale(1.08); filter: brightness(1.05); }
+        .btn-bubbly:active { transform: scale(0.95); }
+
+        /* Mic Animation */
+        .mic-pulse {
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.6); }
+            70% { box-shadow: 0 0 0 20px rgba(255, 107, 107, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); }
+        }
+
+        /* Thinking Animation */
+        .thinking-bounce {
+            animation: thinking 1.2s infinite ease-in-out;
+        }
+        @keyframes thinking {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        /* Modals */
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
+            z-index: 100;
+            transition: opacity 0.3s ease;
+            display: none; 
+        }
+
+        /* Transitions for Sidebar */
+        aside {
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+            z-index: 50;
+        }
+        
+        /* Sidebar States */
+        .panel-hidden-left { transform: translateX(-120%); opacity: 0; pointer-events: none; }
+        .panel-hidden-right { transform: translateX(120%); opacity: 0; pointer-events: none; }
+        .panel-visible { transform: translateX(0); opacity: 1; pointer-events: auto; }
+
+        /* Reopen Handles */
+        .reopen-handle {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 40;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            /* Hidden by default, shown via JS class */
+            display: none; 
+        }
+        .reopen-visible { display: block; animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        
+        @keyframes popIn {
+            from { transform: translateY(-50%) scale(0); }
+            to { transform: translateY(-50%) scale(1); }
+        }
+
+        .pointer-events-auto { pointer-events: auto; }
+        .pointer-events-none { pointer-events: none; }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.2); }
+
+        /* Mobile specific adjustments */
+        @media (max-width: 768px) {
+            aside { position: fixed !important; width: 92% !important; height: 70vh !important; bottom: 20px; top: auto; border-radius: 30px; }
+            #left-panel { left: 4%; }
+            #right-panel { right: 4%; }
+            /* Mobile hide states move down instead of side to be cleaner */
+            .panel-hidden-left { transform: translateY(120%); }
+            .panel-hidden-right { transform: translateY(120%); }
+            
+            .reopen-handle { top: auto; bottom: 100px; transform: none; }
+            .reopen-visible { animation: popUpMobile 0.4s ease; }
+            
+            /* Landing page mobile */
+            .landing-content { padding-top: 2rem; }
+            .landing-hero { flex-direction: column; text-align: center; }
+            .landing-text { width: 100%; }
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <div id="canvas-container"></div>
+
+    <!-- LANDING PAGE OVERLAY -->
+    <div id="landing-page" class="flex flex-col items-center">
+        <!-- Nav -->
+        <nav class="w-full max-w-7xl flex justify-between items-center p-6 md:p-8 sticky top-0 z-50 bg-white/30 backdrop-blur-md border-b border-white/40">
+            <div class="flex items-center gap-2">
+                <span class="kids-font text-2xl text-slate-700 font-bold">Mumaa</span>
+                <span class="bg-blue-100 text-blue-600 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide border border-blue-200">Public Beta</span>
+            </div>
+            <div class="hidden md:flex gap-8 font-bold text-slate-500 text-sm tracking-wide">
+                <a href="#features" class="hover:text-pink-500 transition-colors">FEATURES</a>
+                <a href="#comparison" class="hover:text-pink-500 transition-colors">MUMAA VS OTHERS</a>
+                <a href="#roadmap" class="hover:text-pink-500 transition-colors">ROADMAP</a>
+            </div>
+            <button onclick="startApp()" class="btn-bubbly bg-slate-800 text-white px-6 py-2 rounded-full font-bold shadow-lg hover:bg-slate-700 border-2 border-slate-600">Try Beta</button>
+        </nav>
+
+        <!-- Hero Section -->
+        <div class="w-full max-w-7xl px-6 flex flex-col md:flex-row items-center justify-between min-h-[75vh] relative">
+            <div class="landing-text w-full md:w-1/2 space-y-6 z-10 pt-10 md:pt-0 text-center md:text-left">
+                <div class="inline-block bg-yellow-100 text-yellow-700 font-bold px-4 py-1 rounded-full text-sm border border-yellow-200 mb-2">
+                    ✨ Introducing Beta v1.0
+                </div>
+                <h1 class="kids-font text-5xl md:text-7xl text-slate-800 leading-tight">
+                    Your Personal <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500">AI Parenting Sidekick</span>
+                </h1>
+                <p class="text-lg md:text-xl text-slate-600 leading-relaxed font-semibold max-w-lg mx-auto md:mx-0">
+                    Not just a chatbot. Mumaa is an emotionally intelligent companion designed to grow with your child, remembering what matters and keeping them safe.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 pt-6 justify-center md:justify-start">
+                    <button onclick="startApp()" class="btn-bubbly bg-gradient-to-r from-pink-500 to-purple-500 text-white px-8 py-4 rounded-full font-bold text-xl shadow-xl flex items-center justify-center gap-2 border-4 border-white/50">
+                        Launch App <span>🚀</span>
+                    </button>
+                    <a href="#features" class="btn-bubbly bg-white text-slate-600 px-8 py-4 rounded-full font-bold text-xl shadow-lg border-2 border-white flex items-center justify-center">
+                        Learn More
+                    </a>
+                </div>
+                <p class="text-xs text-slate-400 font-bold mt-4 uppercase tracking-wider">
+                    * No Sign-up Required for Demo
+                </p>
+            </div>
+            <!-- Spacer to let the 3D robot show through on the right -->
+            <div class="w-full md:w-1/2 h-64 md:h-auto"></div>
+        </div>
+
+        <!-- Section 2: Core Advantages -->
+        <div id="features" class="w-full max-w-7xl px-6 py-20">
+            <div class="text-center mb-16">
+                <h2 class="kids-font text-4xl md:text-5xl text-blue-500 mb-4">Why Parents ❤️ Mumaa</h2>
+                <p class="text-slate-500 font-bold text-lg max-w-2xl mx-auto">We built Mumaa because standard AI feels like a textbook. Kids need a friend.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="feature-card p-8 flex flex-col items-center text-center space-y-4">
+                    <div class="w-20 h-20 bg-pink-100 rounded-full flex items-center justify-center text-4xl shadow-inner border-2 border-pink-200">💖</div>
+                    <h3 class="kids-font text-2xl text-slate-700">Emotional IQ</h3>
+                    <p class="text-slate-600 font-medium">Mumaa detects tone. If your child is sad, she comforts. If they are excited, she celebrates. She's programmed for empathy, not just facts.</p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="feature-card p-8 flex flex-col items-center text-center space-y-4 border-blue-300 transform md:-translate-y-4">
+                    <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center text-4xl shadow-inner border-2 border-blue-200">🗣️</div>
+                    <h3 class="kids-font text-2xl text-slate-700">Voice-First Design</h3>
+                    <p class="text-slate-600 font-medium">Kids can't always type. Mumaa speaks naturally and listens attentively, making interaction seamless for toddlers and pre-readers.</p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="feature-card p-8 flex flex-col items-center text-center space-y-4">
+                    <div class="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center text-4xl shadow-inner border-2 border-yellow-200">🧠</div>
+                    <h3 class="kids-font text-2xl text-slate-700">Long-Term Memory</h3>
+                    <p class="text-slate-600 font-medium">Using RAG technology, Mumaa remembers names, favorite toys, and past stories. She doesn't reset every session like other bots.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Comparison (The "Why" Section) -->
+        <div id="comparison" class="w-full bg-white/40 backdrop-blur-lg py-20 border-y-4 border-white/50">
+            <div class="max-w-5xl mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="kids-font text-4xl text-slate-800">Mumaa vs. Generic AI</h2>
+                    <p class="text-slate-500 font-bold">Why dedicated parenting AI matters.</p>
+                </div>
+
+                <div class="bg-white rounded-[40px] shadow-xl overflow-hidden border-4 border-white">
+                    <div class="grid grid-cols-3 bg-slate-50 border-b-2 border-slate-100 p-4 font-bold text-slate-400 text-sm uppercase tracking-wider">
+                        <div class="text-center">Feature</div>
+                        <div class="text-center text-slate-500">Generic AI (ChatGPT)</div>
+                        <div class="text-center text-pink-500">Mumaa AI</div>
+                    </div>
+
+                    <!-- Row 1 -->
+                    <div class="grid grid-cols-3 p-6 comparison-row border-b border-slate-100 items-center">
+                        <div class="font-bold text-slate-700">Tone</div>
+                        <div class="text-center text-slate-500 text-sm">Formal, Encyclopedic</div>
+                        <div class="text-center text-pink-500 font-bold bg-pink-50 rounded-full py-1">Warm, Playful</div>
+                    </div>
+
+                    <!-- Row 2 -->
+                    <div class="grid grid-cols-3 p-6 comparison-row border-b border-slate-100 items-center">
+                        <div class="font-bold text-slate-700">Safety Guardrails</div>
+                        <div class="text-center text-slate-500 text-sm">General Filters</div>
+                        <div class="text-center text-green-500 font-bold bg-green-50 rounded-full py-1">Strict Child-Safe Mode</div>
+                    </div>
+
+                    <!-- Row 3 -->
+                    <div class="grid grid-cols-3 p-6 comparison-row border-b border-slate-100 items-center">
+                        <div class="font-bold text-slate-700">Parental Dashboard</div>
+                        <div class="text-center text-slate-300 text-2xl">✕</div>
+                        <div class="text-center text-blue-500 text-2xl">✓</div>
+                    </div>
+
+                    <!-- Row 4 -->
+                    <div class="grid grid-cols-3 p-6 comparison-row items-center">
+                        <div class="font-bold text-slate-700">Personalization</div>
+                        <div class="text-center text-slate-500 text-sm">Session Based</div>
+                        <div class="text-center text-purple-500 font-bold bg-purple-50 rounded-full py-1">Persistent Memory</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Roadmap / Goals -->
+        <div id="roadmap" class="w-full max-w-6xl px-6 py-24 mb-20">
+            <h2 class="kids-font text-4xl md:text-5xl text-center text-purple-500 mb-16">Future Goals Roadmap 🚀</h2>
+            
+            <div class="relative">
+                <!-- Connecting Line (Desktop) -->
+                <div class="hidden md:block absolute top-1/2 left-0 w-full h-2 bg-slate-200 -z-10 rounded-full"></div>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <!-- Step 1 -->
+                    <div class="relative bg-white/80 p-6 rounded-3xl shadow-lg border-2 border-green-400 md:mt-0">
+                        <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-md">CURRENT</div>
+                        <div class="text-4xl mb-2 text-center">🌱</div>
+                        <h3 class="font-bold text-xl text-center text-slate-700 mb-2">Beta Phase</h3>
+                        <ul class="text-sm text-slate-600 space-y-2">
+                            <li>✓ Core Voice Chat</li>
+                            <li>✓ Basic Memory</li>
+                            <li>✓ Parent Dashboard</li>
+                        </ul>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="relative bg-white/60 p-6 rounded-3xl shadow-md border-2 border-white grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition-all hover:-translate-y-2">
+                        <div class="text-4xl mb-2 text-center">🎨</div>
+                        <h3 class="font-bold text-xl text-center text-slate-700 mb-2">Vision Update</h3>
+                        <ul class="text-sm text-slate-600 space-y-2">
+                            <li>• Image Recognition</li>
+                            <li>• "Draw with Mumaa"</li>
+                            <li>• Emotion detection via camera</li>
+                        </ul>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="relative bg-white/60 p-6 rounded-3xl shadow-md border-2 border-white grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition-all hover:-translate-y-2">
+                        <div class="text-4xl mb-2 text-center">📱</div>
+                        <h3 class="font-bold text-xl text-center text-slate-700 mb-2">Native App</h3>
+                        <ul class="text-sm text-slate-600 space-y-2">
+                            <li>• iOS & Android App</li>
+                            <li>• Offline Mode</li>
+                            <li>• Screen time limits</li>
+                        </ul>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="relative bg-white/60 p-6 rounded-3xl shadow-md border-2 border-white grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition-all hover:-translate-y-2">
+                        <div class="text-4xl mb-2 text-center">🏡</div>
+                        <h3 class="font-bold text-xl text-center text-slate-700 mb-2">Family Hub</h3>
+                        <ul class="text-sm text-slate-600 space-y-2">
+                            <li>• Sibling Profiles</li>
+                            <li>• Family Calendar Sync</li>
+                            <li>• Daily Routine Helper</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="w-full bg-slate-800 text-white py-12 rounded-t-[50px] mt-auto text-center">
+            <h2 class="kids-font text-3xl mb-4">Ready to meet Mumaa?</h2>
+            <button onclick="startApp()" class="btn-bubbly bg-pink-500 text-white px-10 py-4 rounded-full font-bold text-xl shadow-lg border-4 border-white/20 hover:bg-pink-400 mb-8">
+                Start Beta Test
+            </button>
+            <p class="text-slate-400 text-xs">
+                © 2026 Mumaa AI. All rights reserved. <br>
+                Disclaimer: Mumaa is an AI assistant. It does not replace professional medical or psychological advice.
+            </p>
+        </div>
+    </div>
+
+    <!-- APP UI CONTAINER (Initially Hidden) -->
+    <div id="app-container" class="app-ui relative z-10 w-full h-screen flex flex-col md:flex-row pointer-events-none p-2 md:p-4 gap-4 overflow-hidden">
+        
+        <!-- Reopen Buttons -->
+        <button id="reopen-left" onclick="togglePanel('left-panel')" class="reopen-handle left-0 kids-glass p-4 rounded-r-3xl text-2xl btn-bubbly border-l-0 shadow-lg text-blue-500 hover:text-blue-600">📚</button>
+        <button id="reopen-right" onclick="togglePanel('right-panel')" class="reopen-handle right-0 kids-glass p-4 rounded-l-3xl text-2xl btn-bubbly border-r-0 shadow-lg text-pink-500 hover:text-pink-600">💬</button>
+
+        <!-- LEFT PANEL: Lessons -->
+        <aside id="left-panel" class="w-80 panel-visible kids-glass rounded-[40px] flex flex-col overflow-hidden shadow-2xl flex-shrink-0">
+            <div class="p-5 bg-yellow-400 text-white flex justify-between items-center shadow-md">
+                <h2 class="kids-font font-bold text-xl flex items-center gap-2">
+                    <span>📚</span> My Lessons
+                </h2>
+                <button onclick="togglePanel('left-panel')" class="bg-white/20 rounded-full p-2 hover:bg-white/40 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            
+            <div class="p-5 flex-1 overflow-y-auto space-y-4">
+                <div class="space-y-2">
+                    <label class="kids-font text-xs font-bold text-blue-500 uppercase tracking-widest px-2">Memory Bank (RAG):</label>
+                    <textarea id="study-material" 
+                        class="w-full h-64 bg-yellow-50/50 border-4 border-yellow-200 rounded-[25px] p-4 text-sm leading-relaxed outline-none focus:border-yellow-400 transition-all resize-none font-sans shadow-inner text-slate-600"
+                        placeholder="Type facts Mumaa should remember here.&#10;Ex: 'Grandma lives in Delhi' or 'My dog's name is Bruno'."></textarea>
+                    
+                    <button id="update-btn" onclick="updateContext()" class="btn-bubbly w-full py-3 bg-blue-500 text-white rounded-[20px] font-bold shadow-lg flex items-center justify-center gap-2 hover:bg-blue-600 transition-colors">
+                        <span id="update-btn-icon">✨</span> <span id="update-btn-text">Teach Mumaa</span>
+                    </button>
+                </div>
+                <div class="text-center bg-white/40 p-3 rounded-2xl border-2 border-white">
+                    <p class="text-[10px] text-slate-500 font-bold uppercase">Mumaa will prioritize this info.</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CENTER: Avatar & Mic -->
+        <main class="flex-1 flex flex-col justify-between items-center py-4 relative h-full">
+            <!-- Header -->
+            <div class="w-full flex justify-between items-start px-2">
+                <div class="w-12"></div> <!-- Spacer -->
+
+                <div class="bg-white/80 backdrop-blur-md px-10 py-3 rounded-full shadow-lg pointer-events-auto mx-auto border-4 border-white/50 animate-bounce-in">
+                    <h1 class="kids-font text-3xl text-pink-500 font-bold tracking-tight drop-shadow-sm">Mumaa</h1>
+                </div>
+
+                <button onclick="openParentGate()" class="btn-bubbly pointer-events-auto bg-white/90 p-3 rounded-full shadow-lg border-4 border-white/50 mr-2 text-blue-400 hover:text-blue-500">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                </button>
+            </div>
+
+            <!-- Mic Controls -->
+            <div class="flex flex-col items-center gap-6 pointer-events-auto mb-8 md:mb-12 w-full max-w-md mx-auto">
+                <div id="status-tag" class="bg-white/90 backdrop-blur-sm px-8 py-2 rounded-full text-lg font-bold text-pink-500 border-2 border-pink-100 opacity-0 transition-opacity duration-300 shadow-md transform translate-y-2">
+                    Listening...
+                </div>
+                
+                <div class="relative group">
+                    <div id="mic-halo" class="absolute -inset-6 bg-pink-400/30 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <button id="mic-btn" onclick="toggleVoiceSession()" class="btn-bubbly w-24 h-24 md:w-28 md:h-28 bg-gradient-to-br from-pink-400 to-pink-500 rounded-full shadow-2xl flex items-center justify-center border-[8px] border-white z-20 relative text-white">
+                        <svg id="mic-icon" xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 md:h-12 md:w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="bg-white/60 backdrop-blur-md px-6 py-2 rounded-full border border-white/60 shadow-sm text-center">
+                    <p id="instruction-text" class="kids-font text-xs md:text-sm text-blue-500 font-bold uppercase tracking-widest">Tap to talk to Mumaa</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- RIGHT PANEL: Chat -->
+        <aside id="right-panel" class="w-80 panel-visible kids-glass rounded-[40px] flex flex-col overflow-hidden shadow-2xl flex-shrink-0">
+            <div class="p-5 bg-blue-400 text-white flex justify-between items-center shadow-md">
+                <h2 class="kids-font font-bold text-xl flex items-center gap-2">
+                    <span>💬</span> Chat
+                </h2>
+                <div class="flex gap-2">
+                    <button onclick="openModal('confirm-modal')" class="bg-white/20 rounded-full p-2 hover:bg-white/40 transition-colors" title="Clear Chat">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                    </button>
+                    <button onclick="togglePanel('right-panel')" class="bg-white/20 rounded-full p-2 hover:bg-white/40 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth"></div>
+
+            <div class="p-4 bg-white/50 border-t-2 border-white">
+                <div class="bg-white rounded-[25px] flex items-center p-2 px-3 gap-2 border-2 border-blue-100 shadow-sm focus-within:border-blue-300 focus-within:shadow-md transition-all">
+                    <input type="text" id="text-input" placeholder="Say hello..." class="bg-transparent border-none outline-none text-sm flex-1 font-bold text-slate-600 placeholder:text-slate-300 h-10">
+                    <button onclick="sendTextMessage()" class="text-blue-500 hover:text-blue-600 transition-transform active:scale-90 p-1">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/></svg>
+                    </button>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- PARENT GATE MODAL -->
+    <div id="parent-gate" class="fixed inset-0 modal-overlay items-center justify-center p-4">
+        <div class="kids-glass p-8 rounded-[40px] max-w-sm w-full text-center space-y-6 border-8 border-yellow-300 shadow-2xl animate-[fadeIn_0.3s_ease-out]">
+            <h2 class="kids-font text-3xl text-blue-500">Parent Check 🔐</h2>
+            <p id="gate-question" class="font-bold text-xl text-slate-600 bg-yellow-50 py-3 rounded-2xl border-2 border-yellow-100"></p>
+            <input type="number" id="gate-answer" placeholder="?" class="w-full p-4 border-4 border-blue-100 rounded-[25px] text-center text-3xl font-bold text-blue-500 outline-none focus:border-blue-400 shadow-inner bg-blue-50/50">
+            <div class="flex gap-3">
+                <button onclick="checkParentGate()" class="btn-bubbly flex-1 py-4 bg-blue-500 text-white rounded-[20px] font-bold text-lg hover:bg-blue-600">Enter</button>
+                <button onclick="closeModals()" class="btn-bubbly px-6 py-4 bg-slate-100 text-slate-400 rounded-[20px] font-bold hover:bg-slate-200">Exit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CLEAR CONFIRM MODAL -->
+    <div id="confirm-modal" class="fixed inset-0 modal-overlay items-center justify-center p-4">
+        <div class="kids-glass p-8 rounded-[40px] max-w-sm w-full text-center space-y-6 border-8 border-red-300 shadow-2xl">
+            <h2 class="kids-font text-3xl text-red-500">Clear Chat? 🗑️</h2>
+            <p class="font-bold text-lg text-slate-600">This will delete all memories of the current conversation.</p>
+            <div class="flex gap-3">
+                <button onclick="executeClearChat()" class="btn-bubbly flex-1 py-3 bg-red-500 text-white rounded-[20px] font-bold shadow-lg hover:bg-red-600">Yes, Clear</button>
+                <button onclick="closeModals()" class="btn-bubbly flex-1 py-3 bg-slate-100 text-slate-500 rounded-[20px] font-bold hover:bg-slate-200">No</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div id="parent-settings" class="fixed inset-0 modal-overlay items-center justify-center p-4 z-[110]">
+        <div class="kids-glass p-6 md:p-8 rounded-[40px] max-w-4xl w-full max-h-[90vh] overflow-y-auto space-y-6 border-8 border-blue-300 shadow-2xl">
+            <div class="flex justify-between items-center border-b-2 border-blue-100 pb-4">
+                <h2 class="kids-font text-3xl md:text-4xl text-pink-500">Mama's Kitchen 🛠️</h2>
+                <button onclick="closeModals()" class="text-slate-300 hover:text-red-400 text-3xl font-bold transition-colors">✕</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Left Col -->
+                <div class="space-y-4">
+                    <h3 class="kids-font text-2xl text-blue-500 border-b-2 border-blue-100 inline-block pb-1">The Explorer</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2">First Name</label>
+                            <input type="text" id="kid-name" class="w-full p-3 bg-blue-50 border-2 border-blue-100 rounded-2xl font-semibold outline-none focus:border-blue-400 text-slate-700">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2">Age</label>
+                            <input type="number" id="kid-age" class="w-full p-3 bg-blue-50 border-2 border-blue-100 rounded-2xl font-semibold outline-none focus:border-blue-400 text-slate-700">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2">Gender</label>
+                            <select id="kid-gender" class="w-full p-3 bg-blue-50 border-2 border-blue-100 rounded-2xl font-semibold outline-none focus:border-blue-400 text-slate-700">
+                                <option value="Boy">Boy</option>
+                                <option value="Girl">Girl</option>
+                            </select>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2">Language</label>
+                            <select id="kid-language" class="w-full p-3 bg-blue-50 border-2 border-blue-100 rounded-2xl font-semibold outline-none focus:border-blue-400 text-slate-700">
+                                <option value="English">English</option>
+                                <option value="Hindi">Hindi</option>
+                                <option value="Hinglish">Hinglish</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Col -->
+                <div class="space-y-4">
+                    <h3 class="kids-font text-2xl text-yellow-500 border-b-2 border-yellow-100 inline-block pb-1">Personality</h3>
+                    <div class="space-y-3">
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2">Likes / Interests</label>
+                            <input type="text" id="kid-likes" placeholder="Cats, Space, Pasta" class="w-full p-3 bg-yellow-50 border-2 border-yellow-100 rounded-2xl font-semibold outline-none focus:border-yellow-400 text-slate-700">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2">Fears / Dislikes</label>
+                            <input type="text" id="kid-dislikes" placeholder="Darkness, Spiders" class="w-full p-3 bg-yellow-50 border-2 border-yellow-100 rounded-2xl font-semibold outline-none focus:border-yellow-400 text-slate-700">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <h3 class="kids-font text-2xl text-green-500 border-b-2 border-green-100 inline-block pb-1">Goal & Voice</h3>
+                <div class="space-y-1">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2">Learning Mission</label>
+                    <textarea id="kid-mission" placeholder="E.g. Teach counting or explain the solar system" class="w-full h-20 p-4 bg-green-50 border-2 border-green-100 rounded-[25px] font-semibold outline-none focus:border-green-400 resize-none shadow-inner text-slate-700"></textarea>
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2">Voice Tone</label>
+                    <select id="voice-selector" class="w-full p-3 bg-slate-50 border-2 border-slate-200 rounded-2xl font-semibold outline-none focus:border-slate-400 text-sm text-slate-700"></select>
+                </div>
+            </div>
+
+            <button onclick="saveParentSettings()" class="btn-bubbly w-full py-5 bg-pink-500 text-white rounded-[25px] font-bold text-xl shadow-xl uppercase tracking-widest hover:bg-pink-600 transition-colors">Apply Settings ✨</button>
+        </div>
+    </div>
+
+    <script>
+        // --- GLOBAL STATE & CONFIG ---
+        const STORAGE_KEYS = { CONFIG: 'mumaa_v3_config', CHATS: 'mumaa_v3_chats', STUDY: 'mumaa_v3_study' };
+        let isListening = false, isSpeaking = false, isThinking = false, serialMode = false, voicesLoaded = false, currentUtterance = null;
+        let isLandingPage = true; // NEW: Track if we are on landing page
+
+        // Default Config
+        let parentConfig = {
+            kidName: "Explorer", kidAge: "5", kidGender: "Boy", kidLanguage: "English",
+            kidLikes: "Playtime", kidDislikes: "Broccoli", kidMission: "Have fun learning", preferredVoiceName: ""
+        };
+
+        // Load Config
+        try {
+            const saved = localStorage.getItem(STORAGE_KEYS.CONFIG);
+            if (saved) parentConfig = { ...parentConfig, ...JSON.parse(saved) };
+        } catch(e) { console.warn("Config load error", e); }
+
+        let studyContext = localStorage.getItem(STORAGE_KEYS.STUDY) || "";
+        let gateCorrectAnswer = 0;
+
+        // --- THREE.JS ENGINE ---
+        let scene, camera, renderer, head, mouth, leftEye, rightEye, mumaaAvatar, faceGroup;
+        let clock;
+        let cameraTarget = { x: -1.5, y: 1.4, z: 3.8 }; // Initial: Shifted left so robot is on right
+        
+        // Scene Objects Arrays
+        let floatingShapes = [];
+        let clouds = [];
+
+        function initThree() {
+            // Safety check with retry logic
+            if (typeof THREE === 'undefined') {
+                console.warn("Three.js not loaded yet, retrying...");
+                setTimeout(initThree, 500); // Retry after 500ms
+                return;
+            }
+
+            const container = document.getElementById('canvas-container');
+            if(!container) return;
+
+            // Prevent duplicate initialization
+            if(container.childNodes.length > 0) return;
+
+            // Initialize clock inside function after library loads
+            clock = new THREE.Clock();
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xdceeff); // Soft blue sky
+            
+            // Camera Setup
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+            camera.position.set(-1.5, 1.4, 3.8); // Start at Landing Page position (Left offset, Robot appears Right)
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true;
+            container.appendChild(renderer.domElement);
+
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+            scene.add(ambientLight);
+
+            const sunLight = new THREE.DirectionalLight(0xffffff, 0.6);
+            sunLight.position.set(5, 12, 8);
+            sunLight.castShadow = true;
+            sunLight.shadow.mapSize.width = 1024; 
+            sunLight.shadow.mapSize.height = 1024;
+            scene.add(sunLight);
+
+            const rimLight = new THREE.PointLight(0xffeeb1, 0.5);
+            rimLight.position.set(-5, 5, -5);
+            scene.add(rimLight);
+
+            createPlayroom();
+            try {
+                createMumaa();
+            } catch (err) {
+                console.error("Error creating character:", err);
+            }
+
+            window.addEventListener('resize', onWindowResize);
+            animate();
+
+            // Init UI values
+            setTimeout(initializeUI, 500);
+        }
+
+        function createPlayroom() {
+            // Reset arrays
+            floatingShapes = [];
+            clouds = [];
+            
+            // 1. Magical Floor (Grass/Carpet)
+            const floorGeo = new THREE.CircleGeometry(15, 64);
+            const floorMat = new THREE.MeshStandardMaterial({ 
+                color: 0x8bc34a, 
+                roughness: 1,
+                side: THREE.DoubleSide
+            });
+            const floor = new THREE.Mesh(floorGeo, floorMat);
+            floor.rotation.x = -Math.PI / 2;
+            floor.position.y = -0.8;
+            floor.receiveShadow = true;
+            scene.add(floor);
+
+            // 2. Decor: Trees/Bushes
+            for(let i=0; i<8; i++) {
+                const angle = (i / 8) * Math.PI * 2;
+                const radius = 6 + Math.random() * 2;
+                const x = Math.cos(angle) * radius;
+                const z = Math.sin(angle) * radius - 2; // Offset slightly back
+                createTree(x, z);
+            }
+
+            // 3. Decor: Clouds
+            createCloud(-5, 4, -5, 1.2);
+            createCloud(5, 5, -8, 1.5);
+            createCloud(0, 6, -6, 1.0);
+            createCloud(-6, 3, -2, 0.8);
+
+            // 4. Floating Magical Shapes
+            const colors = [0xFF6B6B, 0x4D96FF, 0xFFD93D, 0xFF9F43, 0xA55EEA];
+            const geoms = [
+                new THREE.IcosahedronGeometry(0.3),
+                new THREE.OctahedronGeometry(0.25),
+                new THREE.TetrahedronGeometry(0.3),
+                new THREE.TorusGeometry(0.2, 0.08, 8, 16)
+            ];
+
+            for(let i=0; i<15; i++) {
+                const geom = geoms[Math.floor(Math.random()*geoms.length)];
+                const mat = new THREE.MeshStandardMaterial({ 
+                    color: colors[Math.floor(Math.random()*colors.length)], 
+                    roughness: 0.2,
+                    metalness: 0.1
+                });
+                const shape = new THREE.Mesh(geom, mat);
+                
+                // Spread them out but keep them somewhat close to center view
+                const x = (Math.random() - 0.5) * 10;
+                const y = Math.random() * 3 + 0.5;
+                const z = (Math.random() - 0.5) * 5 - 2;
+                
+                shape.position.set(x, y, z);
+                shape.castShadow = true;
+                
+                // Random rotation speed & float params
+                shape.userData = {
+                    rotX: (Math.random() - 0.5) * 0.02,
+                    rotY: (Math.random() - 0.5) * 0.02,
+                    floatSpeed: Math.random() * 0.01 + 0.005,
+                    floatOffset: Math.random() * Math.PI * 2,
+                    initialY: y
+                };
+                
+                scene.add(shape);
+                floatingShapes.push(shape);
+            }
+        }
+
+        // Helper: Create a simple low-poly tree
+        function createTree(x, z) {
+            const group = new THREE.Group();
+            
+            // Trunk
+            const trunk = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.15, 0.2, 0.8, 8),
+                new THREE.MeshStandardMaterial({ color: 0x8d6e63 })
+            );
+            trunk.position.y = 0.4;
+            trunk.castShadow = true;
+            group.add(trunk);
+            
+            // Top
+            const top = new THREE.Mesh(
+                new THREE.ConeGeometry(0.8, 1.5, 8),
+                new THREE.MeshStandardMaterial({ color: 0x66bb6a })
+            );
+            top.position.y = 1.15;
+            top.castShadow = true;
+            group.add(top);
+
+            group.position.set(x, -0.8, z);
+            scene.add(group);
+        }
+
+        // Helper: Create a fluffy cloud
+        function createCloud(x, y, z, scale) {
+            const group = new THREE.Group();
+            const mat = new THREE.MeshStandardMaterial({ color: 0xffffff, flatShading: true, roughness: 0.8 });
+            const geo = new THREE.SphereGeometry(1, 16, 16); // Base size
+
+            const blobs = [
+                {x:0, y:0, z:0, s:1},
+                {x:0.8, y:-0.1, z:0.2, s:0.7},
+                {x:-0.8, y:-0.1, z:-0.2, s:0.7},
+                {x:0.4, y:0.5, z:0, s:0.6}
+            ];
+
+            blobs.forEach(b => {
+                const m = new THREE.Mesh(geo, mat);
+                m.position.set(b.x, b.y, b.z);
+                m.scale.set(b.s, b.s, b.s);
+                group.add(m);
+            });
+
+            group.position.set(x, y, z);
+            group.scale.set(scale, scale, scale);
+            // Store initial X for drifting animation
+            group.userData = { speed: scale * 0.005, initialX: x };
+            
+            scene.add(group);
+            clouds.push(group);
+        }
+
+        function createMumaa() {
+            mumaaAvatar = new THREE.Group();
+
+            // Materials
+            const whitePlasticMat = new THREE.MeshStandardMaterial({
+                color: 0xffffff,
+                roughness: 0.2,
+                metalness: 0.1
+            });
+            const blackGlassMat = new THREE.MeshStandardMaterial({
+                color: 0x111111,
+                roughness: 0.0,
+                metalness: 0.8
+            });
+            const glowBlueMat = new THREE.MeshStandardMaterial({
+                color: 0x00aaff,
+                emissive: 0x00aaff,
+                emissiveIntensity: 1.5
+            });
+            const jointMat = new THREE.MeshStandardMaterial({
+                color: 0x333333,
+                roughness: 0.5
+            });
+
+            // --- HEAD ---
+            const headGroup = new THREE.Group();
+            headGroup.position.y = 1.2;
+
+            // 1. Main Helmet (White Sphere)
+            const helmet = new THREE.Mesh(new THREE.SphereGeometry(0.5, 64, 64), whitePlasticMat);
+            headGroup.add(helmet);
+
+            // 2. Face Screen (Black Sphere intersection)
+            // Positioned slightly forward and scaled
+            const faceScreen = new THREE.Mesh(new THREE.SphereGeometry(0.38, 64, 64), blackGlassMat);
+            faceScreen.position.set(0, 0, 0.25);
+            faceScreen.scale.set(1.1, 0.9, 0.8);
+            headGroup.add(faceScreen);
+
+            // 3. Eyes (Glowing Blue Circles)
+            leftEye = new THREE.Mesh(new THREE.CircleGeometry(0.08, 32), glowBlueMat);
+            leftEye.position.set(-0.18, 0.05, 0.54);
+            leftEye.rotation.y = -0.2;
+            headGroup.add(leftEye);
+
+            rightEye = new THREE.Mesh(new THREE.CircleGeometry(0.08, 32), glowBlueMat);
+            rightEye.position.set(0.18, 0.05, 0.54);
+            rightEye.rotation.y = 0.2;
+            headGroup.add(rightEye);
+
+            // 4. Mouth (Small dash/smile)
+            mouth = new THREE.Group();
+            // REPLACED CAPSULE with CYLINDER for compatibility
+            const mouthLine = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.05, 16), glowBlueMat);
+            mouthLine.rotation.z = Math.PI / 2;
+            mouth.add(mouthLine);
+            mouth.position.set(0, -0.15, 0.58);
+            headGroup.add(mouth);
+
+            // 5. Ear Cups / Headphones
+            const earGeo = new THREE.CylinderGeometry(0.12, 0.12, 0.1, 32);
+            const leftEar = new THREE.Mesh(earGeo, jointMat);
+            leftEar.rotation.z = Math.PI / 2;
+            leftEar.position.set(-0.48, 0, 0);
+            headGroup.add(leftEar);
+
+            const rightEar = leftEar.clone();
+            rightEar.position.set(0.48, 0, 0);
+            headGroup.add(rightEar);
+
+            // Fin on top
+            // REPLACED CAPSULE with CYLINDER for compatibility
+            const fin = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.3, 16), jointMat);
+            fin.rotation.x = Math.PI / 2;
+            fin.position.set(0, 0.48, -0.1);
+            headGroup.add(fin);
+
+            mumaaAvatar.add(headGroup);
+            // Reassign global vars for animation
+            head = headGroup; 
+            faceGroup = headGroup;
+
+            // --- BODY ---
+            const torso = new THREE.Mesh(new THREE.SphereGeometry(0.35, 32, 32), whitePlasticMat);
+            torso.position.y = 0.5;
+            torso.scale.y = 1.2;
+            mumaaAvatar.add(torso);
+
+            // Chest Plate
+            const chestPlate = new THREE.Mesh(new THREE.CircleGeometry(0.15, 32), whitePlasticMat);
+            chestPlate.position.set(0, 0.5, 0.32);
+            mumaaAvatar.add(chestPlate);
+
+            // Arms Helper
+            function createArm(x, rotZ) {
+                const group = new THREE.Group();
+                const shoulder = new THREE.Mesh(new THREE.SphereGeometry(0.12, 32, 32), jointMat);
+                group.add(shoulder);
+
+                const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 0.4, 32), whitePlasticMat);
+                arm.position.y = -0.25;
+                group.add(arm);
+
+                const hand = new THREE.Mesh(new THREE.SphereGeometry(0.1, 32, 32), jointMat);
+                hand.position.y = -0.5;
+                group.add(hand);
+
+                group.position.set(x, 0.65, 0);
+                group.rotation.z = rotZ;
+                return group;
+            }
+
+            const leftArm = createArm(-0.4, 0.2);
+            mumaaAvatar.add(leftArm);
+
+            const rightArm = createArm(0.4, -0.2);
+            mumaaAvatar.add(rightArm);
+
+            // Legs Helper
+            function createLeg(x) {
+                const group = new THREE.Group();
+                const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.15, 0.4, 32), whitePlasticMat);
+                leg.position.y = -0.2;
+                group.add(leg);
+
+                // REPLACED CAPSULE with CYLINDER for compatibility
+                const foot = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.15, 0.15, 32), jointMat);
+                foot.position.set(0, -0.45, 0.05);
+                group.add(foot);
+
+                group.position.set(x, 0.2, 0);
+                return group;
+            }
+
+            const leftLeg = createLeg(-0.2);
+            mumaaAvatar.add(leftLeg);
+
+            const rightLeg = createLeg(0.2);
+            mumaaAvatar.add(rightLeg);
+
+            scene.add(mumaaAvatar);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if(!clock) return; // Wait for clock
+            const t = clock.getElapsedTime();
+            
+            // Camera Transition
+            if (camera) {
+                camera.position.x += (cameraTarget.x - camera.position.x) * 0.05;
+                camera.position.y += (cameraTarget.y - camera.position.y) * 0.05;
+                camera.position.z += (cameraTarget.z - camera.position.z) * 0.05;
+            }
+
+            // --- Scene Animation ---
+            
+            // 1. Floating Shapes
+            floatingShapes.forEach(shape => {
+                shape.rotation.x += shape.userData.rotX;
+                shape.rotation.y += shape.userData.rotY;
+                // Bob up and down
+                shape.position.y = shape.userData.initialY + Math.sin(t * 2 + shape.userData.floatOffset) * 0.2;
+            });
+
+            // 2. Drifting Clouds
+            clouds.forEach(cloud => {
+                cloud.position.x += cloud.userData.speed;
+                // Loop clouds
+                if(cloud.position.x > 15) cloud.position.x = -15;
+            });
+
+            // --- Mumaa Animation ---
+            if (mumaaAvatar && head) {
+                // Gentle breathing
+                mumaaAvatar.position.y = Math.sin(t * 1.5) * 0.01;
+                
+                // Head idle movement
+                const rotY = Math.sin(t * 0.5) * 0.08;
+                const rotX = Math.sin(t * 0.3) * 0.03;
+                
+                head.rotation.y = rotY;
+                head.rotation.x = rotX;
+                
+                // Thinking animation (Head tilt)
+                if (isThinking) {
+                    head.rotation.z = Math.sin(t * 8) * 0.05;
+                } else {
+                    head.rotation.z = 0;
+                }
+
+                // Blinking (Scale eyes vertically)
+                const blink = Math.sin(t * 0.5); // Slow cycle
+                if (blink > 0.98) {
+                    leftEye.scale.y = 0.1;
+                    rightEye.scale.y = 0.1;
+                } else {
+                    leftEye.scale.y = 1;
+                    rightEye.scale.y = 1;
+                }
+            }
+
+            // Lip sync simulation
+            if (isSpeaking && mouth) {
+                const volume = (Math.sin(t * 20) + 1) / 2; // 0 to 1
+                mouth.scale.x = 1 + (volume * 0.5); // Widen mouth
+                mouth.scale.y = 1 + (volume * 0.2); // Open slightly
+            } else if (mouth) {
+                mouth.scale.set(1, 1, 1);
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // --- LANDING PAGE LOGIC ---
+        function startApp() {
+            isLandingPage = false;
+            // Transition UI
+            document.getElementById('landing-page').classList.add('landing-hidden');
+            document.getElementById('app-container').classList.add('app-visible');
+            
+            // Move Camera to Center for App Mode
+            cameraTarget = { x: 0, y: 1.4, z: 3.8 };
+            
+            // Start the Chat Greeting if needed
+            setTimeout(() => {
+                const history = JSON.parse(localStorage.getItem(STORAGE_KEYS.CHATS) || "[]");
+                if (history.length === 0) {
+                    addChatMessage(`Hi ${parentConfig.kidName}! I am Mumaa. What are we playing today?`, 'ai', false);
+                }
+            }, 1000);
+        }
+
+        // --- UI INITIALIZATION ---
+        function initializeUI() {
+            document.getElementById('study-material').value = studyContext;
+            document.getElementById('kid-name').value = parentConfig.kidName;
+            document.getElementById('kid-age').value = parentConfig.kidAge;
+            document.getElementById('kid-gender').value = parentConfig.kidGender || "Boy";
+            document.getElementById('kid-language').value = parentConfig.kidLanguage || "English";
+            document.getElementById('kid-likes').value = parentConfig.kidLikes || "";
+            document.getElementById('kid-dislikes').value = parentConfig.kidDislikes || "";
+            document.getElementById('kid-mission').value = parentConfig.kidMission || "";
+            
+            loadChatHistory();
+            populateVoiceList();
+        }
+
+        // --- PANEL LOGIC ---
+        function togglePanel(id) {
+            const panel = document.getElementById(id);
+            const isLeft = id === 'left-panel';
+            const btn = document.getElementById(isLeft ? 'reopen-left' : 'reopen-right');
+            const hiddenClass = isLeft ? 'panel-hidden-left' : 'panel-hidden-right';
+            const visibleClass = 'panel-visible';
+
+            if (panel.classList.contains(visibleClass)) {
+                // Hide
+                panel.classList.remove(visibleClass);
+                panel.classList.add(hiddenClass);
+                btn.classList.add('reopen-visible');
+            } else {
+                // Show
+                panel.classList.remove(hiddenClass);
+                panel.classList.add(visibleClass);
+                btn.classList.remove('reopen-visible');
+            }
+        }
+
+        function closeModals() {
+            document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
+        }
+        function openModal(id) {
+            closeModals();
+            const el = document.getElementById(id);
+            if(el) el.style.display = 'flex';
+        }
+
+        // --- AI LOGIC (RAG) ---
+        async function processAI(userText) {
+            isThinking = true;
+            updateStatus("Thinking...", true);
+            
+            const age = parseInt(parentConfig.kidAge) || 5;
+            let pedagogy = "Gentle, simple words.";
+            if(age >= 6) pedagogy = "Encouraging, curious mentor.";
+            
+            // Build Context
+            studyContext = localStorage.getItem(STORAGE_KEYS.STUDY) || "";
+            const history = JSON.parse(localStorage.getItem(STORAGE_KEYS.CHATS) || "[]").slice(-6);
+            
+            // Prompt Engineering
+            const prompt = `
+            ROLE: You are Mumaa, a loving AI robot friend for ${parentConfig.kidName} (${parentConfig.kidGender}, Age ${age}).
+            TONE: Warm, playful, robotic but sweet. Language: ${parentConfig.kidLanguage}.
+            INTERESTS: ${parentConfig.kidLikes}. AVOID: ${parentConfig.kidDislikes}.
+            GOAL: ${parentConfig.kidMission}.
+            
+            IMPORTANT MEMORY (RAG):
+            "${studyContext}"
+            
+            INSTRUCTIONS:
+            1. If memory answers the user, USE IT.
+            2. Keep answer SHORT (max 2 sentences).
+            3. Always end with a simple question to keep conversation going.
+            4. No Emojis in text (TTS can't read them well).
+            
+            CHAT HISTORY:
+            ${JSON.stringify(history)}
+            
+            USER SAID: "${userText}"
+            `;
+
+            try {
+                // Call Puter AI
+                const response = await puter.ai.chat(prompt);
+                
+                // Handle response object or string
+                let text = "";
+                if (typeof response === 'object' && response.message) text = response.message.content;
+                else if (typeof response === 'string') text = response;
+                else text = response.toString(); // Fallback
+
+                // Clean text
+                text = text.replace(/[*#]/g, '').trim();
+
+                isThinking = false;
+                updateStatus("", false);
+                
+                addChatMessage(text, 'ai');
+                await speak(text);
+
+            } catch (err) {
+                console.error("AI Error:", err);
+                isThinking = false;
+                updateStatus("Error", false);
+                const fallback = "Beep boop! My circuits got fuzzy. Say that again?";
+                addChatMessage(fallback, 'ai');
+                await speak(fallback);
+            }
+        }
+
+        // --- CHAT SYSTEM ---
+        function renderChatMessage(text, role, animate = true) {
+            const container = document.getElementById('chat-container');
+            if (!container) return;
+
+            const div = document.createElement('div');
+            div.className = `p-3 px-4 text-sm font-bold ${role === 'user' ? 'chat-bubble-user self-end' : 'chat-bubble-ai self-start'}`;
+            div.innerText = text;
+            
+            if(animate) {
+                div.style.opacity = '0';
+                div.style.transform = 'translateY(10px)';
+                div.style.transition = 'all 0.3s ease-out';
+                setTimeout(() => { div.style.opacity = '1'; div.style.transform = 'translateY(0)'; }, 50);
+            }
+
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function addChatMessage(text, role, animate = true) {
+            renderChatMessage(text, role, animate);
+
+            // Save
+            const history = JSON.parse(localStorage.getItem(STORAGE_KEYS.CHATS) || "[]");
+            history.push({ text, role });
+            if (history.length > 30) history.shift();
+            localStorage.setItem(STORAGE_KEYS.CHATS, JSON.stringify(history));
+        }
+
+        function loadChatHistory() {
+            const container = document.getElementById('chat-container');
+            container.innerHTML = "";
+            const history = JSON.parse(localStorage.getItem(STORAGE_KEYS.CHATS) || "[]");
+            // Only load last 10 to keep it clean
+            history.slice(-10).forEach(chat => renderChatMessage(chat.text, chat.role, false));
+        }
+
+        function executeClearChat() {
+            localStorage.setItem(STORAGE_KEYS.CHATS, "[]");
+            document.getElementById('chat-container').innerHTML = "";
+            closeModals();
+            addChatMessage(`Memory cleared! Beep Boop!`, 'ai');
+        }
+
+        function sendTextMessage() {
+            unlockSpeech();
+            const input = document.getElementById('text-input');
+            const text = input.value.trim();
+            if (text) {
+                addChatMessage(text, 'user');
+                processAI(text);
+                input.value = "";
+            }
+        }
+
+        // --- TTS & STT ---
+        function speak(text) {
+            return new Promise((resolve) => {
+                if(!text) return resolve();
+                
+                // Stop any current speech
+                window.speechSynthesis.cancel();
+
+                const utterance = new SpeechSynthesisUtterance(text);
+                currentUtterance = utterance;
+
+                // Voice Selection
+                const voices = window.speechSynthesis.getVoices();
+                const preferred = voices.find(v => v.name === parentConfig.preferredVoiceName);
+                const female = voices.find(v => v.name.includes('Female') || v.name.includes('Samantha') || v.name.includes('Google US English'));
+                
+                utterance.voice = preferred || female || voices[0];
+                utterance.pitch = 1.1; // Slightly higher/friendly
+                utterance.rate = 0.95; // Slightly slower
+
+                utterance.onstart = () => {
+                    isSpeaking = true;
+                    updateStatus("Speaking...", true);
+                };
+
+                utterance.onend = () => {
+                    isSpeaking = false;
+                    updateStatus("", false);
+                    currentUtterance = null;
+                    if(serialMode) {
+                        setTimeout(() => {
+                            if(!isThinking && !isSpeaking) startVoiceInput();
+                        }, 500);
+                    }
+                    resolve();
+                };
+
+                utterance.onerror = (e) => {
+                    console.log("TTS Error", e);
+                    isSpeaking = false;
+                    resolve();
+                };
+
+                window.speechSynthesis.speak(utterance);
+            });
+        }
+
+        // --- VOICE RECOGNITION ---
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition = null;
+        
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+
+            recognition.onstart = () => {
+                isListening = true;
+                document.getElementById('mic-btn').classList.add('mic-pulse');
+                updateStatus("Listening...", true);
+            };
+
+            recognition.onresult = (e) => {
+                const text = e.results[0][0].transcript;
+                if(text) {
+                    addChatMessage(text, 'user');
+                    processAI(text);
+                }
+            };
+
+            recognition.onend = () => {
+                isListening = false;
+                document.getElementById('mic-btn').classList.remove('mic-pulse');
+                if(!isThinking && !isSpeaking) updateStatus("", false);
+            };
+
+            recognition.onerror = (e) => {
+                console.warn("Mic Error:", e.error);
+                isListening = false;
+                serialMode = false; // Stop loop on error
+                document.getElementById('mic-btn').classList.remove('mic-pulse');
+                if(e.error === 'not-allowed') alert("Please allow microphone access to talk to Mumaa.");
+                updateStatus("Tap Mic Again", false);
+            };
+        } else {
+            console.warn("Speech Recognition not supported in this browser");
+        }
+
+        function toggleVoiceSession() {
+            unlockSpeech();
+            if(!recognition) { alert("Voice control not supported in this browser. Try Chrome."); return; }
+            
+            if (isListening) {
+                recognition.stop();
+                serialMode = false;
+            } else {
+                serialMode = true; // Enable conversational loop
+                startVoiceInput();
+            }
+        }
+
+        function startVoiceInput() {
+            if (isSpeaking || isThinking || isListening) return;
+            try { recognition.start(); } catch(e) { /* ignore if already started */ }
+        }
+
+        // --- UTILS ---
+        function updateStatus(text, show) {
+            const tag = document.getElementById('status-tag');
+            tag.innerText = text;
+            tag.style.opacity = show ? "1" : "0";
+            if(text === "Thinking...") tag.classList.add('thinking-bounce');
+            else tag.classList.remove('thinking-bounce');
+        }
+
+        function unlockSpeech() {
+            // Mobile browsers require user interaction to play audio
+            if(window.speechSynthesis.paused) window.speechSynthesis.resume();
+        }
+
+        function populateVoiceList() {
+            const selector = document.getElementById('voice-selector');
+            const voices = window.speechSynthesis.getVoices();
+            if (voices.length > 0) {
+                selector.innerHTML = voices
+                    .filter(v => v.lang.startsWith('en') || v.lang.startsWith('hi'))
+                    .map(v => `<option value="${v.name}" ${v.name === parentConfig.preferredVoiceName ? 'selected' : ''}>${v.name} (${v.lang})</option>`).join('');
+            }
+        }
+
+        function updateContext() {
+            unlockSpeech();
+            const val = document.getElementById('study-material').value.trim();
+            localStorage.setItem(STORAGE_KEYS.STUDY, val);
+            studyContext = val;
+            
+            const btn = document.getElementById('update-btn');
+            const originalText = document.getElementById('update-btn-text').innerText;
+            
+            btn.style.backgroundColor = '#4ade80'; // green
+            document.getElementById('update-btn-text').innerText = "Saved! ✅";
+            
+            setTimeout(() => {
+                btn.style.backgroundColor = ''; // reset
+                document.getElementById('update-btn-text').innerText = originalText;
+            }, 2000);
+        }
+
+        // --- PARENT GATE LOGIC ---
+        function openParentGate() {
+            const n1 = Math.floor(Math.random() * 5) + 3;
+            const n2 = Math.floor(Math.random() * 5) + 2;
+            gateCorrectAnswer = n1 * n2;
+            document.getElementById('gate-question').innerText = `Parents Only: ${n1} x ${n2} = ?`;
+            document.getElementById('gate-answer').value = "";
+            openModal('parent-gate');
+        }
+
+        function checkParentGate() {
+            const ans = parseInt(document.getElementById('gate-answer').value);
+            if (ans === gateCorrectAnswer) {
+                openModal('parent-settings');
+            } else {
+                document.getElementById('gate-question').innerText = "Try again!";
+                setTimeout(openParentGate, 1000);
+            }
+        }
+
+        function saveParentSettings() {
+            unlockSpeech();
+            parentConfig = {
+                kidName: document.getElementById('kid-name').value.trim() || "Explorer",
+                kidAge: document.getElementById('kid-age').value.trim() || "5",
+                kidGender: document.getElementById('kid-gender').value,
+                kidLanguage: document.getElementById('kid-language').value,
+                kidLikes: document.getElementById('kid-likes').value.trim(),
+                kidDislikes: document.getElementById('kid-dislikes').value.trim(),
+                kidMission: document.getElementById('kid-mission').value.trim(),
+                preferredVoiceName: document.getElementById('voice-selector').value
+            };
+            localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(parentConfig));
+            closeModals();
+            speak(`Settings saved! I am ready to play with ${parentConfig.kidName}.`);
+        }
+
+        // --- EVENT LISTENERS ---
+        document.getElementById('text-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') sendTextMessage(); });
+        document.body.addEventListener('click', () => { unlockSpeech(); }, { once: true });
+        if (typeof window.speechSynthesis !== 'undefined') window.speechSynthesis.onvoiceschanged = populateVoiceList;
+        
+        // Start
+        window.onload = initThree;
+        
+    </script>
+</body>
+</html>

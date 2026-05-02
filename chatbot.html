@@ -1,0 +1,647 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parenting Companion Bot</title>
+    <!-- Puter.js for AI -->
+    <script src="https://js.puter.com/v2/"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter for a clean, tech look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        background: '#0B0B0F', 
+                        surface: '#1C1C23',    
+                        surfaceHighlight: '#2C2C35',
+                        primary: '#3B82F6',    
+                        primaryGlow: '#60A5FA', 
+                        secondary: '#8B5CF6',  
+                        textMain: '#FFFFFF',
+                        textMuted: '#9CA3AF',
+                        boy: '#60A5FA',
+                        girl: '#F472B6',
+                    },
+                    animation: {
+                        'float': 'float 4s ease-in-out infinite',
+                        'pulse-glow': 'pulseGlow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { opacity: 1, boxShadow: '0 0 15px rgba(59, 130, 246, 0.5)' },
+                            '50%': { opacity: .7, boxShadow: '0 0 5px rgba(59, 130, 246, 0.2)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151; 
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4B5563; 
+        }
+
+        .chat-bubble {
+            position: relative;
+            max-width: 85%;
+            padding: 14px 18px;
+            border-radius: 24px;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            animation: fadeIn 0.3s ease-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .user-bubble {
+            background: #3B82F6;
+            color: white;
+            border-bottom-right-radius: 4px;
+            margin-left: auto;
+        }
+
+        .bot-bubble {
+            background: #1C1C23;
+            color: #E5E7EB;
+            border-bottom-left-radius: 4px;
+            margin-right: auto;
+            border: 1px solid #2C2C35;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .typing-dot {
+            animation: typing 1.4s infinite ease-in-out both;
+            fill: #9CA3AF;
+        }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+        
+        /* Transition for hidden fields */
+        .hidden-field {
+            display: none;
+        }
+        .hidden-field.show {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-[#050505] font-sans h-screen flex flex-col items-center justify-center overflow-hidden text-gray-200">
+
+    <!-- Decorative Background Elements (Glows) -->
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/20 rounded-full blur-[100px] pointer-events-none"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+    <!-- App Container -->
+    <div id="app" class="relative w-full h-full max-w-[420px] bg-background sm:rounded-[40px] sm:h-[90vh] sm:border-[8px] sm:border-[#1C1C23] shadow-2xl overflow-hidden flex flex-col ring-1 ring-white/5">
+        
+        <!-- ==================== REGISTRATION SCREEN ==================== -->
+        <div id="register-screen" class="absolute inset-0 z-50 bg-background flex flex-col p-6 overflow-y-auto transition-transform duration-500 custom-scrollbar">
+            <div class="flex-1 flex flex-col items-center text-center space-y-6 pt-4">
+                
+                <!-- Robot Avatar -->
+                <div class="relative group">
+                    <div class="absolute -inset-4 bg-gradient-to-r from-primary to-secondary rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200 animate-pulse-glow"></div>
+                    <div class="w-24 h-24 bg-[#1C1C23] rounded-full flex items-center justify-center relative z-10 border border-white/10 animate-float">
+                        <i class="fa-solid fa-robot text-4xl text-primary bg-clip-text"></i>
+                        <div class="absolute top-[42%] left-[32%] w-1.5 h-1.5 bg-blue-400 rounded-full blur-[1px]"></div>
+                        <div class="absolute top-[42%] right-[32%] w-1.5 h-1.5 bg-blue-400 rounded-full blur-[1px]"></div>
+                    </div>
+                </div>
+
+                <div class="space-y-1 w-full">
+                    <h1 class="text-2xl font-bold text-white tracking-tight">Setup Profile</h1>
+                    <p class="text-xs text-textMuted">Help MUMAA guide you better</p>
+                </div>
+
+                <form id="details-form" class="w-full space-y-5 text-left pb-10">
+                    
+                    <!-- 1. Basic Baby Profile -->
+                    <div class="space-y-4">
+                        <h3 class="text-sm font-bold text-primary border-b border-white/5 pb-1">1. Basic Baby Profile</h3>
+                        
+                        <div class="space-y-1">
+                            <label class="block text-xs font-medium text-textMuted ml-1 uppercase tracking-wider">Baby's Name</label>
+                            <input type="text" id="baby-name" required class="w-full pl-4 pr-4 py-3 bg-surface rounded-xl text-white border border-transparent focus:border-primary focus:ring-1 focus:ring-primary outline-none transition placeholder-gray-600 text-sm" placeholder="e.g. Aarav">
+                        </div>
+
+                        <div class="space-y-1">
+                            <label class="block text-xs font-medium text-textMuted ml-1 uppercase tracking-wider">Date of Birth</label>
+                            <input type="date" id="baby-dob" required class="w-full pl-4 pr-4 py-3 bg-surface rounded-xl text-white border border-transparent focus:border-primary focus:ring-1 focus:ring-primary outline-none transition appearance-none text-sm">
+                        </div>
+
+                        <div class="space-y-1">
+                            <label class="block text-xs font-medium text-textMuted ml-1 uppercase tracking-wider">Gender</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <label class="cursor-pointer relative">
+                                    <input type="radio" name="gender" value="boy" class="peer hidden" checked>
+                                    <div class="py-3 rounded-xl bg-surface border border-transparent peer-checked:border-blue-500 peer-checked:bg-blue-500/10 text-center transition flex items-center justify-center space-x-2 text-gray-400 peer-checked:text-blue-400 text-sm">
+                                        <i class="fa-solid fa-child"></i> <span>Boy</span>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer relative">
+                                    <input type="radio" name="gender" value="girl" class="peer hidden">
+                                    <div class="py-3 rounded-xl bg-surface border border-transparent peer-checked:border-pink-500 peer-checked:bg-pink-500/10 text-center transition flex items-center justify-center space-x-2 text-gray-400 peer-checked:text-pink-400 text-sm">
+                                        <i class="fa-solid fa-child-dress"></i> <span>Girl</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="space-y-1">
+                            <label class="block text-xs font-medium text-textMuted ml-1 uppercase tracking-wider">Birth Type</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <label class="cursor-pointer relative">
+                                    <input type="radio" name="birthType" value="Normal" class="peer hidden" checked>
+                                    <div class="py-2.5 rounded-xl bg-surface border border-transparent peer-checked:border-primary peer-checked:bg-primary/10 text-center transition text-gray-400 peer-checked:text-primary text-xs font-medium">Normal</div>
+                                </label>
+                                <label class="cursor-pointer relative">
+                                    <input type="radio" name="birthType" value="C-section" class="peer hidden">
+                                    <div class="py-2.5 rounded-xl bg-surface border border-transparent peer-checked:border-primary peer-checked:bg-primary/10 text-center transition text-gray-400 peer-checked:text-primary text-xs font-medium">C-Section</div>
+                                </label>
+                                <label class="cursor-pointer relative">
+                                    <input type="radio" name="birthType" value="Preterm" class="peer hidden">
+                                    <div class="py-2.5 rounded-xl bg-surface border border-transparent peer-checked:border-primary peer-checked:bg-primary/10 text-center transition text-gray-400 peer-checked:text-primary text-xs font-medium">Preterm</div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Health & Development -->
+                    <div class="space-y-4 pt-2">
+                        <h3 class="text-sm font-bold text-secondary border-b border-white/5 pb-1">2. Health & Development</h3>
+                        
+                        <!-- Medical Conditions -->
+                        <div class="space-y-2">
+                            <label class="block text-xs font-medium text-textMuted ml-1 uppercase tracking-wider">Any Known Medical Conditions?</label>
+                            <div class="flex space-x-4">
+                                <label class="flex items-center space-x-2 cursor-pointer p-2 rounded hover:bg-white/5">
+                                    <input type="radio" name="hasMedical" value="no" class="accent-secondary scale-110" checked onchange="toggleMedicalInput(false)">
+                                    <span class="text-sm text-gray-300">No</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer p-2 rounded hover:bg-white/5">
+                                    <input type="radio" name="hasMedical" value="yes" class="accent-secondary scale-110" onchange="toggleMedicalInput(true)">
+                                    <span class="text-sm text-gray-300">Yes</span>
+                                </label>
+                            </div>
+                            <div id="medical-input-container" class="hidden-field">
+                                <input type="text" id="medical-conditions" class="w-full pl-4 pr-4 py-3 bg-surface rounded-xl text-white border border-secondary/50 focus:border-secondary outline-none transition placeholder-gray-600 text-sm mt-1" placeholder="Please specify condition...">
+                            </div>
+                        </div>
+
+                        <!-- Allergies -->
+                        <div class="space-y-1">
+                            <label class="block text-xs font-medium text-textMuted ml-1 uppercase tracking-wider">Allergies (Optional)</label>
+                            <input type="text" id="allergies" class="w-full pl-4 pr-4 py-3 bg-surface rounded-xl text-white border border-transparent focus:border-secondary outline-none transition placeholder-gray-600 text-sm" placeholder="e.g. Peanuts, Dust, Dairy">
+                        </div>
+
+                        <!-- Teething -->
+                        <div class="space-y-1">
+                            <label class="block text-xs font-medium text-textMuted ml-1 uppercase tracking-wider">Currently Teething?</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <label class="cursor-pointer relative">
+                                    <input type="radio" name="teething" value="No" class="peer hidden" checked>
+                                    <div class="py-2.5 rounded-xl bg-surface border border-transparent peer-checked:border-secondary peer-checked:bg-secondary/10 text-center transition text-gray-400 peer-checked:text-secondary text-xs font-medium">No</div>
+                                </label>
+                                <label class="cursor-pointer relative">
+                                    <input type="radio" name="teething" value="Yes" class="peer hidden">
+                                    <div class="py-2.5 rounded-xl bg-surface border border-transparent peer-checked:border-secondary peer-checked:bg-secondary/10 text-center transition text-gray-400 peer-checked:text-secondary text-xs font-medium">Yes</div>
+                                </label>
+                                <label class="cursor-pointer relative">
+                                    <input type="radio" name="teething" value="Not Sure" class="peer hidden">
+                                    <div class="py-2.5 rounded-xl bg-surface border border-transparent peer-checked:border-secondary peer-checked:bg-secondary/10 text-center transition text-gray-400 peer-checked:text-secondary text-xs font-medium">Not Sure</div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Special Care -->
+                        <div class="space-y-1">
+                            <label class="block text-xs font-medium text-textMuted ml-1 uppercase tracking-wider">Doctor's Special Care (Optional)</label>
+                            <textarea id="special-care" rows="2" class="w-full pl-4 pr-4 py-3 bg-surface rounded-xl text-white border border-transparent focus:border-secondary outline-none transition placeholder-gray-600 text-sm resize-none" placeholder="Any specific advice from doctor?"></textarea>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full bg-gradient-to-r from-[#96C8B4] via-[#87CEEB] to-[#96C8B4] hover:from-[#87CEEB] hover:to-[#96C8B4] text-[#0B0B0F] font-bold py-4 rounded-2xl shadow-[0_0_25px_rgba(150,200,180,0.4)] transform active:scale-[0.98] transition-all mt-6 uppercase tracking-wide">
+                        Complete Setup
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ==================== CHAT SCREEN ==================== -->
+        <div id="chat-screen" class="flex flex-col h-full transform translate-x-full transition-transform duration-500 absolute inset-0 bg-background">
+            
+            <!-- Header -->
+            <div class="bg-background/80 backdrop-blur-md px-6 py-4 flex items-center justify-between z-20 sticky top-0 border-b border-white/5">
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <div class="w-10 h-10 rounded-full bg-surface border border-white/10 flex items-center justify-center shadow-lg overflow-hidden">
+                             <img src="photo_6064604666927975870_y.jpg" alt="MUMAA" class="w-full h-full object-cover">
+                        </div>
+                        <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-background"></div>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-white text-sm leading-tight">MUMAA</h2>
+                        <p id="header-baby-info" class="text-[10px] text-primary font-medium tracking-wide uppercase opacity-90">Loading...</p>
+                    </div>
+                </div>
+                <button onclick="resetApp()" class="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition">
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                </button>
+            </div>
+
+            <!-- Chat Area -->
+            <div id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-6 scroll-smooth pb-24">
+                <!-- Messages will be injected here -->
+            </div>
+
+            <!-- Bottom Section (Suggestions + Input) -->
+            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background via-background to-transparent pt-10 pb-4 px-4 z-20">
+                
+                <!-- Quick Suggestions (Horizontal Scroll) -->
+                <div id="suggestion-container" class="flex gap-2 mb-3 overflow-x-auto pb-2 scrollbar-hide opacity-0 transition-opacity duration-300">
+                    <!-- Pills injected here -->
+                </div>
+
+                <!-- Input Area -->
+                <div class="relative flex items-center gap-2">
+                    <div class="flex-1 bg-surface rounded-full flex items-center px-2 py-2 border border-white/5 focus-within:border-primary/50 transition-colors shadow-lg">
+                        
+                        <!-- Mic Button (Inside Input Left) -->
+                        <button id="mic-btn" class="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-all shrink-0">
+                            <i class="fa-solid fa-microphone"></i>
+                        </button>
+
+                        <input type="text" id="user-input" class="flex-1 bg-transparent border-none outline-none text-white placeholder-gray-500 ml-1 text-sm h-full" placeholder="Ask MUMAA anything..." autocomplete="off">
+                        
+                        <!-- Send Button (Inside Input Right) -->
+                        <button id="send-btn" class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center hover:bg-blue-600 transition-transform active:scale-90 disabled:opacity-50 disabled:cursor-not-allowed shrink-0">
+                            <i class="fa-solid fa-arrow-up"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Logic Script -->
+    <script>
+        // DOM Elements
+        const app = document.getElementById('app');
+        const registerScreen = document.getElementById('register-screen');
+        const chatScreen = document.getElementById('chat-screen');
+        const detailsForm = document.getElementById('details-form');
+        const chatContainer = document.getElementById('chat-container');
+        const suggestionContainer = document.getElementById('suggestion-container');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        const micBtn = document.getElementById('mic-btn');
+        const headerInfo = document.getElementById('header-baby-info');
+
+        // State
+        let babyData = null;
+        let isListening = false;
+        let recognition = null;
+
+        // UI Logic for Form
+        window.toggleMedicalInput = function(show) {
+            const container = document.getElementById('medical-input-container');
+            if (show) {
+                container.classList.add('show');
+            } else {
+                container.classList.remove('show');
+                document.getElementById('medical-conditions').value = ''; // Clear if No
+            }
+        }
+
+        // --- Age Groups Data ---
+        const ageGroups = [
+            {
+                label: "Infant (0-1 year)",
+                minMonth: 0,
+                maxMonth: 12,
+                problems: ["Colic / Crying", "Feeding issues", "Sleep problems", "Gas & Constipation", "Teething pain", "Infections"]
+            },
+            {
+                label: "Toddler (1-3 years)",
+                minMonth: 13,
+                maxMonth: 36,
+                problems: ["Tantrums", "Saying No", "Speech delay", "Separation anxiety", "Food refusal", "Potty training"]
+            },
+            {
+                label: "Preschool (3-5 years)",
+                minMonth: 37,
+                maxMonth: 60,
+                problems: ["Night fears", "Hyperactivity", "Speech clarity", "Social skills", "Bed-wetting", "Attention"]
+            },
+            {
+                label: "Early School (5-7 years)",
+                minMonth: 61,
+                maxMonth: 84,
+                problems: ["Learning difficulty", "School fear", "Confidence", "Comparisons", "Friend problems", "Screen time"]
+            },
+            {
+                label: "Middle Childhood (7-10 years)",
+                minMonth: 85,
+                maxMonth: 120,
+                problems: ["Self-esteem", "Peer pressure", "Bullying", "Anger issues", "Anxiety", "Gadgets"]
+            }
+        ];
+
+        // --- Initialization ---
+        window.onload = () => {
+            const storedData = localStorage.getItem('parentingBotData');
+            if (storedData) {
+                babyData = JSON.parse(storedData);
+                showChatScreen();
+            }
+            initSpeechRecognition();
+        };
+
+        // --- Registration Logic ---
+        detailsForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Gather Basic Data
+            const name = document.getElementById('baby-name').value;
+            const dob = document.getElementById('baby-dob').value;
+            const gender = document.querySelector('input[name="gender"]:checked').value;
+            const birthType = document.querySelector('input[name="birthType"]:checked').value;
+
+            // Gather Health Data
+            const hasMedical = document.querySelector('input[name="hasMedical"]:checked').value;
+            const medicalConditions = hasMedical === 'yes' ? document.getElementById('medical-conditions').value : 'None';
+            const allergies = document.getElementById('allergies').value || 'None';
+            const teething = document.querySelector('input[name="teething"]:checked').value;
+            const specialCare = document.getElementById('special-care').value || 'None';
+
+            babyData = { 
+                name, dob, gender, birthType, 
+                medicalConditions, allergies, teething, specialCare 
+            };
+            
+            localStorage.setItem('parentingBotData', JSON.stringify(babyData));
+            showChatScreen();
+        });
+
+        function calculateAge(dobString) {
+            const dob = new Date(dobString);
+            const now = new Date();
+            
+            let years = now.getFullYear() - dob.getFullYear();
+            let months = now.getMonth() - dob.getMonth();
+            
+            if (months < 0 || (months === 0 && now.getDate() < dob.getDate())) {
+                years--;
+                months += 12;
+            }
+            
+            if (now.getDate() < dob.getDate()) {
+                months--;
+                if(months < 0) months += 12; 
+            }
+
+            const totalMonths = (years * 12) + months;
+            return { years, months, totalMonths };
+        }
+
+        function getAgeGroup(totalMonths) {
+            return ageGroups.find(g => totalMonths >= g.minMonth && totalMonths <= g.maxMonth) || ageGroups[ageGroups.length - 1]; 
+        }
+
+        function showChatScreen() {
+            // Update UI
+            registerScreen.style.transform = 'translateX(-100%)';
+            chatScreen.style.transform = 'translateX(0)';
+            
+            // Calculate Context
+            const ageInfo = calculateAge(babyData.dob);
+            const currentGroup = getAgeGroup(ageInfo.totalMonths);
+            
+            // Update Header
+            let ageString = ageInfo.years > 0 ? `${ageInfo.years}y ${ageInfo.months}m` : `${ageInfo.months} mo`;
+            headerInfo.textContent = `${babyData.name} • ${ageString}`;
+
+            // Initial Greeting
+            if (chatContainer.children.length === 0) {
+                addBotMessage(`Hi! I'm MUMAA, here to help with **${babyData.name}**. I see they are ${ageString} old. How can I help today?`);
+            }
+
+            // Populate Suggestions
+            suggestionContainer.innerHTML = '';
+            suggestionContainer.classList.remove('opacity-0');
+            
+            currentGroup.problems.forEach(prob => {
+                const pill = document.createElement('button');
+                pill.className = "flex-shrink-0 bg-surface border border-white/10 text-gray-300 px-4 py-2 rounded-full text-xs font-medium hover:bg-white/10 hover:text-white hover:border-white/20 transition-all active:scale-95";
+                pill.textContent = prob;
+                pill.onclick = () => handleInput(prob);
+                suggestionContainer.appendChild(pill);
+            });
+        }
+
+        // --- Chat Logic ---
+        function addMessage(text, isUser) {
+            const div = document.createElement('div');
+            div.className = `chat-bubble ${isUser ? 'user-bubble' : 'bot-bubble'}`;
+            
+            div.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+            
+            chatContainer.appendChild(div);
+            scrollToBottom();
+        }
+
+        function addBotMessage(text) {
+            addMessage(text, false);
+        }
+
+        function addUserMessage(text) {
+            addMessage(text, true);
+        }
+
+        function scrollToBottom() {
+            // Scroll to bottom but leave space for inputs
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const id = 'typing-' + Date.now();
+            const div = document.createElement('div');
+            div.id = id;
+            div.className = 'chat-bubble bot-bubble w-16 h-10 flex items-center justify-center space-x-1';
+            div.innerHTML = `
+                <svg viewBox="0 0 24 24" class="w-2 h-2 typing-dot"><circle cx="12" cy="12" r="12"/></svg>
+                <svg viewBox="0 0 24 24" class="w-2 h-2 typing-dot"><circle cx="12" cy="12" r="12"/></svg>
+                <svg viewBox="0 0 24 24" class="w-2 h-2 typing-dot"><circle cx="12" cy="12" r="12"/></svg>
+            `;
+            chatContainer.appendChild(div);
+            scrollToBottom();
+            return id;
+        }
+
+        function removeTypingIndicator(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        // --- AI Integration (Puter.js) ---
+        async function fetchAIResponse(userQuery) {
+            const ageInfo = calculateAge(babyData.dob);
+            const ageContext = `${ageInfo.years} years and ${ageInfo.months} months`;
+            const currentGroup = getAgeGroup(ageInfo.totalMonths);
+
+            // Enhanced System Prompt for Concise, Parent-Friendly Responses
+            const systemPrompt = `
+                You are MUMAA, an expert pediatric advisor.
+                Target Audience: Busy parents who need quick, safe solutions.
+
+                CHILD DETAILS:
+                - Name: ${babyData.name}
+                - Age: ${ageContext}
+                - Health: ${babyData.medicalConditions} (Medical), ${babyData.allergies} (Allergies), ${babyData.birthType} (Birth Type)
+                
+                RESPONSE RULES:
+                1. **Start with the solution immediately.** No fluff like "That's a great question."
+                2. **Format:** Use short bullet points for steps.
+                3. **Length:** Maximum 3-4 sentences of explanation.
+                4. **Safety:** If red flags (high fever >103F, difficulty breathing, lethargy), Stop and say "See a doctor now."
+                5. **Tone:** Warm, calm, but efficient.
+                6. **Language:** English primarily, but understand Hindi parenting terms (Doodh, Zid, etc.).
+
+                User Question: ${userQuery}
+            `;
+
+            try {
+                if (typeof puter === 'undefined') {
+                    return "Puter.js library is not loaded. Please check your internet connection.";
+                }
+                const response = await puter.ai.chat(systemPrompt);
+                if (typeof response === 'object' && response.message) {
+                    return response.message.content || response.message;
+                }
+                return response;
+
+            } catch (error) {
+                console.error("Puter AI Error:", error);
+                return "I'm having trouble connecting. Please check your internet connection.";
+            }
+        }
+
+        async function handleInput(text = null) {
+            const query = text || userInput.value.trim();
+            if (!query) return;
+
+            userInput.value = '';
+            addUserMessage(query);
+
+            const typingId = showTypingIndicator();
+
+            try {
+                const response = await fetchAIResponse(query);
+                removeTypingIndicator(typingId);
+                addBotMessage(response);
+            } catch (err) {
+                removeTypingIndicator(typingId);
+                addBotMessage("Sorry, I encountered an error. Please try again.");
+            }
+        }
+
+        // --- Event Listeners ---
+        sendBtn.addEventListener('click', () => handleInput());
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleInput();
+        });
+
+        // --- Voice Recognition ---
+        function initSpeechRecognition() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.lang = 'en-US'; 
+                recognition.interimResults = false;
+
+                recognition.onstart = () => {
+                    isListening = true;
+                    // Visual feedback for listening
+                    micBtn.classList.remove('text-gray-400');
+                    micBtn.classList.add('text-red-500', 'animate-pulse');
+                    micBtn.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
+                    userInput.placeholder = "Listening...";
+                };
+
+                recognition.onend = () => {
+                    isListening = false;
+                    micBtn.classList.add('text-gray-400');
+                    micBtn.classList.remove('text-red-500', 'animate-pulse');
+                    micBtn.style.backgroundColor = 'transparent';
+                    userInput.placeholder = "Ask anything...";
+                };
+
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    userInput.value = transcript;
+                    handleInput(); 
+                };
+
+                micBtn.onclick = () => {
+                    if (isListening) recognition.stop();
+                    else recognition.start();
+                };
+            } else {
+                micBtn.style.opacity = '0.5';
+                micBtn.title = "Microphone not available";
+            }
+        }
+
+        window.resetApp = function() {
+            if(confirm("Start over with a new profile?")) {
+                localStorage.removeItem('parentingBotData');
+                location.reload();
+            }
+        }
+
+    </script>
+</body>
+</html>
