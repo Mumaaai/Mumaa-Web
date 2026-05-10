@@ -66,7 +66,7 @@ export default function Sidebar({ isOpen, onClose, activeTab, onTabChange }: Sid
         <div className={`p-6 border-b border-stone-100 bg-white flex items-center ${isCollapsed ? 'justify-center px-4' : 'justify-between'}`}>
           <Link to="/" className={`flex items-center gap-3 ${isCollapsed ? 'justify-center' : ''}`}>
             <div className="relative w-10 h-10 shrink-0">
-              <img src="/images/MumaaAIlogo.png" alt="MUMAA Logo" className="w-full h-full border-2 border-white rounded-full shadow-sm" />
+              <img src="images/MumaaAIlogo.png" alt="MUMAA Logo" className="w-full h-full border-2 border-white rounded-full shadow-sm" />
             </div>
             {!isCollapsed && (
               <div className="min-w-0">

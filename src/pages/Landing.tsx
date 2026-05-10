@@ -46,7 +46,7 @@ export default function Landing() {
         >
           <a className="flex items-center gap-3 select-none group" href="#">
             <div className="relative w-10 h-10 overflow-hidden rounded-full shadow-sm">
-              <img src="/images/MumaaAIlogo.png" alt="Mumaa Logo" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+              <img src="images/MumaaAIlogo.png" alt="Mumaa Logo" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
             </div>
             <div className="flex flex-col leading-none">
               <div className="text-2xl font-black tracking-tighter text-stone-800">MUMAA</div>
@@ -122,7 +122,7 @@ export default function Landing() {
               <Link to="/auth" className="px-8 py-4 rounded-full gradient-peach text-orange-900 font-bold hover:shadow-xl hover:-translate-y-1 transition-all shadow-md border border-white flex items-center justify-center gap-2 text-lg">
                 Enter Workspace <ArrowRight className="w-5 h-5" />
               </Link>
-              <a href="/MummA_Cry_Analyzer (2).apk" download className="px-8 py-4 rounded-full bg-white border border-stone-200 text-stone-600 font-bold hover:border-orange-300 hover:bg-orange-50 hover:text-orange-600 transition-all shadow-sm flex items-center justify-center gap-2 text-lg hover:-translate-y-1">
+              <a href="MummA_Cry_Analyzer (2).apk" download className="px-8 py-4 rounded-full bg-white border border-stone-200 text-stone-600 font-bold hover:border-orange-300 hover:bg-orange-50 hover:text-orange-600 transition-all shadow-sm flex items-center justify-center gap-2 text-lg hover:-translate-y-1">
                 <Download className="w-5 h-5" /> Download App
               </a>
             </motion.div>
@@ -138,7 +138,7 @@ export default function Landing() {
             <div className="absolute w-[95%] h-[95%] bg-gradient-to-tr from-orange-200/60 to-rose-200/60 rounded-full blur-[80px] opacity-80 animate-pulse" style={{ animationDuration: '4s' }}></div>
             <div className="relative w-full max-w-[500px] aspect-square flex items-center justify-center">
               <div className="relative w-[90%] h-[90%] rounded-[3rem] overflow-hidden shadow-2xl border-[8px] border-white/80 bg-white backdrop-blur-sm">
-                <img src="/images/pexels-daniel-reche-718241-1556706.jpg" alt="Mother and Child" className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-1000" />
+                <img src="images/pexels-daniel-reche-718241-1556706.jpg" alt="Mother and Child" className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-1000" />
                 <div className="absolute inset-0 bg-orange-900/5 mix-blend-overlay pointer-events-none"></div>
               </div>
 
@@ -319,7 +319,7 @@ export default function Landing() {
                     ].map((toy, i) => (
                         <motion.div variants={fadeIn} key={i} className={`group relative bg-white border border-stone-100 rounded-[2.5rem] overflow-hidden transition-all duration-500 hover:-translate-y-2 shadow-lg flex flex-col ${toy.border}`}>
                             <div className="aspect-square bg-stone-100 relative overflow-hidden flex items-center justify-center cursor-pointer">
-                                <img alt={toy.name} className="product-image transition-transform duration-1000 group-hover:scale-110 absolute inset-0 w-full h-full object-cover" src={`/images/${toy.img}`} />
+                                <img alt={toy.name} className="product-image transition-transform duration-1000 group-hover:scale-110 absolute inset-0 w-full h-full object-cover" src={`images/${toy.img}`} />
                                 <div className={`absolute top-4 right-4 backdrop-blur text-xs font-bold px-4 py-2 rounded-xl border border-white/50 shadow-md z-10 flex items-center gap-1.5 ${toy.badge}`}>
                                     <Sparkles className="w-3.5 h-3.5" /> AI Inside
                                 </div>
@@ -481,7 +481,7 @@ export default function Landing() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
                   <div className="col-span-1 lg:col-span-2">
                       <a className="flex items-center gap-4 mb-8 select-none" href="#">
-                          <img src="/images/MumaaAIlogo.png" alt="Mumaa Logo" className="w-12 h-12 object-cover rounded-2xl shadow-sm border border-stone-100" />
+                          <img src="images/MumaaAIlogo.png" alt="Mumaa Logo" className="w-12 h-12 object-cover rounded-2xl shadow-sm border border-stone-100" />
                           <span className="text-3xl font-black tracking-tighter text-stone-800">MUMAA</span>
                       </a>
                       <p className="text-stone-500 font-medium text-[15px] leading-relaxed max-w-sm mb-8">

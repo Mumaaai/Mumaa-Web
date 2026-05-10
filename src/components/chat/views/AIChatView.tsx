@@ -58,7 +58,7 @@ export default function AIChatView() {
           <div className="max-w-3xl mx-auto w-full my-auto flex flex-col justify-center pt-8">
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="text-center pb-8">
               <div className="w-28 h-28 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-xl border-4 border-white rotate-3 hover:rotate-0 transition-transform duration-500 bg-white">
-                <img src="/images/MumaaAIlogo.png" alt="MUMAA Logo" className="w-16 h-16 rounded-full" />
+                <img src="images/MumaaAIlogo.png" alt="MUMAA Logo" className="w-16 h-16 rounded-full" />
               </div>
               <h3 className="text-4xl font-bold mb-4 tracking-tight text-stone-800">Namaste.</h3>
               <p className="text-stone-600 text-sm md:text-base max-w-sm mx-auto leading-relaxed mb-10 font-medium">

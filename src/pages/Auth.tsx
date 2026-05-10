@@ -37,7 +37,7 @@ export default function Auth() {
 
       {/* Navigation (Simple version) */}
       <Link to="/" className="absolute top-6 left-6 z-50 flex items-center gap-3 select-none group bg-white/50 backdrop-blur-md px-4 py-2 rounded-full border border-stone-200 shadow-sm hover:bg-white transition-all">
-        <img src="/images/MumaaAIlogo.png" alt="Mumaa Logo" className="w-8 h-8 object-cover rounded-full" />
+        <img src="images/MumaaAIlogo.png" alt="Mumaa Logo" className="w-8 h-8 object-cover rounded-full" />
         <span className="text-lg font-black tracking-tighter text-stone-800">MUMAA</span>
       </Link>
 
