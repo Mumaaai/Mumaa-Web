@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Send, Loader2, User, Plus, Baby, Moon, Utensils, Volume2, VolumeX } from 'lucide-react';
+import { Sparkles, Send, Loader2, User, Plus, Baby, Moon, Utensils } from 'lucide-react';
 import ProfileSetupModal from '../ProfileSetupModal';
 import { api } from '../../../api';
 import ReactMarkdown from 'react-markdown';
@@ -27,9 +27,6 @@ interface AIChatViewProps {
   onSessionChange: (id: string) => void;
 }
 
-const ELEVEN_LABS_API_KEY = 'sk_3dfc3e5b5d9474423467e39d24a42dcaea1783acf50bcbce';
-const VOICE_ID = 'pNInz6obpgnuM0sLAsFl'; // Rachel - warm, maternal voice
-
 export default function AIChatView({ user, babyProfile, onProfileUpdate, sessionId, onSessionChange }: AIChatViewProps) {
   const calculateAge = (dob: string) => {
     if (!dob) return "Newborn";
@@ -53,12 +50,9 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate, session
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [streamingText, setStreamingText] = useState('');
   const [isFabOpen, setIsFabOpen] = useState(false);
-  const [currentlySpeakingId, setCurrentlySpeakingId] = useState<string | null>(null);
-  const [isAudioLoading, setIsAudioLoading] = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Load history when sessionId changes
   useEffect(() => {
@@ -108,85 +102,6 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate, session
       await new Promise(resolve => setTimeout(resolve, 20 + Math.random() * 30));
     }
     return currentText;
-  };
-
-  const speak = async (text: string, id: string) => {
-    if (currentlySpeakingId === id) {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-      setCurrentlySpeakingId(null);
-      return;
-    }
-
-    // Stop any current audio
-    if (audioRef.current) {
-      audioRef.current.pause();
-    }
-    
-    // Stop browser TTS just in case
-    window.speechSynthesis.cancel();
-    
-    setCurrentlySpeakingId(id);
-    setIsAudioLoading(true);
-    
-    try {
-      // Clean markdown for speech
-      const cleanText = text.replace(/[#*`_~]/g, '').trim();
-
-      const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}?optimize_streaming_latency=3`, {
-        method: 'POST',
-        headers: {
-          'Accept': 'audio/mpeg',
-          'Content-Type': 'application/json',
-          'xi-api-key': ELEVEN_LABS_API_KEY,
-        },
-        body: JSON.stringify({
-          text: cleanText,
-          model_id: 'eleven_turbo_v2', // Faster and better
-          voice_settings: {
-            stability: 0.5,
-            similarity_boost: 0.75,
-            style: 0.0,
-            use_speaker_boost: true
-          },
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Eleven Labs Error: ${errorData.detail?.message || response.statusText}`);
-      }
-
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      
-      const audio = new Audio(url);
-      audioRef.current = audio;
-      
-      audio.onplay = () => {
-        setIsAudioLoading(false);
-      };
-
-      audio.onended = () => {
-        setCurrentlySpeakingId(null);
-        URL.revokeObjectURL(url);
-      };
-      
-      audio.onerror = (e) => {
-        console.error("Audio playback error", e);
-        setCurrentlySpeakingId(null);
-        setIsAudioLoading(false);
-      };
-
-      await audio.play();
-    } catch (error) {
-      console.error('Speech error:', error);
-      setCurrentlySpeakingId(null);
-      setIsAudioLoading(false);
-      alert("Voice service unavailable. Please check your Eleven Labs API key or limit.");
-    }
   };
 
   const handleSend = async (e?: React.FormEvent) => {
@@ -384,25 +299,6 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate, session
                             msg.text
                           )}
                         </div>
-                        
-                        {msg.sender === 'ai' && (
-                          <button 
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              speak(msg.text, msg.id);
-                            }}
-                            disabled={isAudioLoading && currentlySpeakingId === msg.id}
-                            className={`absolute -right-12 top-0 p-2 rounded-full transition-all border shadow-sm ${currentlySpeakingId === msg.id ? 'bg-orange-100 border-orange-200 text-orange-600' : 'bg-white border-stone-100 text-stone-400 hover:text-orange-500 opacity-0 group-hover/msg:opacity-100'}`}
-                          >
-                            {isAudioLoading && currentlySpeakingId === msg.id ? (
-                              <Loader2 className="w-4 h-4 animate-spin" />
-                            ) : currentlySpeakingId === msg.id ? (
-                              <VolumeX className="w-4 h-4" />
-                            ) : (
-                              <Volume2 className="w-4 h-4" />
-                            )}
-                          </button>
-                        )}
                       </div>
                     </div>
                   </motion.div>

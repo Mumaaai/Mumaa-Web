@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { User, Sparkles, Volume2, History, MessageSquarePlus, Clock, X, Heart } from 'lucide-react';
+import { User, Sparkles, History, MessageSquarePlus, Clock, X, Heart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { TabId } from './Sidebar';
 
@@ -105,9 +105,6 @@ export default function Header({ onMenuClick, activeTab, user, chatSessions = []
             title="Daily Tip"
           >
             <Sparkles className="w-5 h-5" />
-          </button>
-          <button className="p-2.5 bg-white hover:bg-stone-50 rounded-full transition-all border border-stone-200 btn-press shadow-sm text-stone-500 hover:text-stone-700" title="Toggle Voice">
-            <Volume2 className="w-5 h-5" />
           </button>
 
           {/* History Dropdown */}
