@@ -1,5 +1,5 @@
 // Mumaa API Utility
-export const API_URL = 'https://mumaa-api.srisumit96.workers.dev'; // Placeholder - Update with your actual Worker URL
+export const API_URL = 'https://mumaa-api.srisumit96-1ca.workers.dev';
 
 export const api = {
   async post(path: string, data: any) {

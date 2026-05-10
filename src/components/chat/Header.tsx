@@ -4,6 +4,7 @@ import type { TabId } from './Sidebar';
 interface HeaderProps {
   onMenuClick: () => void;
   activeTab: TabId;
+  user: any;
 }
 
 const getTabTitle = (tab: TabId) => {
@@ -27,17 +28,21 @@ const getTabTitle = (tab: TabId) => {
   }
 };
 
-export default function Header({ onMenuClick, activeTab }: HeaderProps) {
+export default function Header({ onMenuClick, activeTab, user }: HeaderProps) {
   return (
     <div className="h-16 min-h-[4rem] border-b border-stone-200/60 flex items-center justify-between px-4 md:px-8 bg-white/85 backdrop-blur-xl z-30 shrink-0">
       <div className="flex items-center gap-3">
-        <button onClick={onMenuClick} className="md:hidden w-10 h-10 rounded-full gradient-peach flex items-center justify-center text-orange-900 shadow-sm btn-press border border-white">
-          <User className="w-5 h-5" />
+        <button onClick={onMenuClick} className="md:hidden w-10 h-10 rounded-full overflow-hidden flex items-center justify-center text-orange-900 shadow-sm btn-press border border-white">
+          {user?.picture ? (
+            <img src={user.picture} alt={user.name} className="w-full h-full object-cover" />
+          ) : (
+            <User className="w-5 h-5" />
+          )}
         </button>
         <div>
           <h2 className="font-bold text-xl leading-tight tracking-tight text-stone-800">{getTabTitle(activeTab)}</h2>
           <p className="text-[11px] text-stone-500 font-semibold tracking-wider uppercase truncate max-w-[150px] sm:max-w-none mt-0.5">
-            Welcome, Priya
+            Welcome, {user?.name?.split(' ')[0] || 'Parent'}
           </p>
         </div>
       </div>

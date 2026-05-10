@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Sidebar, { type TabId } from '../components/chat/Sidebar';
 import Header from '../components/chat/Header';
 
@@ -19,8 +20,25 @@ import LullabyView from '../components/chat/views/LullabyView';
 import PhotoView from '../components/chat/views/PhotoView';
 
 export default function Chat() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabId>('chat');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const session = localStorage.getItem('mumaa_session');
+    if (!session) {
+      navigate('/auth');
+      return;
+    }
+    try {
+      setUser(JSON.parse(session));
+    } catch (e) {
+      navigate('/auth');
+    }
+  }, [navigate]);
+
+  if (!user) return null;
 
   const renderContent = () => {
     switch (activeTab) {
@@ -52,6 +70,7 @@ export default function Chat() {
         onClose={() => setIsMobileMenuOpen(false)} 
         activeTab={activeTab}
         onTabChange={setActiveTab}
+        user={user}
       />
 
       {/* Main Area */}
@@ -64,6 +83,7 @@ export default function Chat() {
         <Header 
           onMenuClick={() => setIsMobileMenuOpen(true)} 
           activeTab={activeTab}
+          user={user}
         />
 
         {/* Dynamic Content Container */}

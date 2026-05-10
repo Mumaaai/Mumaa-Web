@@ -17,9 +17,10 @@ interface SidebarProps {
   onClose: () => void;
   activeTab: TabId;
   onTabChange: (tab: TabId) => void;
+  user: any;
 }
 
-export default function Sidebar({ isOpen, onClose, activeTab, onTabChange }: SidebarProps) {
+export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   
   const navItem = (id: TabId, icon: React.ReactNode, label: string, colorClass: string = 'text-stone-500 bg-stone-100', activeColorClass: string = 'text-orange-600 bg-orange-100') => {
@@ -170,12 +171,16 @@ export default function Sidebar({ isOpen, onClose, activeTab, onTabChange }: Sid
         {/* Settings Button */}
         <div className={`p-5 border-t border-stone-100 bg-white absolute bottom-0 w-full z-10 hidden md:block ${isCollapsed ? 'px-2' : ''}`}>
           <Link to="/auth" title={isCollapsed ? "Settings" : undefined} className={`w-full text-left py-3.5 rounded-2xl bg-stone-50 hover:bg-stone-100 flex items-center gap-3 text-[15px] transition-colors border border-stone-200 group btn-press ${isCollapsed ? 'justify-center px-0' : 'px-4'}`}>
-            <div className="w-9 h-9 rounded-full bg-stone-200 text-stone-600 flex items-center justify-center shrink-0 group-hover:bg-white transition-colors border border-transparent group-hover:border-stone-200 shadow-sm">
-              <Settings2 className="w-4 h-4" />
+            <div className="w-9 h-9 rounded-full bg-stone-200 text-stone-600 flex items-center justify-center shrink-0 group-hover:bg-white transition-colors border border-transparent group-hover:border-stone-200 shadow-sm overflow-hidden">
+              {user?.picture ? (
+                <img src={user.picture} alt={user.name} className="w-full h-full object-cover" />
+              ) : (
+                <Settings2 className="w-4 h-4" />
+              )}
             </div>
             {!isCollapsed && (
               <div className="flex-1 min-w-0">
-                <div className="font-bold truncate text-stone-800">Setup Profile</div>
+                <div className="font-bold truncate text-stone-800">{user?.name || 'Setup Profile'}</div>
                 <div className="text-[11px] text-stone-500 truncate font-medium uppercase tracking-wider">Settings</div>
               </div>
             )}
