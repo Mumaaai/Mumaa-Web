@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Send, Mic, Loader2, User } from 'lucide-react';
+import { Sparkles, Send, Loader2, User, Plus, Baby, Moon, Utensils } from 'lucide-react';
 import ProfileSetupModal from '../ProfileSetupModal';
 import { api } from '../../../api';
 import ReactMarkdown from 'react-markdown';
@@ -49,7 +49,10 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate, session
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [streamingText, setStreamingText] = useState('');
+  const [isFabOpen, setIsFabOpen] = useState(false);
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Load history when sessionId changes
   useEffect(() => {
@@ -96,7 +99,7 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate, session
     for (let i = 0; i < words.length; i++) {
       currentText += (i === 0 ? '' : ' ') + words[i];
       setStreamingText(currentText);
-      await new Promise(resolve => setTimeout(resolve, 30 + Math.random() * 40));
+      await new Promise(resolve => setTimeout(resolve, 20 + Math.random() * 30));
     }
     return currentText;
   };
@@ -117,6 +120,7 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate, session
     setMessages(prev => [...prev, newUserMsg]);
     setInput('');
     setIsLoading(true);
+    setIsFabOpen(false);
 
     try {
       await api.post('/chat/message', {
@@ -169,7 +173,7 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate, session
 
         const aiText = response?.message?.content || "I am here for you, dear. Let's try that again.";
         
-        setIsLoading(false); // Stop loading spinner, start streaming
+        setIsLoading(false);
         const streamedText = await streamResponse(aiText);
         
         const aiResponse: Message = { 
@@ -209,14 +213,39 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate, session
     }
   };
 
-  const quickPrompt = (prompt: string) => {
-    setInput(prompt);
+  const insertAtCursor = (text: string) => {
+    if (!textareaRef.current) {
+      setInput(prev => prev + (prev ? ' ' : '') + text);
+      return;
+    }
+    
+    const start = textareaRef.current.selectionStart;
+    const end = textareaRef.current.selectionEnd;
+    const val = input;
+    const newValue = val.substring(0, start) + text + val.substring(end);
+    setInput(newValue);
+    
+    setTimeout(() => {
+      if (textareaRef.current) {
+        textareaRef.current.focus();
+        const newPos = start + text.length;
+        textareaRef.current.setSelectionRange(newPos, newPos);
+      }
+    }, 0);
+    setIsFabOpen(false);
   };
+
+  const quickPrompts = [
+    { icon: <Utensils className="w-4 h-4" />, text: "Feeding schedule", prompt: "Can you help me with a feeding schedule?" },
+    { icon: <Moon className="w-4 h-4" />, text: "Sleep tips", prompt: "My baby won't sleep, what should I do?" },
+    { icon: <Baby className="w-4 h-4" />, text: "Milestones", prompt: "What are the normal milestones for their age?" },
+    { icon: <Sparkles className="w-4 h-4" />, text: "Mom's Diet", prompt: "Healthy recipes for a nursing mom" },
+  ];
 
   return (
     <div className="flex flex-col h-full w-full absolute inset-0 bg-[#FFF8F3]">
       {/* Centered Scrollable Area */}
-      <div className="flex-1 overflow-y-auto chat-scroll no-scrollbar">
+      <div className="flex-1 overflow-y-auto chat-scroll no-scrollbar" onClick={() => setIsFabOpen(false)}>
         <div className="max-w-3xl mx-auto px-4 md:px-6 py-12 md:py-20 flex flex-col min-h-full">
           
           <AnimatePresence>
@@ -234,23 +263,19 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate, session
                 <p className="text-stone-500 text-base max-w-sm mx-auto leading-relaxed mb-12 font-medium">
                   I am MUMAA, your peaceful parenting companion. How can I support you and your little one today?
                 </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl mx-auto">
-                  <button onClick={() => quickPrompt("Can you help me with a feeding schedule?")} className="p-4 bg-white/50 border border-stone-200 hover:border-orange-200 hover:bg-white rounded-2xl text-sm font-bold text-stone-600 transition-all flex items-center gap-4 text-left group">
-                    <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center text-orange-500 shrink-0">🍼</div>
-                    <span>Feeding Schedule</span>
-                  </button>
-                  <button onClick={() => quickPrompt("My baby won't sleep, what should I do?")} className="p-4 bg-white/50 border border-stone-200 hover:border-indigo-200 hover:bg-white rounded-2xl text-sm font-bold text-stone-600 transition-all flex items-center gap-4 text-left group">
-                    <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-500 shrink-0">😴</div>
-                    <span>Sleep Advice</span>
-                  </button>
-                  <button onClick={() => quickPrompt("Are these normal milestones for their age?")} className="p-4 bg-white/50 border border-stone-200 hover:border-emerald-200 hover:bg-white rounded-2xl text-sm font-bold text-stone-600 transition-all flex items-center gap-4 text-left group">
-                    <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-500 shrink-0">🌱</div>
-                    <span>Milestones</span>
-                  </button>
-                  <button onClick={() => quickPrompt("Healthy recipes for a nursing mom")} className="p-4 bg-white/50 border border-stone-200 hover:border-rose-200 hover:bg-white rounded-2xl text-sm font-bold text-stone-600 transition-all flex items-center gap-4 text-left group">
-                    <div className="w-10 h-10 rounded-xl bg-rose-100 flex items-center justify-center text-rose-500 shrink-0">🍲</div>
-                    <span>Mom's Diet</span>
-                  </button>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl mx-auto text-left">
+                  {quickPrompts.map((p, idx) => (
+                    <button 
+                      key={idx} 
+                      onClick={() => insertAtCursor(p.prompt)}
+                      className="p-4 bg-white/50 border border-stone-200 hover:border-orange-200 hover:bg-white rounded-2xl text-sm font-bold text-stone-600 transition-all flex items-center gap-4 group"
+                    >
+                      <div className="w-10 h-10 rounded-xl bg-stone-100 flex items-center justify-center text-stone-400 group-hover:bg-orange-100 group-hover:text-orange-500 transition-colors shrink-0">
+                        {p.icon}
+                      </div>
+                      <span>{p.text}</span>
+                    </button>
+                  ))}
                 </div>
               </motion.div>
             ) : (
@@ -313,17 +338,53 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate, session
       {/* Floating Input Area (Claude-style) */}
       <div className="w-full max-w-3xl mx-auto px-4 pb-8 pt-2 z-20">
         <div className="relative group">
+          
+          {/* FAB Menu */}
+          <AnimatePresence>
+            {isFabOpen && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                className="absolute left-0 bottom-full mb-4 w-64 bg-white rounded-3xl shadow-2xl border border-stone-100 overflow-hidden"
+              >
+                <div className="p-3 border-b border-stone-50 bg-stone-50/50">
+                  <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest px-2">Quick Helpers</span>
+                </div>
+                <div className="p-2 space-y-1">
+                  {quickPrompts.map((p, idx) => (
+                    <button 
+                      key={idx}
+                      onClick={() => insertAtCursor(p.prompt)}
+                      className="w-full flex items-center gap-3 p-3 hover:bg-orange-50 rounded-2xl transition-colors group text-left"
+                    >
+                      <div className="w-8 h-8 rounded-xl bg-stone-100 group-hover:bg-orange-100 text-stone-400 group-hover:text-orange-500 flex items-center justify-center transition-colors">
+                        {p.icon}
+                      </div>
+                      <span className="text-sm font-bold text-stone-600 group-hover:text-stone-800">{p.text}</span>
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <form onSubmit={handleSend} className="bg-white rounded-[2.5rem] border border-stone-200 shadow-2xl shadow-orange-900/5 focus-within:border-orange-300 focus-within:ring-4 focus-within:ring-orange-100/50 transition-all flex items-end gap-2 p-3">
-            <button type="button" className="p-3 hover:bg-stone-50 rounded-full transition-colors text-stone-400 hover:text-orange-500 btn-press shrink-0">
-              <Mic className="w-6 h-6" />
+            <button 
+              type="button" 
+              onClick={() => setIsFabOpen(!isFabOpen)}
+              className={`p-3 rounded-full transition-all btn-press shrink-0 ${isFabOpen ? 'bg-orange-100 text-orange-600' : 'hover:bg-stone-50 text-stone-400 hover:text-orange-500'}`}
+            >
+              <Plus className={`w-6 h-6 transition-transform duration-300 ${isFabOpen ? 'rotate-45' : ''}`} />
             </button>
             <textarea 
+              ref={textareaRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               rows={1} 
               placeholder="Message Mumaa..." 
-              className="flex-1 bg-transparent border-none outline-none text-stone-800 px-3 py-3 text-[16px] font-medium resize-none max-h-48 placeholder-stone-400 min-h-[48px]"
+              className="flex-1 bg-transparent border-none outline-none text-stone-800 px-2 py-3 text-[16px] font-medium resize-none max-h-48 placeholder-stone-400 min-h-[48px]"
             ></textarea>
             <button 
               type="submit" 
@@ -338,7 +399,6 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate, session
             </button>
           </form>
           
-          {/* Quick Info / Hints */}
           <div className="flex justify-center gap-4 mt-3 px-6 overflow-x-auto no-scrollbar whitespace-nowrap">
             <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest">
               AI companion for mindful parenting
