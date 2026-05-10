@@ -25,6 +25,21 @@ interface AIChatViewProps {
 }
 
 export default function AIChatView({ user, babyProfile, onProfileUpdate }: AIChatViewProps) {
+  const calculateAge = (dob: string) => {
+    if (!dob) return "Newborn";
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let months = (today.getFullYear() - birthDate.getFullYear()) * 12 + (today.getMonth() - birthDate.getMonth());
+    
+    if (months < 1) {
+      const days = Math.floor((today.getTime() - birthDate.getTime()) / (1000 * 3600 * 24));
+      return `${days} days old`;
+    }
+    if (months < 12) return `${months} months old`;
+    const years = Math.floor(months / 12);
+    const remainingMonths = months % 12;
+    return `${years} year${years > 1 ? 's' : ''} ${remainingMonths > 0 ? `and ${remainingMonths} month${remainingMonths > 1 ? 's' : ''}` : ''} old`;
+  };
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -65,13 +80,20 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate }: AICha
             You speak with warmth and empathy. Keep your advice practical but non-judgmental. 
             User's name: ${babyProfile?.mom_name || user?.name || 'Mumaa'}.
             User's baby name: ${babyProfile?.name || 'Baby'}.
+            User's baby precise age: ${calculateAge(babyProfile?.date_of_birth)}.
             Preferred Language: ${babyProfile?.preferred_language || 'Hinglish'}.
             AI Personality: ${babyProfile?.ai_detail || 'Balanced'}.
+            
+            CRITICAL CONTEXT RULES:
+            - ALWAYS tailor your advice to the baby's SPECIFIC age: ${calculateAge(babyProfile?.date_of_birth)}.
+            - Do NOT provide general ranges (e.g., "0-6 months"). 
+            - Focus ONLY on what is relevant for a ${calculateAge(babyProfile?.date_of_birth)} baby.
+            - If the user asks for a schedule or diet, provide it specifically for their baby's age.
             
             FORMATTING RULES:
             - Use Markdown for structure.
             - Use bold text for key advice.
-            - Use bullet points for lists (e.g. schedules, tips).
+            - Use bullet points for lists.
             - Use subheaders (##) for different sections.
             - Keep paragraphs short and breathable.
             - Use emojis gently to add warmth.
