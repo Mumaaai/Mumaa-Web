@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import { Sparkles, ArrowRight, Mail, Lock, User, AlertCircle, Loader2 } from 'lucide-react';
@@ -11,6 +11,8 @@ export default function Auth() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isCheckingSession, setIsCheckingSession] = useState(true);
+  const nameRef = useRef<HTMLInputElement>(null);
   
   const navigate = useNavigate();
 
@@ -18,6 +20,8 @@ export default function Auth() {
     const session = localStorage.getItem('mumaa_session');
     if (session) {
       navigate('/chat');
+    } else {
+      setIsCheckingSession(false);
     }
   }, [navigate]);
 
@@ -42,10 +46,33 @@ export default function Auth() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('Standard login is disabled for now. Please use Google Sign-In.');
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const endpoint = isLogin ? '/auth/signin' : '/auth/signup';
+      const body = isLogin 
+        ? { email, password } 
+        : { email, password, fullName: nameRef.current?.value };
+
+      const data = await api.post(endpoint, body);
+
+      if (data.error) {
+        setError(data.error);
+      } else {
+        localStorage.setItem('mumaa_session', JSON.stringify(data.user));
+        navigate('/chat');
+      }
+    } catch (err) {
+      setError('Connection failed. Please check your internet.');
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  if (isCheckingSession) return null;
 
   return (
     <div className="min-h-screen flex bg-[#FFF8F3] selection:bg-orange-200 selection:text-orange-900 font-sans relative overflow-hidden">
@@ -155,7 +182,7 @@ export default function Auth() {
                       <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Full Name</label>
                       <div className="relative">
                         <User className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 w-5 h-5" />
-                        <input required={!isLogin} type="text" placeholder="Priya Sharma" className="w-full bg-stone-50 border border-stone-200 text-stone-800 font-medium pl-12 pr-5 py-4 rounded-2xl focus:outline-none focus:border-orange-300 focus:ring-4 focus:ring-orange-50 transition-all" />
+                        <input ref={nameRef} required={!isLogin} type="text" placeholder="Priya Sharma" className="w-full bg-stone-50 border border-stone-200 text-stone-800 font-medium pl-12 pr-5 py-4 rounded-2xl focus:outline-none focus:border-orange-300 focus:ring-4 focus:ring-orange-50 transition-all" />
                       </div>
                     </motion.div>
                   )}

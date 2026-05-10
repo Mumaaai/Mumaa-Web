@@ -5,8 +5,9 @@ import {
   TrendingUp, ShieldCheck, Star, Compass, Apple, Blocks, 
   Puzzle, Clock, AudioWaveform, BookHeart, MoonStar, 
   Camera, HeartHandshake, Stethoscope, MessageSquare, Settings2,
-  ChevronLeft, ChevronRight
+  ChevronLeft, ChevronRight, LogOut
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export type TabId = 'chat' | 'dashboard' | 'feeding' | 'growth' | 'vaccination' | 'milestones' | 
                     'guide' | 'diet' | 'study' | 'games' | 'routine' | 'cry' | 'journal' | 
@@ -22,6 +23,12 @@ interface SidebarProps {
 
 export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const navigate = useNavigate();
+  
+  const handleLogout = () => {
+    localStorage.removeItem('mumaa_session');
+    navigate('/auth');
+  };
   
   const navItem = (id: TabId, icon: React.ReactNode, label: string, colorClass: string = 'text-stone-500 bg-stone-100', activeColorClass: string = 'text-orange-600 bg-orange-100') => {
     const isActive = activeTab === id;
@@ -168,8 +175,7 @@ export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user 
           </nav>
         </div>
         
-        {/* Settings Button */}
-        <div className={`p-5 border-t border-stone-100 bg-white absolute bottom-0 w-full z-10 hidden md:block ${isCollapsed ? 'px-2' : ''}`}>
+        <div className={`p-5 border-t border-stone-100 bg-white absolute bottom-0 w-full z-10 hidden md:flex flex-col gap-2 ${isCollapsed ? 'px-2' : ''}`}>
           <Link to="/auth" title={isCollapsed ? "Settings" : undefined} className={`w-full text-left py-3.5 rounded-2xl bg-stone-50 hover:bg-stone-100 flex items-center gap-3 text-[15px] transition-colors border border-stone-200 group btn-press ${isCollapsed ? 'justify-center px-0' : 'px-4'}`}>
             <div className="w-9 h-9 rounded-full bg-stone-200 text-stone-600 flex items-center justify-center shrink-0 group-hover:bg-white transition-colors border border-transparent group-hover:border-stone-200 shadow-sm overflow-hidden">
               {user?.picture ? (
@@ -185,6 +191,17 @@ export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user 
               </div>
             )}
           </Link>
+          
+          <button 
+            onClick={handleLogout}
+            title={isCollapsed ? "Logout" : undefined}
+            className={`w-full text-left py-3 rounded-2xl flex items-center gap-3 text-[15px] transition-all hover:bg-rose-50 border border-transparent group ${isCollapsed ? 'justify-center px-0' : 'px-4'}`}
+          >
+            <div className="w-8 h-8 rounded-xl bg-rose-50 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+              <LogOut className="w-4 h-4 text-rose-500" />
+            </div>
+            {!isCollapsed && <span className="text-rose-600 font-bold">Logout</span>}
+          </button>
         </div>
 
       </div>
