@@ -166,7 +166,7 @@ export default function Header({ onMenuClick, activeTab, user, chatSessions = []
       {/* Daily Tip Modal - Moved out of the flex header to ensure true viewport centering */}
       <AnimatePresence>
         {isTipOpen && (
-          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-stone-200/20 backdrop-blur-3xl top-0 left-0 right-0 bottom-0">
+          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/20 backdrop-blur-[2px] top-0 left-0 right-0 bottom-0">
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 40 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
