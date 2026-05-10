@@ -22,9 +22,11 @@ interface AIChatViewProps {
   user: any;
   babyProfile: any;
   onProfileUpdate: (data: any) => void;
+  sessionId: string;
+  onSessionChange: (id: string) => void;
 }
 
-export default function AIChatView({ user, babyProfile, onProfileUpdate }: AIChatViewProps) {
+export default function AIChatView({ user, babyProfile, onProfileUpdate, sessionId, onSessionChange }: AIChatViewProps) {
   const calculateAge = (dob: string) => {
     if (!dob) return "Newborn";
     const birthDate = new Date(dob);
@@ -40,11 +42,36 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate }: AICha
     const remainingMonths = months % 12;
     return `${years} year${years > 1 ? 's' : ''} ${remainingMonths > 0 ? `and ${remainingMonths} month${remainingMonths > 1 ? 's' : ''}` : ''} old`;
   };
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Load history when sessionId changes
+  useEffect(() => {
+    if (sessionId) {
+      fetchHistory(sessionId);
+    } else {
+      setMessages([]);
+    }
+  }, [sessionId]);
+
+  const fetchHistory = async (id: string) => {
+    try {
+      const history = await api.get(`/chat/history/${id}`);
+      if (history && Array.isArray(history)) {
+        setMessages(history.map((m: any) => ({
+          id: m.id,
+          sender: m.role === 'user' ? 'user' : 'ai',
+          text: m.content
+        })));
+      }
+    } catch (e) {
+      console.error("Failed to fetch history", e);
+    }
+  };
 
   useEffect(() => {
     if (!babyProfile) {
@@ -66,13 +93,39 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate }: AICha
     if (!input.trim() || isLoading) return;
 
     const userText = input.trim();
+    let activeSessionId = sessionId;
+    
+    // Generate new sessionId if none exists
+    if (!activeSessionId) {
+      activeSessionId = crypto.randomUUID();
+      onSessionChange(activeSessionId);
+    }
+
     const newUserMsg: Message = { id: Date.now().toString(), sender: 'user', text: userText };
     setMessages(prev => [...prev, newUserMsg]);
     setInput('');
     setIsLoading(true);
 
+    // Save user message to DB
+    try {
+      await api.post('/chat/message', {
+        userId: user.id,
+        sessionId: activeSessionId,
+        role: 'user',
+        content: userText
+      });
+    } catch (e) {
+      console.error("Failed to save user message", e);
+    }
+
     try {
       if (window.puter) {
+        // Prepare context from previous messages
+        const chatContext = messages.slice(-10).map(m => ({
+          role: m.sender === 'user' ? 'user' : 'assistant',
+          content: m.text
+        }));
+
         const response = await window.puter.ai.chat([
           { 
             role: 'system', 
@@ -100,15 +153,26 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate }: AICha
             
             Use the baby's name occasionally. Be supportive and maternal.` 
           },
+          ...chatContext,
           { role: 'user', content: userText }
         ], { model: 'gpt-4o-mini' });
 
+        const aiText = response?.message?.content || "I am here for you, dear. Let's try that again.";
         const aiResponse: Message = { 
           id: (Date.now() + 1).toString(), 
           sender: 'ai', 
-          text: response?.message?.content || "I am here for you, dear. Let's try that again."
+          text: aiText
         };
         setMessages(prev => [...prev, aiResponse]);
+
+        // Save AI message to DB
+        await api.post('/chat/message', {
+          userId: user.id,
+          sessionId: activeSessionId,
+          role: 'assistant',
+          content: aiText
+        });
+
       } else {
         throw new Error('Puter not loaded');
       }
@@ -129,7 +193,6 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate }: AICha
     try {
       const response = await api.post('/baby', { ...data, userId: user.id });
       if (response && !response.error) {
-        // Fetch the updated profile to ensure we have the correct DB structure
         const updated = await api.get(`/baby/${user.id}`);
         onProfileUpdate(updated);
       }

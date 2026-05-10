@@ -26,6 +26,8 @@ export default function Chat() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [babyProfile, setBabyProfile] = useState<any>(null);
+  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+  const [chatSessions, setChatSessions] = useState<any[]>([]);
 
   useEffect(() => {
     const session = localStorage.getItem('mumaa_session');
@@ -48,16 +50,39 @@ export default function Chat() {
       if (data && !data.error) {
         setBabyProfile(data);
       }
+      fetchChatSessions(userId);
     } catch (e) {
       console.error("Failed to fetch baby profile", e);
     }
+  };
+
+  const fetchChatSessions = async (userId: string) => {
+    try {
+      const sessions = await api.get(`/chat/sessions/${userId}`);
+      setChatSessions(sessions || []);
+    } catch (e) {
+      console.error("Failed to fetch chat sessions", e);
+    }
+  };
+
+  const startNewChat = () => {
+    setCurrentSessionId(crypto.randomUUID());
+    setActiveTab('chat');
   };
 
   if (!user) return null;
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'chat': return <AIChatView user={user} babyProfile={babyProfile} onProfileUpdate={setBabyProfile} />;
+      case 'chat': return (
+        <AIChatView 
+          user={user} 
+          babyProfile={babyProfile} 
+          onProfileUpdate={setBabyProfile} 
+          sessionId={currentSessionId || ''} 
+          onSessionChange={setCurrentSessionId}
+        />
+      );
       case 'dashboard': return <DashboardView />;
       case 'feeding': return <FeedingView />;
       case 'growth': return <GrowthView />;
@@ -72,7 +97,15 @@ export default function Chat() {
       case 'journal': return <JournalView />;
       case 'lullaby': return <LullabyView />;
       case 'photo': return <PhotoView />;
-      default: return <AIChatView user={user} babyProfile={babyProfile} onProfileUpdate={setBabyProfile} />;
+      default: return (
+        <AIChatView 
+          user={user} 
+          babyProfile={babyProfile} 
+          onProfileUpdate={setBabyProfile} 
+          sessionId={currentSessionId || ''} 
+          onSessionChange={setCurrentSessionId}
+        />
+      );
     }
   };
 
@@ -100,6 +133,12 @@ export default function Chat() {
           onMenuClick={() => setIsMobileMenuOpen(true)} 
           activeTab={activeTab}
           user={user}
+          chatSessions={chatSessions}
+          onSessionSelect={(id) => {
+            setCurrentSessionId(id);
+            setActiveTab('chat');
+          }}
+          onNewChat={startNewChat}
         />
 
         {/* Dynamic Content Container */}
