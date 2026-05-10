@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar, { type TabId } from '../components/chat/Sidebar';
 import Header from '../components/chat/Header';
+import { api } from '../api';
 
 import AIChatView from '../components/chat/views/AIChatView';
 import DashboardView from '../components/chat/views/DashboardView';
@@ -24,6 +25,7 @@ export default function Chat() {
   const [activeTab, setActiveTab] = useState<TabId>('chat');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [babyProfile, setBabyProfile] = useState<any>(null);
 
   useEffect(() => {
     const session = localStorage.getItem('mumaa_session');
@@ -32,17 +34,30 @@ export default function Chat() {
       return;
     }
     try {
-      setUser(JSON.parse(session));
+      const parsedUser = JSON.parse(session);
+      setUser(parsedUser);
+      fetchBabyProfile(parsedUser.id);
     } catch (e) {
       navigate('/auth');
     }
   }, [navigate]);
 
+  const fetchBabyProfile = async (userId: string) => {
+    try {
+      const data = await api.get(`/baby/${userId}`);
+      if (data && !data.error) {
+        setBabyProfile(data);
+      }
+    } catch (e) {
+      console.error("Failed to fetch baby profile", e);
+    }
+  };
+
   if (!user) return null;
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'chat': return <AIChatView />;
+      case 'chat': return <AIChatView user={user} babyProfile={babyProfile} onProfileUpdate={setBabyProfile} />;
       case 'dashboard': return <DashboardView />;
       case 'feeding': return <FeedingView />;
       case 'growth': return <GrowthView />;
@@ -57,7 +72,7 @@ export default function Chat() {
       case 'journal': return <JournalView />;
       case 'lullaby': return <LullabyView />;
       case 'photo': return <PhotoView />;
-      default: return <AIChatView />;
+      default: return <AIChatView user={user} babyProfile={babyProfile} onProfileUpdate={setBabyProfile} />;
     }
   };
 
@@ -71,6 +86,7 @@ export default function Chat() {
         activeTab={activeTab}
         onTabChange={setActiveTab}
         user={user}
+        babyProfile={babyProfile}
       />
 
       {/* Main Area */}

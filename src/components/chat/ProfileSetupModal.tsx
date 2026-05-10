@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Baby, X, Sparkles, Calendar, Heart, Save } from 'lucide-react';
+import { X, User } from 'lucide-react';
 
 interface ProfileSetupModalProps {
   isOpen: boolean;
@@ -10,13 +10,25 @@ interface ProfileSetupModalProps {
 }
 
 export default function ProfileSetupModal({ isOpen, onClose, onSave, initialData }: ProfileSetupModalProps) {
-  const [babyName, setBabyName] = useState(initialData?.babyName || '');
-  const [babyDOB, setBabyDOB] = useState(initialData?.babyDOB || '');
-  const [babyGender, setBabyGender] = useState(initialData?.babyGender || 'not_specified');
+  const [momName, setMomName] = useState(initialData?.mom_name || '');
+  const [babyName, setBabyName] = useState(initialData?.name || '');
+  const [babyDOB, setBabyDOB] = useState(initialData?.date_of_birth || '');
+  const [gender, setGender] = useState(initialData?.gender || 'boy');
+  const [bloodGroup, setBloodGroup] = useState(initialData?.blood_group || 'Unknown');
+  const [language, setLanguage] = useState(initialData?.preferred_language || 'Hinglish');
+  const [aiDetail, setAiDetail] = useState(initialData?.ai_detail || 'Balanced');
 
   const handleSave = () => {
     if (!babyName || !babyDOB) return;
-    onSave({ babyName, babyDOB, babyGender });
+    onSave({ 
+      name: babyName, 
+      dob: babyDOB, 
+      gender, 
+      bloodGroup, 
+      language, 
+      aiDetail, 
+      momName 
+    });
     onClose();
   };
 
@@ -35,85 +47,133 @@ export default function ProfileSetupModal({ isOpen, onClose, onSave, initialData
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="relative w-full max-w-lg bg-white rounded-[3rem] shadow-2xl border border-white overflow-hidden"
+            className="relative w-full max-w-lg bg-white rounded-[3.5rem] shadow-2xl border border-white overflow-hidden"
           >
             <div className="p-8 md:p-10">
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl gradient-peach flex items-center justify-center text-orange-600 shadow-sm">
-                    <Baby className="w-6 h-6" />
+                  <div className="w-12 h-12 rounded-2xl bg-orange-100 flex items-center justify-center text-orange-600 shadow-sm">
+                    <User className="w-6 h-6" />
                   </div>
-                  <div>
-                    <h2 className="text-2xl font-black text-stone-800">Baby's Profile</h2>
-                    <p className="text-stone-500 font-medium text-sm">Let's personalize the care.</p>
-                  </div>
+                  <h2 className="text-3xl font-black text-stone-800 tracking-tight">Profile Setup</h2>
                 </div>
-                <button onClick={onClose} className="p-2 hover:bg-stone-100 rounded-full transition-colors text-stone-400">
+                <button onClick={onClose} className="p-2 hover:bg-stone-50 rounded-full transition-colors text-stone-300">
                   <X className="w-6 h-6" />
                 </button>
               </div>
 
               <div className="space-y-6">
+                {/* Mother's Name */}
                 <div className="space-y-2">
-                  <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Baby's Name</label>
+                  <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Mother's Name</label>
                   <div className="relative">
-                    <Heart className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-300 w-5 h-5" />
+                    <input 
+                      type="text" 
+                      value={momName}
+                      onChange={(e) => setMomName(e.target.value)}
+                      placeholder="E.g. Priya" 
+                      className="w-full bg-stone-50/50 border border-stone-100 rounded-3xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 focus:ring-4 focus:ring-orange-50/50 transition-all placeholder:text-stone-300" 
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Baby's Name */}
+                  <div className="space-y-2">
+                    <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Baby's Name</label>
                     <input 
                       type="text" 
                       value={babyName}
                       onChange={(e) => setBabyName(e.target.value)}
-                      placeholder="e.g., Aaryav" 
-                      className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-12 py-4 text-stone-800 font-bold outline-none focus:border-orange-300 focus:ring-4 focus:ring-orange-50 transition-all" 
+                      placeholder="E.g. Arjun" 
+                      className="w-full bg-stone-50/50 border border-stone-100 rounded-2xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 focus:ring-4 focus:ring-orange-50/50 transition-all placeholder:text-stone-300" 
                     />
                   </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Date of Birth</label>
-                  <div className="relative">
-                    <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-300 w-5 h-5" />
+                  {/* Baby's DOB */}
+                  <div className="space-y-2">
+                    <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Baby's DOB</label>
                     <input 
                       type="date" 
                       value={babyDOB}
                       onChange={(e) => setBabyDOB(e.target.value)}
-                      className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-12 py-4 text-stone-800 font-bold outline-none focus:border-orange-300 focus:ring-4 focus:ring-orange-50 transition-all" 
+                      className="w-full bg-stone-50/50 border border-stone-100 rounded-2xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 focus:ring-4 focus:ring-orange-50/50 transition-all" 
                     />
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Gender</label>
-                  <div className="grid grid-cols-3 gap-3">
-                    {['Boy', 'Girl', 'Surprise'].map((g) => (
-                      <button
-                        key={g}
-                        onClick={() => setBabyGender(g.toLowerCase())}
-                        className={`py-3 rounded-2xl font-bold text-sm border transition-all ${
-                          babyGender === g.toLowerCase() 
-                          ? 'bg-orange-100 border-orange-200 text-orange-700 shadow-sm' 
-                          : 'bg-stone-50 border-stone-200 text-stone-500 hover:bg-stone-100'
-                        }`}
-                      >
-                        {g}
-                      </button>
-                    ))}
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Gender Select */}
+                  <div className="space-y-2">
+                    <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Gender</label>
+                    <select 
+                      value={gender}
+                      onChange={(e) => setGender(e.target.value)}
+                      className="w-full bg-stone-50/50 border border-stone-100 rounded-2xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 focus:ring-4 focus:ring-orange-50/50 transition-all appearance-none"
+                    >
+                      <option value="boy">Boy</option>
+                      <option value="girl">Girl</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                  {/* Blood Group */}
+                  <div className="space-y-2">
+                    <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Blood Group</label>
+                    <select 
+                      value={bloodGroup}
+                      onChange={(e) => setBloodGroup(e.target.value)}
+                      className="w-full bg-stone-50/50 border border-stone-100 rounded-2xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 focus:ring-4 focus:ring-orange-50/50 transition-all appearance-none"
+                    >
+                      <option value="Unknown">Unknown</option>
+                      <option value="A+">A+</option>
+                      <option value="A-">A-</option>
+                      <option value="B+">B+</option>
+                      <option value="B-">B-</option>
+                      <option value="O+">O+</option>
+                      <option value="O-">O-</option>
+                      <option value="AB+">AB+</option>
+                      <option value="AB-">AB-</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Language */}
+                  <div className="space-y-2">
+                    <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Language</label>
+                    <select 
+                      value={language}
+                      onChange={(e) => setLanguage(e.target.value)}
+                      className="w-full bg-stone-50/50 border border-stone-100 rounded-2xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 focus:ring-4 focus:ring-orange-50/50 transition-all appearance-none"
+                    >
+                      <option value="Hinglish">Hinglish</option>
+                      <option value="English">English</option>
+                      <option value="Hindi">Hindi</option>
+                    </select>
+                  </div>
+                  {/* AI Detail */}
+                  <div className="space-y-2">
+                    <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">AI Detail</label>
+                    <select 
+                      value={aiDetail}
+                      onChange={(e) => setAiDetail(e.target.value)}
+                      className="w-full bg-stone-50/50 border border-stone-100 rounded-2xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 focus:ring-4 focus:ring-orange-50/50 transition-all appearance-none"
+                    >
+                      <option value="Balanced">Balanced</option>
+                      <option value="Gentle">Gentle</option>
+                      <option value="Strict">Strict</option>
+                    </select>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-10 flex gap-4">
+              <div className="mt-10">
                 <button 
                   onClick={handleSave}
                   disabled={!babyName || !babyDOB}
-                  className="flex-1 gradient-peach text-orange-900 font-bold py-4 rounded-2xl shadow-md border border-white hover:opacity-90 transition-all btn-press disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-full gradient-peach text-orange-900 font-bold py-5 rounded-[2rem] shadow-lg border border-white hover:opacity-95 transition-all btn-press disabled:opacity-50 text-xl"
                 >
-                  <Save className="w-5 h-5" /> Save Profile
+                  Save Profile
                 </button>
-              </div>
-
-              <div className="mt-6 flex items-center gap-2 text-stone-400 justify-center">
-                <Sparkles className="w-4 h-4" />
-                <span className="text-[11px] font-bold uppercase tracking-widest">Personalized AI wisdom awaits</span>
               </div>
             </div>
           </motion.div>

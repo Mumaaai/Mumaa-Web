@@ -19,9 +19,25 @@ interface SidebarProps {
   activeTab: TabId;
   onTabChange: (tab: TabId) => void;
   user: any;
+  babyProfile: any;
 }
 
-export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user }: SidebarProps) {
+const calculateAge = (dob: string) => {
+  if (!dob) return "Newborn";
+  const birthDate = new Date(dob);
+  const today = new Date();
+  let months = (today.getFullYear() - birthDate.getFullYear()) * 12 + (today.getMonth() - birthDate.getMonth());
+  
+  if (months < 1) {
+    const days = Math.floor((today.getTime() - birthDate.getTime()) / (1000 * 3600 * 24));
+    return `${days} Days Old`;
+  }
+  if (months < 12) return `${months} Months Old`;
+  const years = Math.floor(months / 12);
+  return `${years} Year${years > 1 ? 's' : ''} Old`;
+};
+
+export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user, babyProfile }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const navigate = useNavigate();
   
@@ -99,8 +115,10 @@ export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user 
                   <Baby className="w-5 h-5 text-orange-400" />
                 </div>
                 <div className="min-w-0">
-                  <div className="text-base font-bold text-stone-800 truncate">Baby</div>
-                  <div className="text-xs text-stone-500 font-semibold truncate">4 Months Old</div>
+                  <div className="text-base font-bold text-stone-800 truncate">{babyProfile?.name || 'Baby'}</div>
+                  <div className="text-xs text-stone-500 font-semibold truncate">
+                    {babyProfile ? calculateAge(babyProfile.date_of_birth) : 'Profile Pending'}
+                  </div>
                 </div>
               </div>
               <div className="grid grid-cols-3 gap-2 mt-4">

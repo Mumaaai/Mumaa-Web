@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, Send, Mic, Loader2 } from 'lucide-react';
 import ProfileSetupModal from '../ProfileSetupModal';
+import { api } from '../../../api';
 
 declare global {
   interface Window {
@@ -15,22 +16,25 @@ interface Message {
   text: string;
 }
 
-export default function AIChatView() {
+interface AIChatViewProps {
+  user: any;
+  babyProfile: any;
+  onProfileUpdate: (data: any) => void;
+}
+
+export default function AIChatView({ user, babyProfile, onProfileUpdate }: AIChatViewProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [babyProfile, setBabyProfile] = useState<any>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const savedProfile = localStorage.getItem('mumaa_baby_profile');
-    if (savedProfile) {
-      setBabyProfile(JSON.parse(savedProfile));
-    } else {
-      setTimeout(() => setIsModalOpen(true), 1500);
+    if (!babyProfile) {
+      const timer = setTimeout(() => setIsModalOpen(true), 1500);
+      return () => clearTimeout(timer);
     }
-  }, []);
+  }, [babyProfile]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -57,7 +61,10 @@ export default function AIChatView() {
             role: 'system', 
             content: `You are MUMAA, a calm, peaceful, and gentle AI parenting companion. 
             You speak with warmth and empathy. Keep your advice practical but non-judgmental. 
-            User's baby name: ${babyProfile?.babyName || 'Baby'}.
+            User's name: ${babyProfile?.mom_name || user?.name || 'Mumaa'}.
+            User's baby name: ${babyProfile?.name || 'Baby'}.
+            Preferred Language: ${babyProfile?.preferred_language || 'Hinglish'}.
+            AI Personality: ${babyProfile?.ai_detail || 'Balanced'}.
             Use the baby's name occasionally. Be supportive and maternal.` 
           },
           { role: 'user', content: userText }
@@ -85,9 +92,17 @@ export default function AIChatView() {
     }
   };
 
-  const handleSaveProfile = (data: any) => {
-    setBabyProfile(data);
-    localStorage.setItem('mumaa_baby_profile', JSON.stringify(data));
+  const handleSaveProfile = async (data: any) => {
+    try {
+      const response = await api.post('/baby', { ...data, userId: user.id });
+      if (response && !response.error) {
+        // Fetch the updated profile to ensure we have the correct DB structure
+        const updated = await api.get(`/baby/${user.id}`);
+        onProfileUpdate(updated);
+      }
+    } catch (e) {
+      console.error("Failed to save profile", e);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
