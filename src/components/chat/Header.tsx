@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { User, Sparkles, Volume2, History, MessageSquarePlus, Clock } from 'lucide-react';
+import { User, Sparkles, Volume2, History, MessageSquarePlus, Clock, X, Heart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { TabId } from './Sidebar';
 
@@ -43,8 +43,21 @@ const formatDate = (dateStr: string) => {
   });
 };
 
+const DAILY_TIPS = [
+  "Take 5 minutes for yourself today. A happy mom makes a happy baby.",
+  "Trust your instincts. You know your baby better than anyone else.",
+  "Remember that every phase is temporary. This too shall pass.",
+  "Singing to your baby helps build their language skills and bond with you.",
+  "Skin-to-skin contact is soothing for both you and your little one.",
+  "Don't be afraid to ask for help. Parenting is a team sport.",
+  "Celebrate the small wins. Today's nap was a success!",
+  "Take plenty of photos, but remember to put the phone down and just be present too."
+];
+
 export default function Header({ onMenuClick, activeTab, user, chatSessions = [], onSessionSelect, onNewChat }: HeaderProps) {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [isTipOpen, setIsTipOpen] = useState(false);
+  const [dailyTip] = useState(() => DAILY_TIPS[Math.floor(Math.random() * DAILY_TIPS.length)]);
 
   return (
     <div className="h-16 min-h-[4rem] border-b border-stone-200/60 flex items-center justify-between px-4 md:px-8 bg-white/85 backdrop-blur-xl z-30 shrink-0">
@@ -85,7 +98,11 @@ export default function Header({ onMenuClick, activeTab, user, chatSessions = []
           </>
         )}
 
-        <button className="p-2.5 bg-white hover:bg-stone-50 rounded-full transition-all border border-stone-200 btn-press shadow-sm text-amber-500" title="Daily Tip">
+        <button 
+          onClick={() => setIsTipOpen(true)}
+          className="p-2.5 bg-white hover:bg-stone-50 rounded-full transition-all border border-stone-200 btn-press shadow-sm text-amber-500" 
+          title="Daily Tip"
+        >
           <Sparkles className="w-5 h-5" />
         </button>
         <button className="p-2.5 bg-white hover:bg-stone-50 rounded-full transition-all border border-stone-200 btn-press shadow-sm text-stone-500 hover:text-stone-700" title="Toggle Voice">
@@ -143,6 +160,44 @@ export default function Header({ onMenuClick, activeTab, user, chatSessions = []
                 </div>
               </motion.div>
             </>
+          )}
+        </AnimatePresence>
+
+        {/* Daily Tip Modal */}
+        <AnimatePresence>
+          {isTipOpen && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-stone-900/20 backdrop-blur-sm">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                className="bg-white rounded-[3rem] p-8 max-w-sm w-full shadow-2xl relative overflow-hidden"
+              >
+                <div className="absolute top-0 left-0 w-full h-2 gradient-peach opacity-50" />
+                <button 
+                  onClick={() => setIsTipOpen(false)}
+                  className="absolute top-6 right-6 p-2 hover:bg-stone-100 rounded-full transition-colors text-stone-400"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+                
+                <div className="w-16 h-16 rounded-[1.5rem] gradient-peach flex items-center justify-center text-orange-600 mb-6 shadow-lg shadow-orange-200/50">
+                  <Sparkles className="w-8 h-8" />
+                </div>
+                
+                <h3 className="text-2xl font-black text-stone-800 mb-4 tracking-tight leading-tight">Daily Sparkle</h3>
+                <p className="text-stone-600 text-lg font-medium leading-relaxed mb-8">
+                  "{dailyTip}"
+                </p>
+                
+                <button 
+                  onClick={() => setIsTipOpen(false)}
+                  className="w-full py-4 bg-stone-800 text-white rounded-[1.5rem] font-bold hover:bg-stone-900 transition-all shadow-xl shadow-stone-200 btn-press flex items-center justify-center gap-2"
+                >
+                  <Heart className="w-5 h-5 text-rose-400" /> Got it, Mumaa!
+                </button>
+              </motion.div>
+            </div>
           )}
         </AnimatePresence>
       </div>

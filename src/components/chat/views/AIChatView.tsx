@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Send, Loader2, User, Plus, Baby, Moon, Utensils } from 'lucide-react';
+import { Sparkles, Send, Loader2, User, Plus, Baby, Moon, Utensils, Volume2, VolumeX } from 'lucide-react';
 import ProfileSetupModal from '../ProfileSetupModal';
 import { api } from '../../../api';
 import ReactMarkdown from 'react-markdown';
@@ -50,6 +50,7 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate, session
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [streamingText, setStreamingText] = useState('');
   const [isFabOpen, setIsFabOpen] = useState(false);
+  const [currentlySpeakingId, setCurrentlySpeakingId] = useState<string | null>(null);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -102,6 +103,35 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate, session
       await new Promise(resolve => setTimeout(resolve, 20 + Math.random() * 30));
     }
     return currentText;
+  };
+
+  const speak = (text: string, id: string) => {
+    if (currentlySpeakingId === id) {
+      window.speechSynthesis.cancel();
+      setCurrentlySpeakingId(null);
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+    const cleanText = text.replace(/[#*`_~]/g, '');
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.rate = 0.95;
+    utterance.pitch = 1.05;
+    
+    const voices = window.speechSynthesis.getVoices();
+    const preferredVoice = voices.find(v => 
+      v.name.includes('Female') || 
+      v.name.includes('Google UK English Female') || 
+      v.name.includes('Samantha') ||
+      v.name.includes('Microsoft Zira')
+    );
+    if (preferredVoice) utterance.voice = preferredVoice;
+
+    utterance.onend = () => setCurrentlySpeakingId(null);
+    utterance.onerror = () => setCurrentlySpeakingId(null);
+    
+    setCurrentlySpeakingId(id);
+    window.speechSynthesis.speak(utterance);
   };
 
   const handleSend = async (e?: React.FormEvent) => {
@@ -291,7 +321,7 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate, session
                       {msg.sender === 'user' ? <User className="w-5 h-5" /> : <Sparkles className="w-5 h-5" />}
                     </div>
                     <div className={`flex-1 min-w-0 ${msg.sender === 'user' ? 'text-right' : ''}`}>
-                      <div className={`inline-block text-left ${msg.sender === 'user' ? 'bg-stone-100 px-5 py-3 rounded-2xl text-stone-700' : 'w-full'}`}>
+                      <div className={`inline-block text-left relative group/msg ${msg.sender === 'user' ? 'bg-stone-100 px-5 py-3 rounded-2xl text-stone-700' : 'w-full'}`}>
                         <div className="markdown-content text-[16px] leading-relaxed font-medium text-stone-800">
                           {msg.sender === 'ai' ? (
                             <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.text}</ReactMarkdown>
@@ -299,6 +329,15 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate, session
                             msg.text
                           )}
                         </div>
+                        
+                        {msg.sender === 'ai' && (
+                          <button 
+                            onClick={() => speak(msg.text, msg.id)}
+                            className={`absolute -right-12 top-0 p-2 rounded-full transition-all border shadow-sm ${currentlySpeakingId === msg.id ? 'bg-orange-100 border-orange-200 text-orange-600' : 'bg-white border-stone-100 text-stone-400 hover:text-orange-500 opacity-0 group-hover/msg:opacity-100'}`}
+                          >
+                            {currentlySpeakingId === msg.id ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                          </button>
+                        )}
                       </div>
                     </div>
                   </motion.div>
