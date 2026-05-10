@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { Sparkles, Send, Mic, Loader2 } from 'lucide-react';
 import ProfileSetupModal from '../ProfileSetupModal';
 import { api } from '../../../api';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 declare global {
   interface Window {
@@ -65,6 +67,15 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate }: AICha
             User's baby name: ${babyProfile?.name || 'Baby'}.
             Preferred Language: ${babyProfile?.preferred_language || 'Hinglish'}.
             AI Personality: ${babyProfile?.ai_detail || 'Balanced'}.
+            
+            FORMATTING RULES:
+            - Use Markdown for structure.
+            - Use bold text for key advice.
+            - Use bullet points for lists (e.g. schedules, tips).
+            - Use subheaders (##) for different sections.
+            - Keep paragraphs short and breathable.
+            - Use emojis gently to add warmth.
+            
             Use the baby's name occasionally. Be supportive and maternal.` 
           },
           { role: 'user', content: userText }
@@ -174,7 +185,13 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate }: AICha
                     ? 'bg-stone-800 text-white rounded-tr-sm' 
                     : 'bg-white border border-stone-200 text-stone-700 rounded-tl-sm'
                 }`}>
-                  {msg.text}
+                  {msg.sender === 'ai' ? (
+                    <div className="markdown-content">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.text}</ReactMarkdown>
+                    </div>
+                  ) : (
+                    msg.text
+                  )}
                 </div>
               </motion.div>
             ))}
