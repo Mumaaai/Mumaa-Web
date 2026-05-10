@@ -1,6 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, Send, Mic } from 'lucide-react';
+import { Sparkles, Send, Mic, Loader2 } from 'lucide-react';
+import ProfileSetupModal from '../ProfileSetupModal';
+
+declare global {
+  interface Window {
+    puter: any;
+  }
+}
 
 interface Message {
   id: string;
@@ -11,7 +18,19 @@ interface Message {
 export default function AIChatView() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [babyProfile, setBabyProfile] = useState<any>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const savedProfile = localStorage.getItem('mumaa_baby_profile');
+    if (savedProfile) {
+      setBabyProfile(JSON.parse(savedProfile));
+    } else {
+      setTimeout(() => setIsModalOpen(true), 1500);
+    }
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -21,23 +40,54 @@ export default function AIChatView() {
     scrollToBottom();
   }, [messages]);
 
-  const handleSend = (e?: React.FormEvent) => {
+  const handleSend = async (e?: React.FormEvent) => {
     e?.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || isLoading) return;
 
-    const newUserMsg: Message = { id: Date.now().toString(), sender: 'user', text: input };
+    const userText = input.trim();
+    const newUserMsg: Message = { id: Date.now().toString(), sender: 'user', text: userText };
     setMessages(prev => [...prev, newUserMsg]);
     setInput('');
+    setIsLoading(true);
 
-    // Mock AI response
-    setTimeout(() => {
-      const aiResponse: Message = { 
+    try {
+      if (window.puter) {
+        const response = await window.puter.ai.chat([
+          { 
+            role: 'system', 
+            content: `You are MUMAA, a calm, peaceful, and gentle AI parenting companion. 
+            You speak with warmth and empathy. Keep your advice practical but non-judgmental. 
+            User's baby name: ${babyProfile?.babyName || 'Baby'}.
+            Use the baby's name occasionally. Be supportive and maternal.` 
+          },
+          { role: 'user', content: userText }
+        ], { model: 'gpt-4o-mini' });
+
+        const aiResponse: Message = { 
+          id: (Date.now() + 1).toString(), 
+          sender: 'ai', 
+          text: response?.message?.content || "I am here for you, dear. Let's try that again."
+        };
+        setMessages(prev => [...prev, aiResponse]);
+      } else {
+        throw new Error('Puter not loaded');
+      }
+    } catch (err) {
+      console.error('Chat error:', err);
+      const errorMsg: Message = { 
         id: (Date.now() + 1).toString(), 
         sender: 'ai', 
-        text: "I completely understand. Parenting is a journey full of surprises. How can I help you today?" 
+        text: "I'm having a quiet moment. Could you repeat that for me, please?" 
       };
-      setMessages(prev => [...prev, aiResponse]);
-    }, 1000);
+      setMessages(prev => [...prev, errorMsg]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSaveProfile = (data: any) => {
+    setBabyProfile(data);
+    localStorage.setItem('mumaa_baby_profile', JSON.stringify(data));
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -113,6 +163,16 @@ export default function AIChatView() {
                 </div>
               </motion.div>
             ))}
+            {isLoading && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-4">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 shadow-sm border border-white gradient-peach text-orange-600">
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                </div>
+                <div className="bg-white border border-stone-100 p-5 rounded-[1.5rem] rounded-tl-sm shadow-sm text-stone-400 italic text-sm">
+                  Mumaa is thinking...
+                </div>
+              </motion.div>
+            )}
             <div ref={messagesEndRef} />
           </div>
         )}
@@ -155,6 +215,12 @@ export default function AIChatView() {
           </form>
         </div>
       </div>
+      <ProfileSetupModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        onSave={handleSaveProfile}
+        initialData={babyProfile}
+      />
     </div>
   );
 }
