@@ -125,14 +125,17 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate, session
       audioRef.current.pause();
     }
     
+    // Stop browser TTS just in case
+    window.speechSynthesis.cancel();
+    
     setCurrentlySpeakingId(id);
     setIsAudioLoading(true);
     
     try {
       // Clean markdown for speech
-      const cleanText = text.replace(/[#*`_~]/g, '');
+      const cleanText = text.replace(/[#*`_~]/g, '').trim();
 
-      const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}`, {
+      const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}?optimize_streaming_latency=3`, {
         method: 'POST',
         headers: {
           'Accept': 'audio/mpeg',
@@ -141,15 +144,20 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate, session
         },
         body: JSON.stringify({
           text: cleanText,
-          model_id: 'eleven_monolingual_v1',
+          model_id: 'eleven_turbo_v2', // Faster and better
           voice_settings: {
             stability: 0.5,
             similarity_boost: 0.75,
+            style: 0.0,
+            use_speaker_boost: true
           },
         }),
       });
 
-      if (!response.ok) throw new Error('Eleven Labs API error');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Eleven Labs Error: ${errorData.detail?.message || response.statusText}`);
+      }
 
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
@@ -157,22 +165,27 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate, session
       const audio = new Audio(url);
       audioRef.current = audio;
       
+      audio.onplay = () => {
+        setIsAudioLoading(false);
+      };
+
       audio.onended = () => {
         setCurrentlySpeakingId(null);
         URL.revokeObjectURL(url);
       };
       
-      audio.play();
-      setIsAudioLoading(false);
+      audio.onerror = (e) => {
+        console.error("Audio playback error", e);
+        setCurrentlySpeakingId(null);
+        setIsAudioLoading(false);
+      };
+
+      await audio.play();
     } catch (error) {
       console.error('Speech error:', error);
       setCurrentlySpeakingId(null);
       setIsAudioLoading(false);
-      
-      // Fallback to browser TTS if Eleven Labs fails
-      const utterance = new SpeechSynthesisUtterance(text.replace(/[#*`_~]/g, ''));
-      utterance.onend = () => setCurrentlySpeakingId(null);
-      window.speechSynthesis.speak(utterance);
+      alert("Voice service unavailable. Please check your Eleven Labs API key or limit.");
     }
   };
 
@@ -374,7 +387,10 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate, session
                         
                         {msg.sender === 'ai' && (
                           <button 
-                            onClick={() => speak(msg.text, msg.id)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              speak(msg.text, msg.id);
+                            }}
                             disabled={isAudioLoading && currentlySpeakingId === msg.id}
                             className={`absolute -right-12 top-0 p-2 rounded-full transition-all border shadow-sm ${currentlySpeakingId === msg.id ? 'bg-orange-100 border-orange-200 text-orange-600' : 'bg-white border-stone-100 text-stone-400 hover:text-orange-500 opacity-0 group-hover/msg:opacity-100'}`}
                           >
