@@ -206,7 +206,7 @@ export default function Auth() {
                 <div className="space-y-2">
                   <div className="flex justify-between items-center ml-2">
                     <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest">Password</label>
-                    {isLogin && <a href="#" className="text-xs font-bold text-orange-500 hover:text-orange-600">Forgot?</a>}
+                    {isLogin && <Link to="/forgot-password" className="text-xs font-bold text-orange-500 hover:text-orange-600">Forgot?</Link>}
                   </div>
                   <div className="relative">
                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 w-5 h-5" />
