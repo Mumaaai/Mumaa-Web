@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar, { type TabId } from '../components/chat/Sidebar';
 import Header from '../components/chat/Header';
+import { api } from '../api';
 
 import AIChatView from '../components/chat/views/AIChatView';
 import DashboardView from '../components/chat/views/DashboardView';
@@ -24,6 +25,9 @@ export default function Chat() {
   const [activeTab, setActiveTab] = useState<TabId>('chat');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [babyProfile, setBabyProfile] = useState<any>(null);
+  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+  const [chatSessions, setChatSessions] = useState<any[]>([]);
 
   useEffect(() => {
     const session = localStorage.getItem('mumaa_session');
@@ -32,17 +36,53 @@ export default function Chat() {
       return;
     }
     try {
-      setUser(JSON.parse(session));
+      const parsedUser = JSON.parse(session);
+      setUser(parsedUser);
+      fetchBabyProfile(parsedUser.id);
     } catch (e) {
       navigate('/auth');
     }
   }, [navigate]);
 
+  const fetchBabyProfile = async (userId: string) => {
+    try {
+      const data = await api.get(`/baby/${userId}`);
+      if (data && !data.error) {
+        setBabyProfile(data);
+      }
+      fetchChatSessions(userId);
+    } catch (e) {
+      console.error("Failed to fetch baby profile", e);
+    }
+  };
+
+  const fetchChatSessions = async (userId: string) => {
+    try {
+      const sessions = await api.get(`/chat/sessions/${userId}`);
+      setChatSessions(sessions || []);
+    } catch (e) {
+      console.error("Failed to fetch chat sessions", e);
+    }
+  };
+
+  const startNewChat = () => {
+    setCurrentSessionId(crypto.randomUUID());
+    setActiveTab('chat');
+  };
+
   if (!user) return null;
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'chat': return <AIChatView />;
+      case 'chat': return (
+        <AIChatView 
+          user={user} 
+          babyProfile={babyProfile} 
+          onProfileUpdate={setBabyProfile} 
+          sessionId={currentSessionId || ''} 
+          onSessionChange={setCurrentSessionId}
+        />
+      );
       case 'dashboard': return <DashboardView />;
       case 'feeding': return <FeedingView />;
       case 'growth': return <GrowthView />;
@@ -57,7 +97,15 @@ export default function Chat() {
       case 'journal': return <JournalView />;
       case 'lullaby': return <LullabyView />;
       case 'photo': return <PhotoView />;
-      default: return <AIChatView />;
+      default: return (
+        <AIChatView 
+          user={user} 
+          babyProfile={babyProfile} 
+          onProfileUpdate={setBabyProfile} 
+          sessionId={currentSessionId || ''} 
+          onSessionChange={setCurrentSessionId}
+        />
+      );
     }
   };
 
@@ -71,6 +119,7 @@ export default function Chat() {
         activeTab={activeTab}
         onTabChange={setActiveTab}
         user={user}
+        babyProfile={babyProfile}
       />
 
       {/* Main Area */}
@@ -84,6 +133,12 @@ export default function Chat() {
           onMenuClick={() => setIsMobileMenuOpen(true)} 
           activeTab={activeTab}
           user={user}
+          chatSessions={chatSessions}
+          onSessionSelect={(id) => {
+            setCurrentSessionId(id);
+            setActiveTab('chat');
+          }}
+          onNewChat={startNewChat}
         />
 
         {/* Dynamic Content Container */}
