@@ -166,11 +166,11 @@ export default function Header({ onMenuClick, activeTab, user, chatSessions = []
         {/* Daily Tip Modal */}
         <AnimatePresence>
           {isTipOpen && (
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-stone-900/20 backdrop-blur-sm">
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-stone-900/40 backdrop-blur-md top-0 left-0 right-0 bottom-0">
               <motion.div
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                initial={{ opacity: 0, scale: 0.9, y: 40 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                exit={{ opacity: 0, scale: 0.9, y: 40 }}
                 className="bg-white rounded-[3rem] p-8 max-w-sm w-full shadow-2xl relative overflow-hidden"
               >
                 <div className="absolute top-0 left-0 w-full h-2 gradient-peach opacity-50" />

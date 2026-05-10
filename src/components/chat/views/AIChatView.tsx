@@ -27,6 +27,9 @@ interface AIChatViewProps {
   onSessionChange: (id: string) => void;
 }
 
+const ELEVEN_LABS_API_KEY = 'sk_3dfc3e5b5d9474423467e39d24a42dcaea1783acf50bcbce';
+const VOICE_ID = 'pNInz6obpgnuM0sLAsFl'; // Rachel - warm, maternal voice
+
 export default function AIChatView({ user, babyProfile, onProfileUpdate, sessionId, onSessionChange }: AIChatViewProps) {
   const calculateAge = (dob: string) => {
     if (!dob) return "Newborn";
@@ -51,9 +54,11 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate, session
   const [streamingText, setStreamingText] = useState('');
   const [isFabOpen, setIsFabOpen] = useState(false);
   const [currentlySpeakingId, setCurrentlySpeakingId] = useState<string | null>(null);
+  const [isAudioLoading, setIsAudioLoading] = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Load history when sessionId changes
   useEffect(() => {
@@ -105,33 +110,70 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate, session
     return currentText;
   };
 
-  const speak = (text: string, id: string) => {
+  const speak = async (text: string, id: string) => {
     if (currentlySpeakingId === id) {
-      window.speechSynthesis.cancel();
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
       setCurrentlySpeakingId(null);
       return;
     }
 
-    window.speechSynthesis.cancel();
-    const cleanText = text.replace(/[#*`_~]/g, '');
-    const utterance = new SpeechSynthesisUtterance(cleanText);
-    utterance.rate = 0.95;
-    utterance.pitch = 1.05;
-    
-    const voices = window.speechSynthesis.getVoices();
-    const preferredVoice = voices.find(v => 
-      v.name.includes('Female') || 
-      v.name.includes('Google UK English Female') || 
-      v.name.includes('Samantha') ||
-      v.name.includes('Microsoft Zira')
-    );
-    if (preferredVoice) utterance.voice = preferredVoice;
-
-    utterance.onend = () => setCurrentlySpeakingId(null);
-    utterance.onerror = () => setCurrentlySpeakingId(null);
+    // Stop any current audio
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
     
     setCurrentlySpeakingId(id);
-    window.speechSynthesis.speak(utterance);
+    setIsAudioLoading(true);
+    
+    try {
+      // Clean markdown for speech
+      const cleanText = text.replace(/[#*`_~]/g, '');
+
+      const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'audio/mpeg',
+          'Content-Type': 'application/json',
+          'xi-api-key': ELEVEN_LABS_API_KEY,
+        },
+        body: JSON.stringify({
+          text: cleanText,
+          model_id: 'eleven_monolingual_v1',
+          voice_settings: {
+            stability: 0.5,
+            similarity_boost: 0.75,
+          },
+        }),
+      });
+
+      if (!response.ok) throw new Error('Eleven Labs API error');
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      
+      const audio = new Audio(url);
+      audioRef.current = audio;
+      
+      audio.onended = () => {
+        setCurrentlySpeakingId(null);
+        URL.revokeObjectURL(url);
+      };
+      
+      audio.play();
+      setIsAudioLoading(false);
+    } catch (error) {
+      console.error('Speech error:', error);
+      setCurrentlySpeakingId(null);
+      setIsAudioLoading(false);
+      
+      // Fallback to browser TTS if Eleven Labs fails
+      const utterance = new SpeechSynthesisUtterance(text.replace(/[#*`_~]/g, ''));
+      utterance.onend = () => setCurrentlySpeakingId(null);
+      window.speechSynthesis.speak(utterance);
+    }
   };
 
   const handleSend = async (e?: React.FormEvent) => {
@@ -333,9 +375,16 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate, session
                         {msg.sender === 'ai' && (
                           <button 
                             onClick={() => speak(msg.text, msg.id)}
+                            disabled={isAudioLoading && currentlySpeakingId === msg.id}
                             className={`absolute -right-12 top-0 p-2 rounded-full transition-all border shadow-sm ${currentlySpeakingId === msg.id ? 'bg-orange-100 border-orange-200 text-orange-600' : 'bg-white border-stone-100 text-stone-400 hover:text-orange-500 opacity-0 group-hover/msg:opacity-100'}`}
                           >
-                            {currentlySpeakingId === msg.id ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                            {isAudioLoading && currentlySpeakingId === msg.id ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : currentlySpeakingId === msg.id ? (
+                              <VolumeX className="w-4 h-4" />
+                            ) : (
+                              <Volume2 className="w-4 h-4" />
+                            )}
                           </button>
                         )}
                       </div>
