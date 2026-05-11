@@ -231,7 +231,7 @@ export default function GrowthView({ user, babyProfile }: Props) {
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
-  const gender: 'boy' | 'girl' = babyProfile?.gender === 'female' ? 'girl' : 'boy';
+  const gender: 'boy' | 'girl' = babyProfile?.gender === 'girl' ? 'girl' : 'boy';
 
   // ─── Fetch records ──────────────────────────────────────────────────────────
   const fetchRecords = useCallback(async () => {
