@@ -5,7 +5,7 @@ import {
   TrendingUp, ShieldCheck, Star, Compass, Apple, Blocks, 
   Puzzle, Clock, AudioWaveform, BookHeart, MoonStar, 
   Camera, HeartHandshake, Stethoscope, MessageSquare, Settings2,
-  ChevronLeft, ChevronRight, LogOut
+  ChevronLeft, ChevronRight, LogOut, Edit3
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -20,6 +20,7 @@ interface SidebarProps {
   onTabChange: (tab: TabId) => void;
   user: any;
   babyProfile: any;
+  onProfileClick?: () => void;
 }
 
 const calculateAge = (dob: string) => {
@@ -37,7 +38,7 @@ const calculateAge = (dob: string) => {
   return `${years} Year${years > 1 ? 's' : ''} Old`;
 };
 
-export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user, babyProfile }: SidebarProps) {
+export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user, babyProfile, onProfileClick }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const navigate = useNavigate();
   
@@ -106,18 +107,24 @@ export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user,
           )}
         </div>
 
-        {/* Quick Stats (Hidden on collapse) */}
+        {/* Quick Stats (Hidden on collapse) - Now Clickable */}
         {!isCollapsed && (
-          <div className="p-5 border-b border-stone-100 bg-[#FFFDFB]">
-            <div className="bg-white rounded-2xl p-4 shadow-sm border border-stone-100">
+          <div className="p-5 border-b border-stone-100 bg-[#FFFDFB] cursor-pointer" onClick={onProfileClick}>
+            <button 
+              onClick={onProfileClick}
+              className="w-full text-left bg-white rounded-2xl p-4 shadow-sm border border-stone-100 hover:border-orange-200 hover:shadow-md transition-all group relative overflow-hidden"
+            >
+              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Edit3 className="w-3.5 h-3.5 text-stone-400" />
+              </div>
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                   <Baby className="w-5 h-5 text-orange-400" />
                 </div>
                 <div className="min-w-0">
-                  <div className="text-base font-bold text-stone-800 truncate">{babyProfile?.name || 'Baby'}</div>
+                  <div className="text-base font-bold text-stone-800 truncate group-hover:text-orange-600 transition-colors">{babyProfile?.name || 'Setup Profile'}</div>
                   <div className="text-xs text-stone-500 font-semibold truncate">
-                    {babyProfile ? calculateAge(babyProfile.date_of_birth) : 'Profile Pending'}
+                    {babyProfile ? calculateAge(babyProfile.date_of_birth) : 'Click to complete'}
                   </div>
                 </div>
               </div>
@@ -135,7 +142,7 @@ export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user,
                   <div className="text-[10px] text-stone-500 font-bold uppercase tracking-wider mt-0.5">Sleep</div>
                 </div>
               </div>
-            </div>
+            </button>
           </div>
         )}
         

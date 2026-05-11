@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Send, Loader2, User, Plus, Baby, Moon, Utensils } from 'lucide-react';
-import ProfileSetupModal from '../ProfileSetupModal';
 import { api } from '../../../api';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -22,12 +21,12 @@ interface Message {
 interface AIChatViewProps {
   user: any;
   babyProfile: any;
-  onProfileUpdate: (data: any) => void;
   sessionId: string;
   onSessionChange: (id: string) => void;
+  onHistoryRefresh?: () => void;
 }
 
-export default function AIChatView({ user, babyProfile, onProfileUpdate, sessionId, onSessionChange }: AIChatViewProps) {
+export default function AIChatView({ user, babyProfile, sessionId, onSessionChange, onHistoryRefresh }: AIChatViewProps) {
   const calculateAge = (dob: string) => {
     if (!dob) return "Newborn";
     const birthDate = new Date(dob);
@@ -47,7 +46,6 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate, session
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [streamingText, setStreamingText] = useState('');
   const [isFabOpen, setIsFabOpen] = useState(false);
   
@@ -78,13 +76,6 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate, session
     }
   };
 
-  useEffect(() => {
-    if (!babyProfile) {
-      const timer = setTimeout(() => setIsModalOpen(true), 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [babyProfile]);
-
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -104,14 +95,28 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate, session
     return currentText;
   };
 
+  const generateTitle = async (firstMsg: string, aiResponse: string) => {
+    if (!window.puter) return "New Chat";
+    try {
+      const response = await window.puter.ai.chat([
+        { role: 'system', content: 'Generate a short, friendly, 2-4 word title for a parenting chat based on this exchange. No quotes, just the title.' },
+        { role: 'user', content: `User: ${firstMsg}\nAI: ${aiResponse}` }
+      ], { model: 'gpt-4o-mini' });
+      return response?.message?.content || "New Chat";
+    } catch (e) {
+      return "New Chat";
+    }
+  };
+
   const handleSend = async (e?: React.FormEvent) => {
     e?.preventDefault();
     if (!input.trim() || isLoading) return;
 
     const userText = input.trim();
     let activeSessionId = sessionId;
+    const isNewSession = !activeSessionId;
     
-    if (!activeSessionId) {
+    if (isNewSession) {
       activeSessionId = crypto.randomUUID();
       onSessionChange(activeSessionId);
     }
@@ -190,6 +195,17 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate, session
           role: 'assistant',
           content: streamedText
         });
+
+        // If new session, generate title and update history
+        if (isNewSession) {
+          const title = await generateTitle(userText, streamedText);
+          try {
+            await api.put(`/chat/session/${activeSessionId}`, { title });
+            onHistoryRefresh?.();
+          } catch (e) {
+            console.error("Failed to update session title", e);
+          }
+        }
 
       } else {
         throw new Error('Puter not loaded');
@@ -406,23 +422,6 @@ export default function AIChatView({ user, babyProfile, onProfileUpdate, session
           </div>
         </div>
       </div>
-
-      <ProfileSetupModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        onSave={async (data) => {
-          try {
-            const response = await api.post('/baby', { ...data, userId: user.id });
-            if (response && !response.error) {
-              const updated = await api.get(`/baby/${user.id}`);
-              onProfileUpdate(updated);
-            }
-          } catch (e) {
-            console.error("Failed to save profile", e);
-          }
-        }}
-        initialData={babyProfile}
-      />
     </div>
   );
 }

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { User, Sparkles, History, MessageSquarePlus, Clock, X, Heart } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { User, Sparkles, History, MessageSquarePlus, Clock, X, Heart, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { TabId } from './Sidebar';
 
@@ -7,6 +7,7 @@ interface HeaderProps {
   onMenuClick: () => void;
   activeTab: TabId;
   user: any;
+  babyProfile: any;
   chatSessions?: any[];
   onSessionSelect?: (id: string) => void;
   onNewChat?: () => void;
@@ -43,21 +44,55 @@ const formatDate = (dateStr: string) => {
   });
 };
 
-const DAILY_TIPS = [
-  "Take 5 minutes for yourself today. A happy mom makes a happy baby.",
-  "Trust your instincts. You know your baby better than anyone else.",
-  "Remember that every phase is temporary. This too shall pass.",
-  "Singing to your baby helps build their language skills and bond with you.",
-  "Skin-to-skin contact is soothing for both you and your little one.",
-  "Don't be afraid to ask for help. Parenting is a team sport.",
-  "Celebrate the small wins. Today's nap was a success!",
-  "Take plenty of photos, but remember to put the phone down and just be present too."
-];
-
-export default function Header({ onMenuClick, activeTab, user, chatSessions = [], onSessionSelect, onNewChat }: HeaderProps) {
+export default function Header({ onMenuClick, activeTab, user, babyProfile, chatSessions = [], onSessionSelect, onNewChat }: HeaderProps) {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isTipOpen, setIsTipOpen] = useState(false);
-  const [dailyTip] = useState(() => DAILY_TIPS[Math.floor(Math.random() * DAILY_TIPS.length)]);
+  const [dailyTip, setDailyTip] = useState<string>("");
+  const [isGeneratingTip, setIsGeneratingTip] = useState(false);
+
+  const calculateAge = (dob: string) => {
+    if (!dob) return "Newborn";
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let months = (today.getFullYear() - birthDate.getFullYear()) * 12 + (today.getMonth() - birthDate.getMonth());
+    if (months < 1) return "Newborn";
+    if (months < 12) return `${months} months`;
+    return `${Math.floor(months / 12)} years`;
+  };
+
+  const generateAITip = async () => {
+    if (dailyTip && !isTipOpen) return; // Only generate if we don't have one or opening
+    if (!window.puter) return;
+    
+    setIsGeneratingTip(true);
+    try {
+      const babyAge = calculateAge(babyProfile?.date_of_birth);
+      const babyName = babyProfile?.name || "the baby";
+      
+      const response = await window.puter.ai.chat([
+        { 
+          role: 'system', 
+          content: 'You are MUMAA, a gentle parenting companion. Generate ONE supportive, practical, and warm parenting tip (max 25 words). Focus on the baby\'s age and well-being. Use a maternal, soothing tone. No quotes.' 
+        },
+        { 
+          role: 'user', 
+          content: `Generate a tip for a parent of a ${babyAge} old baby named ${babyName}.` 
+        }
+      ], { model: 'gpt-4o-mini' });
+      
+      setDailyTip(response?.message?.content || "Trust your heart, Mumaa. You are doing a wonderful job.");
+    } catch (e) {
+      setDailyTip("Every moment with your little one is a gift. Embrace the journey.");
+    } finally {
+      setIsGeneratingTip(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isTipOpen && !dailyTip) {
+      generateAITip();
+    }
+  }, [isTipOpen]);
 
   return (
     <>
@@ -141,7 +176,7 @@ export default function Header({ onMenuClick, activeTab, user, chatSessions = []
                             <History className="w-4 h-4" />
                           </div>
                           <div className="min-w-0">
-                            <div className="text-sm font-bold text-stone-700 truncate">Chat Session</div>
+                            <div className="text-sm font-bold text-stone-700 truncate">{session.title || 'Chat Session'}</div>
                             <div className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">{formatDate(session.created_at)}</div>
                           </div>
                         </button>
@@ -181,20 +216,36 @@ export default function Header({ onMenuClick, activeTab, user, chatSessions = []
                 <X className="w-5 h-5" />
               </button>
               
-              <div className="w-16 h-16 rounded-[1.5rem] gradient-peach flex items-center justify-center text-orange-600 mb-6 shadow-lg shadow-orange-200/50">
+              <div className="w-16 h-16 rounded-[1.5rem] gradient-peach flex items-center justify-center text-orange-600 mb-6 shadow-lg shadow-orange-200/50 mx-auto">
                 <Sparkles className="w-8 h-8" />
               </div>
               
-              <h3 className="text-2xl font-black text-stone-800 mb-4 tracking-tight leading-tight">Daily Sparkle</h3>
-              <p className="text-stone-600 text-lg font-medium leading-relaxed mb-8">
-                "{dailyTip}"
-              </p>
+              <h3 className="text-2xl font-black text-stone-800 mb-4 tracking-tight leading-tight text-center">Gentle Tip</h3>
+              
+              <div className="bg-stone-50/50 rounded-[2rem] p-6 mb-8 border border-stone-100 min-h-[120px] flex items-center justify-center">
+                {isGeneratingTip ? (
+                  <div className="flex flex-col items-center gap-3 text-stone-400 italic text-sm">
+                    <Loader2 className="w-6 h-6 animate-spin text-orange-400" />
+                    <span>Mumaa is thinking...</span>
+                  </div>
+                ) : (
+                  <p className="text-stone-600 text-lg font-medium leading-relaxed italic text-center">
+                    "{dailyTip}"
+                  </p>
+                )}
+              </div>
+              
+              <div className="text-center mb-6">
+                <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest px-3 py-1 bg-stone-100 rounded-full">
+                  For {babyProfile?.name || 'Baby'} at {calculateAge(babyProfile?.date_of_birth)}
+                </span>
+              </div>
               
               <button 
                 onClick={() => setIsTipOpen(false)}
                 className="w-full py-4 bg-stone-800 text-white rounded-[1.5rem] font-bold hover:bg-stone-900 transition-all shadow-xl shadow-stone-200 btn-press flex items-center justify-center gap-2"
               >
-                <Heart className="w-5 h-5 text-rose-400" /> Got it, Mumaa!
+                <Heart className="w-5 h-5 text-rose-400" /> Close
               </button>
             </motion.div>
           </div>

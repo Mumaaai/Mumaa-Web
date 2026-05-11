@@ -13,6 +13,17 @@ export const api = {
     return response.json();
   },
 
+  async put(path: string, data: any) {
+    const response = await fetch(`${API_URL}${path}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    return response.json();
+  },
+
   async get(path: string) {
     const response = await fetch(`${API_URL}${path}`);
     return response.json();

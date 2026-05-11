@@ -19,6 +19,7 @@ import CryView from '../components/chat/views/CryView';
 import JournalView from '../components/chat/views/JournalView';
 import LullabyView from '../components/chat/views/LullabyView';
 import PhotoView from '../components/chat/views/PhotoView';
+import ProfileSetupModal from '../components/chat/ProfileSetupModal';
 
 export default function Chat() {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ export default function Chat() {
   const [babyProfile, setBabyProfile] = useState<any>(null);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const [chatSessions, setChatSessions] = useState<any[]>([]);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   useEffect(() => {
     const session = localStorage.getItem('mumaa_session');
@@ -47,12 +49,16 @@ export default function Chat() {
   const fetchBabyProfile = async (userId: string) => {
     try {
       const data = await api.get(`/baby/${userId}`);
-      if (data && !data.error) {
+      if (data && !data.error && data.name) {
         setBabyProfile(data);
+      } else {
+        // Show modal if profile is missing
+        setIsProfileModalOpen(true);
       }
       fetchChatSessions(userId);
     } catch (e) {
       console.error("Failed to fetch baby profile", e);
+      setIsProfileModalOpen(true);
     }
   };
 
@@ -78,9 +84,9 @@ export default function Chat() {
         <AIChatView 
           user={user} 
           babyProfile={babyProfile} 
-          onProfileUpdate={setBabyProfile} 
           sessionId={currentSessionId || ''} 
           onSessionChange={setCurrentSessionId}
+          onHistoryRefresh={() => fetchChatSessions(user.id)}
         />
       );
       case 'dashboard': return <DashboardView />;
@@ -101,9 +107,9 @@ export default function Chat() {
         <AIChatView 
           user={user} 
           babyProfile={babyProfile} 
-          onProfileUpdate={setBabyProfile} 
           sessionId={currentSessionId || ''} 
           onSessionChange={setCurrentSessionId}
+          onHistoryRefresh={() => fetchChatSessions(user.id)}
         />
       );
     }
@@ -120,6 +126,7 @@ export default function Chat() {
         onTabChange={setActiveTab}
         user={user}
         babyProfile={babyProfile}
+        onProfileClick={() => setIsProfileModalOpen(true)}
       />
 
       {/* Main Area */}
@@ -133,6 +140,7 @@ export default function Chat() {
           onMenuClick={() => setIsMobileMenuOpen(true)} 
           activeTab={activeTab}
           user={user}
+          babyProfile={babyProfile}
           chatSessions={chatSessions}
           onSessionSelect={(id) => {
             setCurrentSessionId(id);
@@ -147,6 +155,24 @@ export default function Chat() {
         </div>
 
       </div>
+
+      <ProfileSetupModal 
+        isOpen={isProfileModalOpen} 
+        onClose={() => setIsProfileModalOpen(false)} 
+        onSave={async (data) => {
+          try {
+            const response = await api.post('/baby', { ...data, userId: user.id });
+            if (response && !response.error) {
+              const updated = await api.get(`/baby/${user.id}`);
+              setBabyProfile(updated);
+              setIsProfileModalOpen(false);
+            }
+          } catch (e) {
+            console.error("Failed to save profile", e);
+          }
+        }}
+        initialData={babyProfile}
+      />
     </div>
   );
 }
