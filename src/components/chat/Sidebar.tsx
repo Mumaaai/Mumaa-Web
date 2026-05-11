@@ -5,7 +5,7 @@ import {
   TrendingUp, ShieldCheck, Star, Compass, Apple, Blocks, 
   Puzzle, Clock, AudioWaveform, BookHeart, MoonStar, 
   Camera, HeartHandshake, Stethoscope, MessageSquare, Settings2,
-  ChevronLeft, ChevronRight, LogOut, Edit3
+  ChevronLeft, ChevronRight, LogOut
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -109,14 +109,11 @@ export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user,
 
         {/* Quick Stats (Hidden on collapse) - Now Clickable */}
         {!isCollapsed && (
-          <div className="p-5 border-b border-stone-100 bg-[#FFFDFB] cursor-pointer" onClick={onProfileClick}>
+          <div className="p-5 border-b border-stone-100 bg-[#FFFDFB]">
             <button 
               onClick={onProfileClick}
-              className="w-full text-left bg-white rounded-2xl p-4 shadow-sm border border-stone-100 hover:border-orange-200 hover:shadow-md transition-all group relative overflow-hidden"
+              className="w-full text-left bg-white rounded-2xl p-4 shadow-sm border border-stone-100 hover:border-orange-200 hover:shadow-md transition-all group relative overflow-hidden cursor-pointer"
             >
-              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <Edit3 className="w-3.5 h-3.5 text-stone-400" />
-              </div>
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                   <Baby className="w-5 h-5 text-orange-400" />
