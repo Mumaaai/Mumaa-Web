@@ -1,22 +1,45 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, User } from 'lucide-react';
+import { X, User, Baby, Calendar, Heart, Languages, Sparkles, Edit3, Save } from 'lucide-react';
 
-interface ProfileSetupModalProps {
+interface BabyProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (data: any) => void;
   initialData?: any;
+  forceEdit?: boolean;
 }
 
-export default function ProfileSetupModal({ isOpen, onClose, onSave, initialData }: ProfileSetupModalProps) {
-  const [momName, setMomName] = useState(initialData?.mom_name || '');
-  const [babyName, setBabyName] = useState(initialData?.name || '');
-  const [babyDOB, setBabyDOB] = useState(initialData?.date_of_birth || '');
-  const [gender, setGender] = useState(initialData?.gender || 'boy');
-  const [bloodGroup, setBloodGroup] = useState(initialData?.blood_group || 'Unknown');
-  const [language, setLanguage] = useState(initialData?.preferred_language || 'Hinglish');
-  const [aiDetail, setAiDetail] = useState(initialData?.ai_detail || 'Balanced');
+export default function BabyProfileModal({ isOpen, onClose, onSave, initialData, forceEdit = false }: BabyProfileModalProps) {
+  const [isEditing, setIsEditing] = useState(forceEdit || !initialData?.name);
+  
+  // Form State
+  const [momName, setMomName] = useState('');
+  const [babyName, setBabyName] = useState('');
+  const [babyDOB, setBabyDOB] = useState('');
+  const [gender, setGender] = useState('boy');
+  const [bloodGroup, setBloodGroup] = useState('Unknown');
+  const [language, setLanguage] = useState('Hinglish');
+  const [aiDetail, setAiDetail] = useState('Balanced');
+
+  // Sync state with initialData when modal opens or initialData changes
+  useEffect(() => {
+    if (isOpen && initialData) {
+      setMomName(initialData.mom_name || '');
+      setBabyName(initialData.name || '');
+      setBabyDOB(initialData.date_of_birth || '');
+      setGender(initialData.gender || 'boy');
+      setBloodGroup(initialData.blood_group || 'Unknown');
+      setLanguage(initialData.preferred_language || 'Hinglish');
+      setAiDetail(initialData.ai_detail || 'Balanced');
+      
+      if (!initialData.name) {
+        setIsEditing(true);
+      } else if (!forceEdit) {
+        setIsEditing(false);
+      }
+    }
+  }, [isOpen, initialData, forceEdit]);
 
   const handleSave = () => {
     if (!babyName || !babyDOB) return;
@@ -29,8 +52,30 @@ export default function ProfileSetupModal({ isOpen, onClose, onSave, initialData
       aiDetail, 
       momName 
     });
-    onClose();
+    setIsEditing(false);
   };
+
+  const calculateAge = (dob: string) => {
+    if (!dob) return "Newborn";
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let months = (today.getFullYear() - birthDate.getFullYear()) * 12 + (today.getMonth() - birthDate.getMonth());
+    if (months < 1) return "Newborn";
+    if (months < 12) return `${months} Months Old`;
+    return `${Math.floor(months / 12)} Years Old`;
+  };
+
+  const InfoRow = ({ icon: Icon, label, value, color }: any) => (
+    <div className="flex items-center gap-4 p-4 bg-stone-50/50 rounded-2xl border border-stone-100">
+      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${color}`}>
+        <Icon className="w-5 h-5" />
+      </div>
+      <div>
+        <div className="text-[10px] font-black text-stone-400 uppercase tracking-widest">{label}</div>
+        <div className="text-sm font-bold text-stone-800">{value}</div>
+      </div>
+    </div>
+  );
 
   return (
     <AnimatePresence>
@@ -41,7 +86,7 @@ export default function ProfileSetupModal({ isOpen, onClose, onSave, initialData
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-stone-900/40 backdrop-blur-md"
+            className="absolute inset-0 bg-stone-900/30 backdrop-blur-md"
           />
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -49,132 +94,200 @@ export default function ProfileSetupModal({ isOpen, onClose, onSave, initialData
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             className="relative w-full max-w-lg bg-white rounded-[3.5rem] shadow-2xl border border-white overflow-hidden"
           >
-            <div className="p-8 md:p-10">
-              <div className="flex items-center justify-between mb-8">
+            {/* Header */}
+            <div className="p-8 pb-4">
+              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-2xl bg-orange-100 flex items-center justify-center text-orange-600 shadow-sm">
-                    <User className="w-6 h-6" />
+                    <Baby className="w-6 h-6" />
                   </div>
-                  <h2 className="text-3xl font-black text-stone-800 tracking-tight">Profile Setup</h2>
+                  <div>
+                    <h2 className="text-2xl font-black text-stone-800 tracking-tight">
+                      {isEditing ? (initialData?.name ? 'Edit Profile' : 'Setup Profile') : 'Baby Profile'}
+                    </h2>
+                    <p className="text-xs text-stone-500 font-semibold uppercase tracking-widest mt-0.5">Mumaa Companion</p>
+                  </div>
                 </div>
-                <button onClick={onClose} className="p-2 hover:bg-stone-50 rounded-full transition-colors text-stone-300">
-                  <X className="w-6 h-6" />
-                </button>
+                <div className="flex items-center gap-2">
+                  {!isEditing && initialData?.name && (
+                    <button 
+                      onClick={() => setIsEditing(true)}
+                      className="p-3 bg-stone-50 hover:bg-orange-50 text-stone-400 hover:text-orange-600 rounded-2xl transition-all border border-transparent hover:border-orange-100 btn-press"
+                      title="Edit Profile"
+                    >
+                      <Edit3 className="w-5 h-5" />
+                    </button>
+                  )}
+                  <button onClick={onClose} className="p-3 hover:bg-stone-50 rounded-2xl transition-colors text-stone-300">
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
               </div>
+            </div>
 
-              <div className="space-y-6">
-                {/* Mother's Name */}
-                <div className="space-y-2">
-                  <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Mother's Name</label>
-                  <div className="relative">
+            <div className="p-8 pt-0 max-h-[70vh] overflow-y-auto no-scrollbar">
+              {isEditing ? (
+                /* Edit Mode - Form */
+                <div className="space-y-6 pt-4">
+                  <div className="space-y-2">
+                    <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Mother's Name</label>
                     <input 
                       type="text" 
                       value={momName}
                       onChange={(e) => setMomName(e.target.value)}
-                      placeholder="E.g. Priya" 
-                      className="w-full bg-stone-50/50 border border-stone-100 rounded-3xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 focus:ring-4 focus:ring-orange-50/50 transition-all placeholder:text-stone-300" 
+                      placeholder="Your name" 
+                      className="w-full bg-stone-50/50 border border-stone-100 rounded-3xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 focus:ring-4 focus:ring-orange-50/50 transition-all placeholder:text-stone-300 shadow-inner" 
                     />
                   </div>
-                </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  {/* Baby's Name */}
-                  <div className="space-y-2">
-                    <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Baby's Name</label>
-                    <input 
-                      type="text" 
-                      value={babyName}
-                      onChange={(e) => setBabyName(e.target.value)}
-                      placeholder="E.g. Arjun" 
-                      className="w-full bg-stone-50/50 border border-stone-100 rounded-2xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 focus:ring-4 focus:ring-orange-50/50 transition-all placeholder:text-stone-300" 
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Baby's Name</label>
+                      <input 
+                        type="text" 
+                        value={babyName}
+                        onChange={(e) => setBabyName(e.target.value)}
+                        placeholder="Baby's name" 
+                        className="w-full bg-stone-50/50 border border-stone-100 rounded-2xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 focus:ring-4 focus:ring-orange-50/50 transition-all placeholder:text-stone-300 shadow-inner" 
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Baby's DOB</label>
+                      <input 
+                        type="date" 
+                        value={babyDOB}
+                        onChange={(e) => setBabyDOB(e.target.value)}
+                        className="w-full bg-stone-50/50 border border-stone-100 rounded-2xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 focus:ring-4 focus:ring-orange-50/50 transition-all shadow-inner" 
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Gender</label>
+                      <select 
+                        value={gender}
+                        onChange={(e) => setGender(e.target.value)}
+                        className="w-full bg-stone-50/50 border border-stone-100 rounded-2xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 transition-all appearance-none shadow-inner"
+                      >
+                        <option value="boy">Boy</option>
+                        <option value="girl">Girl</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Blood Group</label>
+                      <select 
+                        value={bloodGroup}
+                        onChange={(e) => setBloodGroup(e.target.value)}
+                        className="w-full bg-stone-50/50 border border-stone-100 rounded-2xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 transition-all appearance-none shadow-inner"
+                      >
+                        <option value="Unknown">Unknown</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Preferred Language</label>
+                      <select 
+                        value={language}
+                        onChange={(e) => setLanguage(e.target.value)}
+                        className="w-full bg-stone-50/50 border border-stone-100 rounded-2xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 transition-all appearance-none shadow-inner"
+                      >
+                        <option value="Hinglish">Hinglish</option>
+                        <option value="English">English</option>
+                        <option value="Hindi">Hindi</option>
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">AI Tone</label>
+                      <select 
+                        value={aiDetail}
+                        onChange={(e) => setAiDetail(e.target.value)}
+                        className="w-full bg-stone-50/50 border border-stone-100 rounded-2xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 transition-all appearance-none shadow-inner"
+                      >
+                        <option value="Balanced">Balanced</option>
+                        <option value="Gentle">Gentle</option>
+                        <option value="Strict">Strict</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <button 
+                    onClick={handleSave}
+                    disabled={!babyName || !babyDOB}
+                    className="w-full gradient-peach text-orange-900 font-black py-5 rounded-[2rem] shadow-xl border border-white hover:opacity-95 transition-all btn-press disabled:opacity-50 text-xl mt-4 flex items-center justify-center gap-2"
+                  >
+                    <Save className="w-6 h-6" /> Save Profile
+                  </button>
+                </div>
+              ) : (
+                /* View Mode - Elegant Card */
+                <div className="space-y-4 pt-4">
+                  <div className="bg-stone-50/80 rounded-[2.5rem] p-8 border border-stone-100 relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-orange-100/30 rounded-full blur-3xl -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-1000" />
+                    
+                    <div className="text-center relative z-10">
+                      <div className="text-4xl font-black text-stone-800 mb-2">{initialData?.name}</div>
+                      <div className="text-orange-600 font-black text-sm uppercase tracking-[0.2em]">
+                        {calculateAge(initialData?.date_of_birth)}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <InfoRow 
+                      icon={User} 
+                      label="Mother" 
+                      value={initialData?.mom_name || 'Not Set'} 
+                      color="bg-rose-50 text-rose-500"
+                    />
+                    <InfoRow 
+                      icon={Calendar} 
+                      label="Birthday" 
+                      value={new Date(initialData?.date_of_birth).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })} 
+                      color="bg-sky-50 text-sky-500"
+                    />
+                    <InfoRow 
+                      icon={Heart} 
+                      label="Gender" 
+                      value={initialData?.gender === 'boy' ? 'Prince (Boy)' : 'Princess (Girl)'} 
+                      color="bg-orange-50 text-orange-500"
+                    />
+                    <InfoRow 
+                      icon={Sparkles} 
+                      label="Blood Group" 
+                      value={initialData?.blood_group || 'Unknown'} 
+                      color="bg-emerald-50 text-emerald-500"
+                    />
+                    <InfoRow 
+                      icon={Languages} 
+                      label="Language" 
+                      value={initialData?.preferred_language} 
+                      color="bg-indigo-50 text-indigo-500"
+                    />
+                    <InfoRow 
+                      icon={Sparkles} 
+                      label="AI Companion" 
+                      value={`${initialData?.ai_detail} Tone`} 
+                      color="bg-amber-50 text-amber-500"
                     />
                   </div>
-                  {/* Baby's DOB */}
-                  <div className="space-y-2">
-                    <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Baby's DOB</label>
-                    <input 
-                      type="date" 
-                      value={babyDOB}
-                      onChange={(e) => setBabyDOB(e.target.value)}
-                      className="w-full bg-stone-50/50 border border-stone-100 rounded-2xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 focus:ring-4 focus:ring-orange-50/50 transition-all" 
-                    />
+
+                  <div className="mt-8 text-center">
+                    <p className="text-[10px] text-stone-400 font-bold uppercase tracking-[0.3em]">Mumaa AI • Mindful Parenting</p>
                   </div>
                 </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  {/* Gender Select */}
-                  <div className="space-y-2">
-                    <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Gender</label>
-                    <select 
-                      value={gender}
-                      onChange={(e) => setGender(e.target.value)}
-                      className="w-full bg-stone-50/50 border border-stone-100 rounded-2xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 focus:ring-4 focus:ring-orange-50/50 transition-all appearance-none"
-                    >
-                      <option value="boy">Boy</option>
-                      <option value="girl">Girl</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-                  {/* Blood Group */}
-                  <div className="space-y-2">
-                    <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Blood Group</label>
-                    <select 
-                      value={bloodGroup}
-                      onChange={(e) => setBloodGroup(e.target.value)}
-                      className="w-full bg-stone-50/50 border border-stone-100 rounded-2xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 focus:ring-4 focus:ring-orange-50/50 transition-all appearance-none"
-                    >
-                      <option value="Unknown">Unknown</option>
-                      <option value="A+">A+</option>
-                      <option value="A-">A-</option>
-                      <option value="B+">B+</option>
-                      <option value="B-">B-</option>
-                      <option value="O+">O+</option>
-                      <option value="O-">O-</option>
-                      <option value="AB+">AB+</option>
-                      <option value="AB-">AB-</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  {/* Language */}
-                  <div className="space-y-2">
-                    <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Language</label>
-                    <select 
-                      value={language}
-                      onChange={(e) => setLanguage(e.target.value)}
-                      className="w-full bg-stone-50/50 border border-stone-100 rounded-2xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 focus:ring-4 focus:ring-orange-50/50 transition-all appearance-none"
-                    >
-                      <option value="Hinglish">Hinglish</option>
-                      <option value="English">English</option>
-                      <option value="Hindi">Hindi</option>
-                    </select>
-                  </div>
-                  {/* AI Detail */}
-                  <div className="space-y-2">
-                    <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">AI Detail</label>
-                    <select 
-                      value={aiDetail}
-                      onChange={(e) => setAiDetail(e.target.value)}
-                      className="w-full bg-stone-50/50 border border-stone-100 rounded-2xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 focus:ring-4 focus:ring-orange-50/50 transition-all appearance-none"
-                    >
-                      <option value="Balanced">Balanced</option>
-                      <option value="Gentle">Gentle</option>
-                      <option value="Strict">Strict</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-10">
-                <button 
-                  onClick={handleSave}
-                  disabled={!babyName || !babyDOB}
-                  className="w-full gradient-peach text-orange-900 font-bold py-5 rounded-[2rem] shadow-lg border border-white hover:opacity-95 transition-all btn-press disabled:opacity-50 text-xl"
-                >
-                  Save Profile
-                </button>
-              </div>
+              )}
             </div>
           </motion.div>
         </div>

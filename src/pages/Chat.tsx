@@ -19,7 +19,7 @@ import CryView from '../components/chat/views/CryView';
 import JournalView from '../components/chat/views/JournalView';
 import LullabyView from '../components/chat/views/LullabyView';
 import PhotoView from '../components/chat/views/PhotoView';
-import ProfileSetupModal from '../components/chat/ProfileSetupModal';
+import BabyProfileModal from '../components/chat/ProfileSetupModal';
 
 export default function Chat() {
   const navigate = useNavigate();
@@ -156,7 +156,7 @@ export default function Chat() {
 
       </div>
 
-      <ProfileSetupModal 
+      <BabyProfileModal 
         isOpen={isProfileModalOpen} 
         onClose={() => setIsProfileModalOpen(false)} 
         onSave={async (data) => {
@@ -165,7 +165,7 @@ export default function Chat() {
             if (response && !response.error) {
               const updated = await api.get(`/baby/${user.id}`);
               setBabyProfile(updated);
-              setIsProfileModalOpen(false);
+              // setIsProfileModalOpen(false); // Modal now handles its own close/transition after save
             }
           } catch (e) {
             console.error("Failed to save profile", e);
