@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid,
-  Tooltip, ResponsiveContainer, ReferenceLine, Legend, ComposedChart, Bar
+  AreaChart, Area, Line, XAxis, YAxis, CartesianGrid,
+  Tooltip, ResponsiveContainer, ComposedChart
 } from 'recharts';
 import {
   Scale, Ruler, Activity, Plus, X, TrendingUp, TrendingDown,
@@ -159,7 +159,6 @@ interface GrowthRecord {
 }
 
 interface Props {
-  user?: any;
   babyProfile?: any;
 }
 
@@ -216,7 +215,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 // ─── Main Component ───────────────────────────────────────────────────────────
-export default function GrowthView({ user, babyProfile }: Props) {
+export default function GrowthView({ babyProfile }: Props) {
   const [records, setRecords] = useState<GrowthRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
