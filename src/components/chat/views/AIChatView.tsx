@@ -53,16 +53,21 @@ export default function AIChatView({ user, babyProfile, sessionId, onSessionChan
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  const [isHistoryLoading, setIsHistoryLoading] = useState(false);
   const prevSessionIdRef = useRef<string | null>(null);
 
   // Load history when sessionId changes
   useEffect(() => {
     if (sessionId && sessionId !== prevSessionIdRef.current) {
-      // Only clear if it's a genuine switch to an existing session
-      // If we just created this session ID in handleSend, messages will already be set
-      if (messages.length === 0) {
-        fetchHistory(sessionId);
-      }
+      // If we switch to a different session, we should always fetch history
+      // EXCEPT if this is a brand new session we just created (messages.length will be > 0 but it won't be in DB yet)
+      // Actually, if sessionId changed, and it's not the first message of a new session, we fetch.
+      
+      // Let's check if the current messages belong to the NEW sessionId.
+      // Since we don't have a good way to check that without adding more state, 
+      // we'll assume that if sessionId changed, we should fetch UNLESS we just sent a message.
+      
+      fetchHistory(sessionId);
       prevSessionIdRef.current = sessionId;
     } else if (!sessionId) {
       setMessages([]);
@@ -72,6 +77,7 @@ export default function AIChatView({ user, babyProfile, sessionId, onSessionChan
   }, [sessionId]);
 
   const fetchHistory = async (id: string) => {
+    setIsHistoryLoading(true);
     try {
       const history = await api.get(`/chat/history/${id}`);
       if (history && Array.isArray(history)) {
@@ -84,12 +90,14 @@ export default function AIChatView({ user, babyProfile, sessionId, onSessionChan
       
       // Also fetch session details to get the title
       const sessions = await api.get(`/chat/sessions/${user.id}`);
-      const currentSession = sessions.find((s: any) => s.session_id === id);
+      const currentSession = sessions.find((s: any) => (s.session_id === id || s.id === id));
       if (currentSession) {
         setSessionTitle(currentSession.title);
       }
     } catch (e) {
       console.error("Failed to fetch history", e);
+    } finally {
+      setIsHistoryLoading(false);
     }
   };
 
@@ -303,9 +311,21 @@ export default function AIChatView({ user, babyProfile, sessionId, onSessionChan
       <div className="flex-1 overflow-y-auto chat-scroll no-scrollbar" onClick={() => setIsFabOpen(false)}>
         <div className="max-w-3xl mx-auto px-4 md:px-6 py-12 md:py-20 flex flex-col min-h-full">
           
-          <AnimatePresence>
-            {messages.length === 0 ? (
+          <AnimatePresence mode="wait">
+            {isHistoryLoading ? (
               <motion.div 
+                key="loader"
+                initial={{ opacity: 0 }} 
+                animate={{ opacity: 1 }} 
+                exit={{ opacity: 0 }}
+                className="my-auto flex flex-col items-center justify-center py-20 text-stone-400"
+              >
+                <Loader2 className="w-8 h-8 animate-spin text-orange-400 mb-4" />
+                <p className="text-xs font-bold uppercase tracking-widest">Opening your conversation...</p>
+              </motion.div>
+            ) : messages.length === 0 ? (
+              <motion.div 
+                key="empty"
                 initial={{ opacity: 0, y: 20 }} 
                 animate={{ opacity: 1, y: 0 }} 
                 exit={{ opacity: 0, scale: 0.95 }}
@@ -334,7 +354,12 @@ export default function AIChatView({ user, babyProfile, sessionId, onSessionChan
                 </div>
               </motion.div>
             ) : (
-              <div className="space-y-12 pb-12">
+              <motion.div 
+                key="messages"
+                initial={{ opacity: 0 }} 
+                animate={{ opacity: 1 }}
+                className="space-y-12 pb-12"
+              >
                 {messages.map((msg) => (
                   <motion.div 
                     key={msg.id}
@@ -373,7 +398,7 @@ export default function AIChatView({ user, babyProfile, sessionId, onSessionChan
                   </div>
                 )}
 
-                {isLoading && (
+                {isLoading && !streamingText && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-6">
                     <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 border border-stone-100 bg-white text-orange-500">
                       <Loader2 className="w-5 h-5 animate-spin" />
@@ -384,7 +409,7 @@ export default function AIChatView({ user, babyProfile, sessionId, onSessionChan
                   </motion.div>
                 )}
                 <div ref={messagesEndRef} />
-              </div>
+              </motion.div>
             )}
           </AnimatePresence>
         </div>

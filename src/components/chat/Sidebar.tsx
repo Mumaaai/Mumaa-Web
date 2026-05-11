@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, Baby, MessageCircleHeart, LayoutDashboard, Utensils, 
   TrendingUp, ShieldCheck, Star, Compass, Apple, Blocks, 
@@ -40,6 +41,7 @@ const calculateAge = (dob: string) => {
 
 export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user, babyProfile, onProfileClick }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const navigate = useNavigate();
   
   const handleLogout = () => {
@@ -198,7 +200,11 @@ export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user,
         </div>
         
         <div className={`p-5 border-t border-stone-100 bg-white absolute bottom-0 w-full z-10 hidden md:flex flex-col gap-2 ${isCollapsed ? 'px-2' : ''}`}>
-          <Link to="/auth" title={isCollapsed ? "Settings" : undefined} className={`w-full text-left py-3.5 rounded-2xl bg-stone-50 hover:bg-stone-100 flex items-center gap-3 text-[15px] transition-colors border border-stone-200 group btn-press ${isCollapsed ? 'justify-center px-0' : 'px-4'}`}>
+          <button 
+            onClick={() => setIsLogoutModalOpen(true)}
+            title={isCollapsed ? "User Settings" : undefined} 
+            className={`w-full text-left py-3.5 rounded-2xl bg-stone-50 hover:bg-stone-100 flex items-center gap-3 text-[15px] transition-colors border border-stone-200 group btn-press ${isCollapsed ? 'justify-center px-0' : 'px-4'}`}
+          >
             <div className="w-9 h-9 rounded-full bg-stone-200 text-stone-600 flex items-center justify-center shrink-0 group-hover:bg-white transition-colors border border-transparent group-hover:border-stone-200 shadow-sm overflow-hidden">
               {user?.picture ? (
                 <img src={user.picture} alt={user.name} className="w-full h-full object-cover" />
@@ -208,24 +214,54 @@ export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user,
             </div>
             {!isCollapsed && (
               <div className="flex-1 min-w-0">
-                <div className="font-bold truncate text-stone-800">{user?.name || 'Setup Profile'}</div>
-                <div className="text-[11px] text-stone-500 truncate font-medium uppercase tracking-wider">Settings</div>
+                <div className="font-bold truncate text-stone-800">{user?.name || 'User'}</div>
+                <div className="text-[11px] text-stone-500 truncate font-medium uppercase tracking-wider">Account Settings</div>
               </div>
             )}
-          </Link>
-          
-          <button 
-            onClick={handleLogout}
-            title={isCollapsed ? "Logout" : undefined}
-            className={`w-full text-left py-3 rounded-2xl flex items-center gap-3 text-[15px] transition-all hover:bg-rose-50 border border-transparent group ${isCollapsed ? 'justify-center px-0' : 'px-4'}`}
-          >
-            <div className="w-8 h-8 rounded-xl bg-rose-50 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-              <LogOut className="w-4 h-4 text-rose-500" />
-            </div>
-            {!isCollapsed && <span className="text-rose-600 font-bold">Logout</span>}
           </button>
         </div>
 
+        {/* User Menu Popover */}
+        <AnimatePresence>
+          {isLogoutModalOpen && (
+            <div className="absolute bottom-[100px] left-6 z-[60] w-[232px]">
+              {/* Backdrop for closing */}
+              <div 
+                className="fixed inset-0 z-[-1]" 
+                onClick={() => setIsLogoutModalOpen(false)}
+              />
+              
+              <motion.div 
+                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                className="bg-white rounded-[2rem] p-6 shadow-2xl border border-stone-100 text-center"
+              >
+                <div className="w-14 h-14 bg-rose-50 rounded-[1.2rem] flex items-center justify-center mx-auto mb-4 text-rose-500">
+                  <LogOut className="w-7 h-7" />
+                </div>
+                <h3 className="text-lg font-black text-stone-800 tracking-tight mb-1">Ready to Leave?</h3>
+                <p className="text-stone-500 text-[11px] font-bold uppercase tracking-wider mb-6">
+                  Session will be saved
+                </p>
+                <div className="flex flex-col gap-2">
+                  <button 
+                    onClick={handleLogout}
+                    className="w-full py-3 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-rose-100"
+                  >
+                    Logout
+                  </button>
+                  <button 
+                    onClick={() => setIsLogoutModalOpen(false)}
+                    className="w-full py-3 bg-stone-50 hover:bg-stone-100 text-stone-600 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
       </div>
     </>
   );

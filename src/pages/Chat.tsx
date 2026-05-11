@@ -69,13 +69,17 @@ export default function Chat() {
     try {
       const sessions = await api.get(`/chat/sessions/${userId}`);
       // Sort sessions by created_at descending (latest first)
-      const sortedSessions = (sessions || []).map((s: any) => ({
-        ...s,
-        // Prefer knownTitle if the API still returns a generic one
-        title: (knownTitles[s.session_id] && (s.title === 'Parenting Chat' || s.title === 'New Parenting Chat' || !s.title)) 
-          ? knownTitles[s.session_id] 
-          : s.title
-      })).sort((a: any, b: any) => 
+      const sortedSessions = (sessions || []).map((s: any) => {
+        const sid = s.session_id || s.id; // Support both just in case
+        return {
+          ...s,
+          session_id: sid,
+          // Prefer knownTitle if the API still returns a generic one
+          title: (knownTitles[sid] && (s.title === 'Parenting Chat' || s.title === 'New Parenting Chat' || !s.title)) 
+            ? knownTitles[sid] 
+            : s.title
+        };
+      }).sort((a: any, b: any) => 
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       );
       setChatSessions(sortedSessions);
