@@ -5,7 +5,8 @@ import {
   Sparkles, Menu, ShieldCheck, ArrowRight, Download, Check, 
   Video, AudioWaveform, MessageCircleHeart, Apple, Clock, 
   Leaf, MessageCircle, Plus, Mail, 
-  MessageSquare, User, Send
+  MessageSquare, User, Send, Heart, Mic, PlayCircle, 
+  Gamepad2, Brain, Volume2
 } from 'lucide-react';
 
 const fadeIn = {
@@ -46,11 +47,11 @@ export default function Landing() {
         >
           <a className="flex items-center gap-3 select-none group" href="#">
             <div className="relative w-10 h-10 overflow-hidden rounded-full shadow-sm">
-              <img src="images/MumaaAIlogo.png" alt="Mumaa Logo" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+              <img src="/images/MumaaAIlogo.png" alt="Mumaa Logo" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
             </div>
             <div className="flex flex-col leading-none">
-              <div className="text-2xl font-black tracking-tighter text-stone-800">MUMAA</div>
-              <span className="text-[10px] font-bold text-orange-500 tracking-[0.1em] uppercase mt-0.5">AI Companion</span>
+              <div className="text-2xl font-black tracking-tighter text-stone-800">AI MUMAA</div>
+              <span className="text-[10px] font-bold text-orange-500 tracking-[0.1em] uppercase mt-0.5">A PARENTING COMPANION</span>
             </div>
           </a>
 
@@ -63,6 +64,14 @@ export default function Landing() {
           </div>
 
           <div className="flex items-center gap-3">
+            <a 
+              href="https://mumaa-vc-one.vercel.app/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="hidden md:flex items-center gap-2 px-5 py-2.5 rounded-full bg-rose-50 text-rose-600 text-sm font-bold hover:bg-rose-100 transition-all border border-rose-100"
+            >
+              <Video className="w-4 h-4" /> Live Consult
+            </a>
             <Link to="/auth" className="hidden sm:flex items-center gap-2 px-6 py-2.5 rounded-full gradient-peach text-orange-900 text-sm font-bold hover:shadow-lg hover:-translate-y-0.5 transition-all shadow-md border border-white">
               <Sparkles className="w-4 h-4" /> Launch Mumaa
             </Link>
@@ -138,7 +147,7 @@ export default function Landing() {
             <div className="absolute w-[95%] h-[95%] bg-gradient-to-tr from-orange-200/60 to-rose-200/60 rounded-full blur-[80px] opacity-80 animate-pulse" style={{ animationDuration: '4s' }}></div>
             <div className="relative w-full max-w-[500px] aspect-square flex items-center justify-center">
               <div className="relative w-[90%] h-[90%] rounded-[3rem] overflow-hidden shadow-2xl border-[8px] border-white/80 bg-white backdrop-blur-sm">
-                <img src="images/pexels-daniel-reche-718241-1556706.jpg" alt="Mother and Child" className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-1000" />
+                <img src="/images/pexels-daniel-reche-718241-1556706.jpg" alt="Mother and Child" className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-1000" />
                 <div className="absolute inset-0 bg-orange-900/5 mix-blend-overlay pointer-events-none"></div>
               </div>
 
@@ -245,17 +254,29 @@ export default function Landing() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {[
-                { title: 'Video Consults', badge: 'Soon', badgeClass: 'text-teal-600 bg-teal-50 border-teal-100', color: 'teal', icon: Video, desc: 'Connect instantly with certified nannies for real-time triage, sleep routines, and behavioral guidance.', points: ['Expert Nannies', 'Live Video Triage', 'Sleep Advice', 'Feeding Help'], link: '#nanny-feature', linkText: 'Learn More',
+                { title: 'Video Consults', badge: 'Expert Led', badgeClass: 'text-teal-600 bg-teal-50 border-teal-100', color: 'teal', icon: Video, desc: 'Live expert nannies for real-time video triage, sleep and feeding support.', points: ['Certified Nannies', 'Video Triage', 'Sleep Support', 'Feeding Help'], link: '#nanny-feature', linkText: 'Learn More',
                   containerClass: 'hover:border-teal-200 hover:shadow-teal-100/50', bgClass: 'bg-teal-50', iconBg: 'bg-teal-100', iconColor: 'text-teal-500', textHover: 'group-hover:text-teal-500', dotClass: 'bg-teal-400', btnClass: 'bg-teal-50 hover:bg-teal-100 text-teal-700 border border-teal-200' },
-                { title: 'Cry Translator', badge: 'Popular', badgeClass: 'text-rose-500 bg-rose-50 border-rose-100', color: 'rose', icon: AudioWaveform, desc: "Record 10s of crying. Our AI gently analyzes acoustic patterns to predict your baby's needs.", points: ['Acoustic Analysis', '10s Recording', 'Private & Secure', 'Instant Action Tips'], link: '/auth', linkText: 'Try Now',
+                { title: 'Cry Translator', badge: 'Popular', badgeClass: 'text-rose-500 bg-rose-50 border-rose-100', color: 'rose', icon: AudioWaveform, desc: "AI-powered acoustic analysis to decode baby cries in 10 seconds.", points: ['Acoustic Analysis', '10s Recording', 'Predicts Needs', 'Instant Action'], link: '/auth', linkText: 'Try Now',
                   containerClass: 'hover:border-rose-200 hover:shadow-rose-100/50', bgClass: 'bg-rose-50', iconBg: 'bg-rose-100', iconColor: 'text-rose-500', textHover: 'group-hover:text-rose-500', dotClass: 'bg-rose-400', btnClass: 'gradient-rose text-rose-900 border border-white' },
-                { title: 'AI Companion', badge: '24/7 Chat', badgeClass: 'text-indigo-600 bg-indigo-50 border-indigo-100', color: 'indigo', icon: MessageCircleHeart, desc: 'A supportive, judgment-free chat assistant available anytime in multiple languages to answer any worry.', points: ['Hinglish Support', 'Non-judgmental', 'Context-Aware', 'Empathetic'], link: '/auth', linkText: 'Chat Now',
+                { title: 'AI Saheli', badge: '24/7 Expert', badgeClass: 'text-indigo-600 bg-indigo-50 border-indigo-100', color: 'indigo', icon: MessageCircleHeart, desc: 'Your 24/7 empathetic assistant covering 20+ categories with Hinglish support.', points: ['20+ Categories', 'Hinglish Chat', 'Context-Aware', 'Expert Guidance'], link: '/auth', linkText: 'Chat Now',
                   containerClass: 'hover:border-indigo-200 hover:shadow-indigo-100/50', bgClass: 'bg-indigo-50', iconBg: 'bg-indigo-100', iconColor: 'text-indigo-500', textHover: 'group-hover:text-indigo-500', dotClass: 'bg-indigo-400', btnClass: 'gradient-lavender text-indigo-900 border border-white' },
-                { title: 'Nutrition AI', badge: 'Custom', badgeClass: 'text-sky-600 bg-sky-50 border-sky-100', color: 'sky', icon: Apple, desc: 'Custom diet charts blending modern pediatrics with traditional Indian postpartum foods.', points: ['Baby Weaning', 'Mom Recovery', 'Indian Recipes', 'Veg/Non-Veg'], link: '/auth', linkText: 'Build Plan',
-                  containerClass: 'hover:border-sky-200 hover:shadow-sky-100/50', bgClass: 'bg-sky-50', iconBg: 'bg-sky-100', iconColor: 'text-sky-500', textHover: 'group-hover:text-sky-500', dotClass: 'bg-sky-400', btnClass: 'gradient-blue text-sky-900 border border-white' },
-                { title: 'Daily Routines', badge: 'Smart', badgeClass: 'text-orange-600 bg-orange-50 border-orange-100', color: 'orange', icon: Clock, desc: 'Log feeds, diapers, and sleep to gently establish a healthy rhythm for your growing baby.', points: ['Easy Logging', 'Sleep Tracking', 'Flexible Setup', 'Growth Checks'], link: '/auth', linkText: 'Build Plan',
+                { title: 'Single Parenting', badge: 'Empower', badgeClass: 'text-rose-600 bg-rose-50 border-rose-100', color: 'rose', icon: Heart, desc: 'Dedicated tools, checklists and emotional support tailored for solo parents.', points: ['Solo Parent Guide', 'Checklists', 'Legal Basics', 'Support Groups'], link: '/auth', linkText: 'Get Support',
+                  containerClass: 'hover:border-rose-200 hover:shadow-rose-100/50', bgClass: 'bg-rose-50', iconBg: 'bg-rose-100', iconColor: 'text-rose-500', textHover: 'group-hover:text-rose-500', dotClass: 'bg-rose-400', btnClass: 'gradient-rose text-rose-900 border border-white' },
+                { title: 'Daily Routines', badge: 'Smart', badgeClass: 'text-orange-600 bg-orange-50 border-orange-100', color: 'orange', icon: Clock, desc: 'Smart logging, sleep tracking, growth checks and flexible scheduling.', points: ['Smart Logging', 'Sleep Tracking', 'Growth Checks', 'Scheduling'], link: '/auth', linkText: 'Build Plan',
                   containerClass: 'hover:border-orange-200 hover:shadow-orange-100/50', bgClass: 'bg-orange-50', iconBg: 'bg-orange-100', iconColor: 'text-orange-500', textHover: 'group-hover:text-orange-500', dotClass: 'bg-orange-400', btnClass: 'gradient-peach text-orange-900 border border-white' },
-                { title: 'Dadi Nani Nuskhe', badge: 'Heritage', badgeClass: 'text-amber-600 bg-amber-50 border-amber-100', color: 'amber', icon: Leaf, desc: 'Access a curated library of safe, time-tested Indian home remedies and traditional wisdom for everyday care.', points: ['Home Remedies', 'Ayurvedic Basics', 'Gentle Care', 'Elder Wisdom'], link: '/auth', linkText: 'Explore Nuskhe',
+                { title: 'Care Guides', badge: 'Visual', badgeClass: 'text-emerald-600 bg-emerald-50 border-emerald-100', color: 'emerald', icon: PlayCircle, desc: 'Short, expert-curated video guides covering baby care and parenting tips.', points: ['Short Guides', 'Expert Tips', 'Care Techniques', 'Quick Ideas'], link: '/auth', linkText: 'Watch Now',
+                  containerClass: 'hover:border-emerald-200 hover:shadow-emerald-100/50', bgClass: 'bg-emerald-50', iconBg: 'bg-emerald-100', iconColor: 'text-emerald-500', textHover: 'group-hover:text-emerald-500', dotClass: 'bg-emerald-400', btnClass: 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200' },
+                { title: 'Nutrition AI', badge: 'Custom', badgeClass: 'text-sky-600 bg-sky-50 border-sky-100', color: 'sky', icon: Apple, desc: 'Indian-rooted baby weaning, mom recovery diet and recipe guidance.', points: ['Indian-Rooted', 'Baby Weaning', 'Mom Recovery', 'Recipe Guide'], link: '/auth', linkText: 'Build Plan',
+                  containerClass: 'hover:border-sky-200 hover:shadow-sky-100/50', bgClass: 'bg-sky-50', iconBg: 'bg-sky-100', iconColor: 'text-sky-500', textHover: 'group-hover:text-sky-500', dotClass: 'bg-sky-400', btnClass: 'gradient-blue text-sky-900 border border-white' },
+                { title: 'Play Tools', badge: 'Growth', badgeClass: 'text-pink-600 bg-pink-50 border-pink-100', color: 'pink', icon: Gamepad2, desc: 'Age-wise toy recommendations that support sensory and motor development.', points: ['Sensory Support', 'Motor Skills', 'Cognitive Growth', 'Age-Wise'], link: '/auth', linkText: 'Shop Now',
+                  containerClass: 'hover:border-pink-200 hover:shadow-pink-100/50', bgClass: 'bg-pink-50', iconBg: 'bg-pink-100', iconColor: 'text-pink-500', textHover: 'group-hover:text-pink-500', dotClass: 'bg-pink-400', btnClass: 'bg-pink-50 hover:bg-pink-100 text-pink-700 border border-pink-200' },
+                { title: 'Mind Games', badge: 'Brain', badgeClass: 'text-violet-600 bg-violet-50 border-violet-100', color: 'violet', icon: Brain, desc: 'Interactive games scientifically designed to stimulate baby\'s brain development.', points: ['Brain Training', 'Interactive Play', 'Learning Games', 'Research Based'], link: '/auth', linkText: 'Play Now',
+                  containerClass: 'hover:border-violet-200 hover:shadow-violet-100/50', bgClass: 'bg-violet-50', iconBg: 'bg-violet-100', iconColor: 'text-violet-500', textHover: 'group-hover:text-violet-500', dotClass: 'bg-violet-400', btnClass: 'bg-violet-50 hover:bg-violet-100 text-violet-700 border border-violet-200' },
+                { title: 'Voice Personalization', badge: 'Soothing', badgeClass: 'text-purple-600 bg-purple-50 border-purple-100', color: 'purple', icon: Mic, desc: 'Personalize soothing audio and lullabies using the mother\'s unique voice.', points: ['Voice Matching', 'Secure Tech', 'Soothing Audio', 'Lullabies'], link: '/auth', linkText: 'Personalize',
+                  containerClass: 'hover:border-purple-200 hover:shadow-purple-100/50', bgClass: 'bg-purple-50', iconBg: 'bg-purple-100', iconColor: 'text-purple-500', textHover: 'group-hover:text-purple-500', dotClass: 'bg-purple-400', btnClass: 'bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200' },
+                { title: 'Sleep Sanctuary', badge: 'Calm', badgeClass: 'text-cyan-600 bg-cyan-50 border-cyan-100', color: 'cyan', icon: Volume2, desc: 'A library of white noise and nature sounds to help babies sleep faster.', points: ['White Noise', 'Nature Sounds', 'Sleep Library', 'Settling Audio'], link: '/auth', linkText: 'Play Audio',
+                  containerClass: 'hover:border-cyan-200 hover:shadow-cyan-100/50', bgClass: 'bg-cyan-50', iconBg: 'bg-cyan-100', iconColor: 'text-cyan-500', textHover: 'group-hover:text-cyan-500', dotClass: 'bg-cyan-400', btnClass: 'bg-cyan-50 hover:bg-cyan-100 text-cyan-700 border border-cyan-200' },
+                { title: 'Traditional Wisdom', badge: 'Heritage', badgeClass: 'text-amber-600 bg-amber-50 border-amber-100', color: 'amber', icon: Leaf, desc: 'Home remedies, Ayurvedic basics and traditional elder wisdom.', points: ['Home Remedies', 'Ayurvedics', 'Elder Guidance', 'Natural Care'], link: '/auth', linkText: 'Explore',
                   containerClass: 'hover:border-amber-200 hover:shadow-amber-100/50', bgClass: 'bg-amber-50', iconBg: 'bg-amber-100', iconColor: 'text-amber-500', textHover: 'group-hover:text-amber-500', dotClass: 'bg-amber-400', btnClass: 'bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200' },
               ].map((feature, i) => {
                 const Icon = feature.icon;
@@ -325,8 +346,8 @@ export default function Landing() {
                       <Video className="w-5 h-5" />
                     </div>
                     <div>
-                      <h4 className="text-lg font-bold text-stone-800">Instant Video Triage</h4>
-                      <p className="text-stone-500 text-sm font-medium leading-relaxed mt-1">Get immediate, face-to-face guidance for tricky sleep routines, feeding challenges, and behavioral questions.</p>
+                      <h4 className="text-lg font-bold text-stone-800">Expert Video Triage</h4>
+                      <p className="text-stone-500 text-sm font-medium leading-relaxed mt-1">Connect with <b>Certified Expert Nannies</b> with <b>8+ years of experience</b> for immediate, face-to-face guidance.</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -335,7 +356,7 @@ export default function Landing() {
                     </div>
                     <div>
                       <h4 className="text-lg font-bold text-stone-800">Your Digital Village</h4>
-                      <p className="text-stone-500 text-sm font-medium leading-relaxed mt-1">Replaces the lost guidance of the joint family with certified, highly vetted nanny professionals.</p>
+                      <p className="text-stone-500 text-sm font-medium leading-relaxed mt-1">Replaces the lost guidance of the joint family with highly vetted nanny professionals specializing in newborn care.</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -343,39 +364,51 @@ export default function Landing() {
                       <MessageSquare className="w-5 h-5" />
                     </div>
                     <div>
-                      <h4 className="text-lg font-bold text-stone-800">A Living Support Network</h4>
-                      <p className="text-stone-500 text-sm font-medium leading-relaxed mt-1">Transforming MUMAA from a smart digital tool into a dynamic, human-centered care network.</p>
+                      <h4 className="text-lg font-bold text-stone-800">Verified Support Network</h4>
+                      <p className="text-stone-500 text-sm font-medium leading-relaxed mt-1">Every nanny in our network is hand-picked for their empathy, warmth, and years of lived professional experience.</p>
                     </div>
                   </div>
                 </div>
+                <div className="mt-10">
+                  <a 
+                    href="https://mumaa-vc-one.vercel.app/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-rose-500 text-white font-black hover:bg-rose-600 hover:shadow-xl hover:-translate-y-1 transition-all shadow-lg text-lg"
+                  >
+                    <Video className="w-6 h-6" /> Start Live Consultation
+                  </a>
+                </div>
               </motion.div>
 
-              {/* Visual Mockup */}
+              {/* Phone-like Image Content */}
               <motion.div 
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
-                className="relative flex justify-center items-center h-full min-h-[400px] z-10"
+                className="relative flex justify-center items-center z-10"
               >
-                {/* Phone Frame */}
-                <div className="relative w-[280px] h-[580px] bg-stone-900 rounded-[3rem] border-[8px] border-stone-800 shadow-2xl overflow-hidden flex flex-col">
+                <div className="relative w-[280px] h-[580px] rounded-[3rem] overflow-hidden shadow-2xl border-[6px] border-stone-800 bg-stone-900">
                   {/* Dynamic Island */}
-                  <div className="absolute top-2 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-full z-20"></div>
-                  {/* Video Feed */}
-                  <img src="images/nanny.png" className="w-full h-full object-cover" alt="Nanny Video Call" />
-
-                  {/* Video Controls Overlay */}
-                  <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-black/40 backdrop-blur-md px-6 py-3 rounded-full w-max">
-                    <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white backdrop-blur">
-                      <AudioWaveform className="w-5 h-5" />
-                    </div>
-                    <div className="w-12 h-12 rounded-full bg-red-500 flex items-center justify-center text-white shadow-lg">
-                      <Video className="w-6 h-6 text-white scale-x-[-1]" />
-                    </div>
-                    <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white backdrop-blur">
-                      <Video className="w-5 h-5" />
-                    </div>
+                  {/* <div className="absolute top-2 left-1/2 -translate-x-1/2 w-20 h-5 bg-black rounded-full z-20"></div> */}
+                  
+                  {/* Image (The "Screen") */}
+                  <img src="/images/nanny.png" className="w-full h-full object-cover" alt="Nanny Consultation" />
+                  
+                  {/* Internal UI elements to make it look like a call */}
+                  <div className="absolute bottom-8 left-0 right-0 px-6 flex justify-center">
+                    {/* <div className="flex items-center gap-4 bg-black/20 backdrop-blur-md p-3 rounded-full border border-white/10">
+                      <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white">
+                        <AudioWaveform className="w-4 h-4" />
+                      </div>
+                      <div className="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center text-white shadow-lg">
+                        <Video className="w-5 h-5 scale-x-[-1]" />
+                      </div>
+                      <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white">
+                        <Video className="w-4 h-4" />
+                      </div>
+                    </div> */}
                   </div>
                 </div>
 
@@ -383,12 +416,15 @@ export default function Landing() {
                 <motion.div 
                   animate={{ y: [0, -10, 0] }}
                   transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute top-20 -left-6 bg-white/90 backdrop-blur-md p-3 rounded-2xl shadow-xl border border-stone-100 flex items-center gap-3"
+                  className="absolute -top-6 -right-6 bg-white/95 backdrop-blur-md px-5 py-3 rounded-2xl shadow-xl border border-stone-100 flex items-center gap-3 z-20"
                 >
-                  <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center">
-                    <Clock className="w-4 h-4" />
+                  <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shadow-inner">
+                    <Video className="w-5 h-5" />
                   </div>
-                  <div className="text-[10px] font-black text-stone-800 uppercase tracking-tighter">Live Session</div>
+                  <div>
+                    <div className="text-[10px] font-black text-emerald-500 uppercase tracking-widest leading-none mb-1">Status</div>
+                    <div className="text-sm font-black text-stone-800 leading-none">Nanny Online</div>
+                  </div>
                 </motion.div>
               </motion.div>
             </div>
@@ -420,7 +456,7 @@ export default function Landing() {
                     ].map((toy, i) => (
                         <motion.div variants={fadeIn} key={i} className={`group relative bg-white border border-stone-100 rounded-[2.5rem] overflow-hidden transition-all duration-500 hover:-translate-y-2 shadow-lg flex flex-col ${toy.border}`}>
                             <div className="aspect-square bg-stone-100 relative overflow-hidden flex items-center justify-center cursor-pointer">
-                                <img alt={toy.name} className="product-image transition-transform duration-1000 group-hover:scale-110 absolute inset-0 w-full h-full object-cover" src={`images/${toy.img}`} />
+                                <img alt={toy.name} className="product-image transition-transform duration-1000 group-hover:scale-110 absolute inset-0 w-full h-full object-cover" src={`/images/${toy.img}`} />
                                 <div className={`absolute top-4 right-4 backdrop-blur text-xs font-bold px-4 py-2 rounded-xl border border-white/50 shadow-md z-10 flex items-center gap-1.5 ${toy.badge}`}>
                                     <Sparkles className="w-3.5 h-3.5" /> AI Inside
                                 </div>
@@ -509,7 +545,7 @@ export default function Landing() {
                                 </div>
                                 <div>
                                     <p className="text-[11px] font-bold text-stone-400 uppercase tracking-widest mb-1">Email Us</p>
-                                    <p className="font-extrabold text-stone-700 text-lg">support@mumaa.ai</p>
+                                    <p className="font-extrabold text-stone-700 text-lg">aimumaa1201@gmail.com</p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-6 p-5 bg-white rounded-3xl shadow-md border border-white hover:-translate-y-1 transition-transform">
@@ -582,11 +618,11 @@ export default function Landing() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
                   <div className="col-span-1 lg:col-span-2">
                       <a className="flex items-center gap-4 mb-8 select-none" href="#">
-                          <img src="images/MumaaAIlogo.png" alt="Mumaa Logo" className="w-12 h-12 object-cover rounded-2xl shadow-sm border border-stone-100" />
-                          <span className="text-3xl font-black tracking-tighter text-stone-800">MUMAA</span>
+                          <img src="/images/MumaaAIlogo.png" alt="Mumaa Logo" className="w-12 h-12 object-cover rounded-2xl shadow-sm border border-stone-100" />
+                          <span className="text-3xl font-black tracking-tighter text-stone-800">AI MUMAA</span>
                       </a>
                       <p className="text-stone-500 font-medium text-[15px] leading-relaxed max-w-sm mb-8">
-                          India's most calming AI companion for parents. Reassuring insights, secure analysis, and absolute peace of mind.
+                          India's most calming AI parenting companion. Reassuring insights, secure analysis, and absolute peace of mind.
                       </p>
                       <div className="flex items-center gap-4">
                           <a href="#" className="w-12 h-12 rounded-full bg-stone-50 border border-stone-200 flex items-center justify-center text-stone-400 hover:text-rose-500 hover:border-rose-200 hover:bg-rose-50 transition-all shadow-sm hover:-translate-y-1">
