@@ -24,6 +24,13 @@ const staggerContainer = {
   }
 };
 
+const pageContainer = "mx-auto w-full max-w-[1120px] px-4 sm:px-5 lg:px-6";
+const sectionY = "py-12 sm:py-14 lg:py-16";
+const sectionHeader = "mx-auto mb-8 max-w-2xl text-center sm:mb-10";
+const sectionTitle = "text-[clamp(1.75rem,3.4vw,2.65rem)] font-extrabold leading-[1.08] tracking-tight text-stone-800";
+const sectionLead = "mx-auto max-w-2xl text-[clamp(0.92rem,1.1vw,1rem)] font-medium leading-6 text-stone-500";
+const cardRadius = "rounded-[1.5rem]";
+
 export default function Landing() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
@@ -38,24 +45,24 @@ export default function Landing() {
       <div className="orb-2"></div>
 
       {/* Navigation */}
-      <nav className="fixed left-0 right-0 z-50 flex flex-col items-center pt-3 px-4">
+      <nav className="fixed left-0 right-0 z-50 flex flex-col items-center pt-2.5 sm:pt-3">
         <motion.div 
           initial={{ y: -50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="glass-nav w-full max-w-7xl rounded-3xl md:rounded-full border border-stone-200 shadow-sm px-5 py-3.5 flex items-center justify-between"
+          className="glass-nav flex w-[calc(100vw_-_2.5rem)] max-w-[1120px] items-center justify-between rounded-2xl border border-stone-200 px-2.5 py-2.5 shadow-sm min-[360px]:w-[calc(100vw_-_2rem)] sm:px-3.5 md:rounded-full lg:px-4"
         >
-          <a className="flex items-center gap-3 select-none group" href="#">
-            <div className="relative w-10 h-10 overflow-hidden rounded-full shadow-sm">
+          <a className="group flex min-w-0 items-center gap-2.5 select-none sm:gap-3" href="#">
+            <div className="relative h-7 w-7 shrink-0 overflow-hidden rounded-full shadow-sm min-[360px]:h-8 min-[360px]:w-8 sm:h-9 sm:w-9">
               <img src="/images/MumaaAIlogo.png" alt="Mumaa Logo" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
             </div>
-            <div className="flex flex-col leading-none">
-              <div className="text-2xl font-black tracking-tighter text-stone-800">AI MUMAA</div>
-              <span className="text-[10px] font-bold text-orange-500 tracking-[0.1em] uppercase mt-0.5">A PARENTING COMPANION</span>
+            <div className="flex min-w-0 flex-col leading-none">
+              <div className="truncate text-[15px] font-black tracking-tight text-stone-800 min-[360px]:text-lg sm:text-xl">AI MUMAA</div>
+              <span className="mt-0.5 hidden text-[8px] font-bold uppercase tracking-[0.1em] text-orange-500 min-[360px]:block sm:text-[9px]">A PARENTING COMPANION</span>
             </div>
           </a>
 
-          <div className="hidden lg:flex items-center gap-8 text-[15px] font-bold text-stone-500">
+          <div className="hidden items-center gap-4 text-[13px] font-bold text-stone-500 lg:flex xl:gap-6">
             <a className="hover:text-orange-500 transition-colors" href="#hero">Home</a>
             <a className="hover:text-orange-500 transition-colors" href="#features">App Features</a>
             <a className="hover:text-orange-500 transition-colors" href="#toys">Play Family</a>
@@ -63,20 +70,20 @@ export default function Landing() {
             <a className="hover:text-orange-500 transition-colors" href="#contact">Contact</a>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             <a 
               href="https://mumaa-vc-one.vercel.app/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="hidden md:flex items-center gap-2 px-5 py-2.5 rounded-full bg-rose-50 text-rose-600 text-sm font-bold hover:bg-rose-100 transition-all border border-rose-100"
+              className="hidden items-center gap-2 rounded-full border border-rose-100 bg-rose-50 px-3.5 py-2 text-[13px] font-bold text-rose-600 transition-all hover:bg-rose-100 md:flex"
             >
               <Video className="w-4 h-4" /> Live Consult
             </a>
-            <Link to="/auth" className="hidden sm:flex items-center gap-2 px-6 py-2.5 rounded-full gradient-peach text-orange-900 text-sm font-bold hover:shadow-lg hover:-translate-y-0.5 transition-all shadow-md border border-white">
+            <Link to="/auth" className="gradient-peach hidden items-center gap-2 rounded-full border border-white px-3.5 py-2 text-[13px] font-bold text-orange-900 shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg sm:flex lg:px-4">
               <Sparkles className="w-4 h-4" /> Launch Mumaa
             </Link>
-            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="lg:hidden text-stone-600 p-2 rounded-full hover:bg-stone-100 transition-colors">
-              <Menu className="w-6 h-6" />
+            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="rounded-full p-1.5 text-stone-600 transition-colors hover:bg-stone-100 sm:p-2 lg:hidden">
+              <Menu className="h-5 w-5 sm:h-6 sm:w-6" />
             </button>
           </div>
         </motion.div>
@@ -86,36 +93,36 @@ export default function Landing() {
           <motion.div 
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="w-full max-w-7xl mt-2 bg-white/90 backdrop-blur-xl rounded-3xl p-5 shadow-2xl border border-stone-100 flex flex-col gap-2"
+            className="mt-2 flex w-[calc(100vw_-_2.5rem)] max-w-[1120px] flex-col gap-1.5 rounded-2xl border border-stone-100 bg-white/90 p-2.5 shadow-2xl backdrop-blur-xl min-[360px]:w-[calc(100vw_-_2rem)] sm:gap-2 sm:p-3"
           >
-            <a href="#hero" onClick={() => setIsMobileMenuOpen(false)} className="block text-stone-600 hover:bg-orange-50 hover:text-orange-600 px-4 py-3 rounded-xl transition-colors font-bold">Home</a>
-            <a href="#features" onClick={() => setIsMobileMenuOpen(false)} className="block text-stone-600 hover:bg-orange-50 hover:text-orange-600 px-4 py-3 rounded-xl transition-colors font-bold">App Features</a>
-            <a href="#toys" onClick={() => setIsMobileMenuOpen(false)} className="block text-stone-600 hover:bg-orange-50 hover:text-orange-600 px-4 py-3 rounded-xl transition-colors font-bold">Play Family</a>
-            <a href="#faq-section" onClick={() => setIsMobileMenuOpen(false)} className="block text-stone-600 hover:bg-orange-50 hover:text-orange-600 px-4 py-3 rounded-xl transition-colors font-bold">FAQ</a>
+            <a href="#hero" onClick={() => setIsMobileMenuOpen(false)} className="block rounded-xl px-3 py-2.5 font-bold text-stone-600 transition-colors hover:bg-orange-50 hover:text-orange-600 sm:px-4 sm:py-3">Home</a>
+            <a href="#features" onClick={() => setIsMobileMenuOpen(false)} className="block rounded-xl px-3 py-2.5 font-bold text-stone-600 transition-colors hover:bg-orange-50 hover:text-orange-600 sm:px-4 sm:py-3">App Features</a>
+            <a href="#toys" onClick={() => setIsMobileMenuOpen(false)} className="block rounded-xl px-3 py-2.5 font-bold text-stone-600 transition-colors hover:bg-orange-50 hover:text-orange-600 sm:px-4 sm:py-3">Play Family</a>
+            <a href="#faq-section" onClick={() => setIsMobileMenuOpen(false)} className="block rounded-xl px-3 py-2.5 font-bold text-stone-600 transition-colors hover:bg-orange-50 hover:text-orange-600 sm:px-4 sm:py-3">FAQ</a>
             <div className="mt-2 pt-4 border-t border-stone-100 flex flex-col gap-3">
-              <Link to="/auth" className="block text-orange-900 gradient-peach px-4 py-3 rounded-xl transition-colors font-bold text-center shadow-md">Launch Mumaa</Link>
+              <Link to="/auth" className="gradient-peach block rounded-xl px-3 py-2.5 text-center font-bold text-orange-900 shadow-md transition-colors sm:px-4 sm:py-3">Launch Mumaa</Link>
             </div>
           </motion.div>
         )}
       </nav>
 
-      <main className="flex-grow pt-32">
+      <main className="flex-grow pt-20 lg:pt-24">
         {/* Hero Section */}
-        <section id="hero" className="relative max-w-7xl mx-auto px-6 pt-10 pb-24 grid lg:grid-cols-2 gap-12 items-center min-h-[85vh]">
+        <section id="hero" className={`${pageContainer} relative grid min-h-[calc(100svh-6rem)] items-center gap-6 pb-10 pt-3 sm:pb-12 lg:min-h-[560px] lg:grid-cols-[1.03fr_0.97fr] lg:gap-8 lg:pb-14`}>
           <motion.div 
             variants={staggerContainer}
             initial="hidden"
             animate="visible"
             className="relative z-10 order-2 lg:order-1"
           >
-            <motion.div variants={fadeIn} className="flex flex-wrap gap-3 mb-8">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 text-emerald-600 text-xs font-bold uppercase tracking-widest shadow-sm border border-emerald-100">
+            <motion.div variants={fadeIn} className="mb-4 flex flex-wrap gap-2.5 lg:mb-5">
+              <div className="inline-flex items-center gap-2 rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-emerald-600 shadow-sm">
                 <ShieldCheck className="w-4 h-4" />
                 100% Private & Safe
               </div>
             </motion.div>
 
-            <motion.h1 variants={fadeIn} className="text-5xl md:text-6xl lg:text-[4.5rem] font-extrabold leading-[1.1] mb-6 tracking-tight text-stone-800">
+            <motion.h1 variants={fadeIn} className="mb-4 max-w-3xl text-[clamp(2.15rem,4.65vw,3.75rem)] font-extrabold leading-[1.04] tracking-tight text-stone-800">
               Maa sab samajhti hai, <br />
               Par <span className="text-orange-500 inline-block relative">
                 Mumaa
@@ -124,14 +131,14 @@ export default function Landing() {
                 </svg>
               </span> <br /> maa ko samajhti hai.
             </motion.h1>
-            <motion.p variants={fadeIn} className="text-stone-500 text-[1.1rem] mb-10 max-w-lg leading-relaxed font-medium">
+            <motion.p variants={fadeIn} className="mb-6 max-w-xl text-[clamp(0.92rem,1.25vw,1.02rem)] font-medium leading-6 text-stone-500 sm:mb-7">
               Your calm, AI-powered parenting companion. Get expert guidance, softly translate baby cries, track growth, and explore safe physical learning toys.
             </motion.p>
-            <motion.div variants={fadeIn} className="flex flex-col sm:flex-row gap-4">
-              <Link to="/auth" className="px-8 py-4 rounded-full gradient-peach text-orange-900 font-bold hover:shadow-xl hover:-translate-y-1 transition-all shadow-md border border-white flex items-center justify-center gap-2 text-lg">
+            <motion.div variants={fadeIn} className="flex flex-col gap-3 sm:flex-row">
+              <Link to="/auth" className="gradient-peach flex items-center justify-center gap-2 rounded-full border border-white px-5 py-3 text-[15px] font-bold text-orange-900 shadow-md transition-all hover:-translate-y-1 hover:shadow-xl">
                 Enter Workspace <ArrowRight className="w-5 h-5" />
               </Link>
-              <a href="MummA_Cry_Analyzer (2).apk" download className="px-8 py-4 rounded-full bg-white border border-stone-200 text-stone-600 font-bold hover:border-orange-300 hover:bg-orange-50 hover:text-orange-600 transition-all shadow-sm flex items-center justify-center gap-2 text-lg hover:-translate-y-1">
+              <a href="MummA_Cry_Analyzer (2).apk" download className="flex items-center justify-center gap-2 rounded-full border border-stone-200 bg-white px-5 py-3 text-[15px] font-bold text-stone-600 shadow-sm transition-all hover:-translate-y-1 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-600">
                 <Download className="w-5 h-5" /> Download App
               </a>
             </motion.div>
@@ -142,11 +149,11 @@ export default function Landing() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="relative order-1 lg:order-2 flex justify-center items-center"
+            className="relative order-1 flex items-center justify-center lg:order-2"
           >
-            <div className="absolute w-[95%] h-[95%] bg-gradient-to-tr from-orange-200/60 to-rose-200/60 rounded-full blur-[80px] opacity-80 animate-pulse" style={{ animationDuration: '4s' }}></div>
-            <div className="relative w-full max-w-[500px] aspect-square flex items-center justify-center">
-              <div className="relative w-[90%] h-[90%] rounded-[3rem] overflow-hidden shadow-2xl border-[8px] border-white/80 bg-white backdrop-blur-sm">
+            <div className="absolute h-[84%] w-[84%] rounded-full bg-gradient-to-tr from-orange-200/50 to-rose-200/50 opacity-70 blur-[64px]" />
+            <div className="relative flex aspect-square w-full max-w-[min(70vw,390px)] items-center justify-center lg:max-w-[405px] xl:max-w-[420px]">
+              <div className="relative h-[90%] w-[90%] overflow-hidden rounded-[2rem] border-[6px] border-white/80 bg-white shadow-2xl backdrop-blur-sm sm:rounded-[2.5rem]">
                 <img src="/images/pexels-daniel-reche-718241-1556706.jpg" alt="Mother and Child" className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-1000" />
                 <div className="absolute inset-0 bg-orange-900/5 mix-blend-overlay pointer-events-none"></div>
               </div>
@@ -155,26 +162,28 @@ export default function Landing() {
               <motion.div 
                 animate={{ y: [0, -15, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute top-8 -right-4 bg-white/90 backdrop-blur p-4 rounded-2xl shadow-xl border border-white flex items-center gap-3"
+                className="absolute right-0 top-5 flex items-center gap-2.5 rounded-2xl border border-white bg-white/90 p-2.5 shadow-xl backdrop-blur sm:-right-2 lg:-right-3"
               >
-                <div className="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center text-2xl border border-indigo-100 shadow-inner">😴</div>
+                <div className="flex h-9 w-9 items-center justify-center rounded-full border border-indigo-100 bg-indigo-50 text-indigo-500 shadow-inner">
+                  <Clock className="h-5 w-5" />
+                </div>
                 <div>
                   <div className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">AI Insight</div>
-                  <div className="text-sm font-bold text-stone-800">Baby is sleepy</div>
+                  <div className="text-[13px] font-bold text-stone-800">Baby is sleepy</div>
                 </div>
               </motion.div>
               
               <motion.div 
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                className="absolute bottom-12 -left-4 bg-white/90 backdrop-blur p-4 rounded-2xl shadow-xl border border-white flex items-center gap-3"
+                className="absolute bottom-8 left-0 flex items-center gap-2.5 rounded-2xl border border-white bg-white/90 p-2.5 shadow-xl backdrop-blur sm:-left-2 lg:-left-3"
               >
-                <div className="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500 border border-emerald-100 shadow-inner">
-                  <Check className="w-6 h-6" />
+                <div className="flex h-9 w-9 items-center justify-center rounded-full border border-emerald-100 bg-emerald-50 text-emerald-500 shadow-inner">
+                  <Check className="h-5 w-5" />
                 </div>
                 <div>
                   <div className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Routine</div>
-                  <div className="text-sm font-bold text-stone-800">Feeding Logged</div>
+                  <div className="text-[13px] font-bold text-stone-800">Feeding Logged</div>
                 </div>
               </motion.div>
             </div>
@@ -188,14 +197,14 @@ export default function Landing() {
           viewport={{ once: true, margin: "-100px" }}
           variants={staggerContainer}
           id="trust" 
-          className="max-w-7xl mx-auto px-6 py-20"
+          className={`${pageContainer} ${sectionY}`}
         >
-          <motion.div variants={fadeIn} className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-extrabold mb-6 text-stone-800">Backed by Science. <br /><span className="text-emerald-500">Driven by Empathy.</span></h2>
-            <p className="text-stone-500 text-lg max-w-2xl mx-auto font-medium leading-relaxed">We analyzed thousands of parenting journeys to build an AI that actually reduces stress, rather than adding to it.</p>
+          <motion.div variants={fadeIn} className={sectionHeader}>
+            <h2 className={`${sectionTitle} mb-4`}>Backed by Science. <br /><span className="text-emerald-500">Driven by Empathy.</span></h2>
+            <p className={sectionLead}>We analyzed thousands of parenting journeys to build an AI that actually reduces stress, rather than adding to it.</p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:gap-5">
             {[
               { num: '78%', title: 'Less Midnight Anxiety', desc: 'Mothers using MUMAA report significantly less panic during late-night crying, thanks to instant, calming AI translations.', color: 'text-emerald-400' },
               { num: '100K+', title: 'Cry Patterns Analyzed', desc: 'Our acoustic AI models are trained on vast pediatric datasets to accurately and gently distinguish hunger, pain, and sleepiness.', color: 'text-sky-400' },
@@ -204,12 +213,12 @@ export default function Landing() {
               <motion.div 
                 variants={fadeIn}
                 key={idx} 
-                className="bg-white/80 backdrop-blur rounded-[2.5rem] p-10 border border-white shadow-xl hover:shadow-2xl transition-shadow text-center relative overflow-hidden group"
+                className={`${cardRadius} group relative overflow-hidden border border-white bg-white/80 p-5 text-center shadow-lg backdrop-blur transition-shadow hover:shadow-xl lg:p-6`}
               >
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-stone-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className={`text-6xl font-black ${stat.color} mb-6 tracking-tighter drop-shadow-sm`}>{stat.num}</div>
-                <h3 className="text-xl font-extrabold text-stone-800 mb-4 relative z-10">{stat.title}</h3>
-                <p className="text-[15px] text-stone-500 font-medium leading-relaxed relative z-10">{stat.desc}</p>
+                <div className={`text-[clamp(2.2rem,4.2vw,3.05rem)] font-black ${stat.color} mb-3 tracking-tight drop-shadow-sm`}>{stat.num}</div>
+                <h3 className="relative z-10 mb-2.5 text-base font-extrabold text-stone-800">{stat.title}</h3>
+                <p className="relative z-10 text-sm font-medium leading-6 text-stone-500">{stat.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -244,15 +253,15 @@ export default function Landing() {
           viewport={{ once: true, margin: "-100px" }}
           variants={staggerContainer}
           id="features" 
-          className="py-24 relative"
+          className={`${sectionY} relative`}
         >
-          <div className="max-w-7xl mx-auto px-6">
-            <motion.div variants={fadeIn} className="text-center mb-20">
-              <h2 className="text-4xl md:text-5xl font-extrabold text-stone-800 mb-6">A Full <span className="text-indigo-500">Village of Support</span></h2>
-              <p className="text-stone-500 font-medium text-[1.1rem] max-w-2xl mx-auto">Everything you need in one calm, beautifully organized app.</p>
+          <div className={pageContainer}>
+            <motion.div variants={fadeIn} className={sectionHeader}>
+              <h2 className={`${sectionTitle} mb-4`}>A Full <span className="text-indigo-500">Village of Support</span></h2>
+              <p className={sectionLead}>Everything you need in one calm, beautifully organized app.</p>
             </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-5">
               {[
                 { title: 'Video Consults', badge: 'Expert Led', badgeClass: 'text-teal-600 bg-teal-50 border-teal-100', color: 'teal', icon: Video, desc: 'Live expert nannies for real-time video triage, sleep and feeding support.', points: ['Certified Nannies', 'Video Triage', 'Sleep Support', 'Feeding Help'], link: '#nanny-feature', linkText: 'Learn More',
                   containerClass: 'hover:border-teal-200 hover:shadow-teal-100/50', bgClass: 'bg-teal-50', iconBg: 'bg-teal-100', iconColor: 'text-teal-500', textHover: 'group-hover:text-teal-500', dotClass: 'bg-teal-400', btnClass: 'bg-teal-50 hover:bg-teal-100 text-teal-700 border border-teal-200' },
@@ -282,28 +291,28 @@ export default function Landing() {
                 const Icon = feature.icon;
 
                 return (
-                  <motion.div variants={fadeIn} key={i} className={`group relative bg-white/80 backdrop-blur-sm border border-stone-100 rounded-[2.5rem] overflow-hidden transition-all duration-500 hover:-translate-y-2 shadow-lg flex flex-col p-8 ${feature.containerClass}`}>
+                  <motion.div variants={fadeIn} key={i} className={`group relative flex flex-col overflow-hidden border border-stone-100 bg-white/80 p-5 shadow-md backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-lg lg:p-6 ${cardRadius} ${feature.containerClass}`}>
                     <div className={`absolute top-0 right-0 w-32 h-32 rounded-bl-[4rem] -mr-6 -mt-6 transition-transform duration-700 group-hover:scale-125 opacity-70 ${feature.bgClass}`}></div>
-                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-8 border border-white shadow-sm relative z-10 ${feature.iconBg}`}>
-                      <Icon className={`w-7 h-7 ${feature.iconColor}`} />
+                    <div className={`relative z-10 mb-5 flex h-10 w-10 items-center justify-center rounded-xl border border-white shadow-sm ${feature.iconBg}`}>
+                      <Icon className={`h-5 w-5 ${feature.iconColor}`} />
                     </div>
-                    <div className="flex justify-between items-start mb-4 relative z-10">
+                    <div className="relative z-10 mb-3 flex items-start justify-between gap-3">
                       <Link to={feature.link}>
-                        <h3 className={`text-2xl font-extrabold text-stone-800 transition-colors cursor-pointer tracking-tight ${feature.textHover}`}>{feature.title}</h3>
+                        <h3 className={`cursor-pointer text-[clamp(1.12rem,1.7vw,1.35rem)] font-extrabold tracking-tight text-stone-800 transition-colors ${feature.textHover}`}>{feature.title}</h3>
                       </Link>
                       <span className={`font-bold px-3 py-1.5 rounded-xl text-[10px] uppercase tracking-widest border shadow-sm bg-white ${feature.badgeClass}`}>{feature.badge}</span>
                     </div>
-                    <p className="text-stone-500 text-[15px] mb-8 font-medium leading-relaxed flex-1 relative z-10">{feature.desc}</p>
-                    <div className="mb-8 grid grid-cols-2 gap-x-4 gap-y-3 relative z-10">
+                    <p className="relative z-10 mb-5 flex-1 text-sm font-medium leading-6 text-stone-500">{feature.desc}</p>
+                    <div className="relative z-10 mb-5 grid grid-cols-2 gap-x-3 gap-y-2">
                       {feature.points.map((pt, j) => (
-                        <div key={j} className="flex items-center gap-2 text-sm font-bold text-stone-600">
+                        <div key={j} className="flex items-center gap-2 text-[13px] font-bold text-stone-600">
                           <div className={`w-2 h-2 rounded-full ${feature.dotClass}`}></div>{pt}
                         </div>
                       ))}
                     </div>
-                    <div className="flex gap-3 h-14 relative z-10 mt-auto">
+                    <div className="relative z-10 mt-auto flex h-11 gap-3">
                       <Link className="flex-1" to={feature.link}>
-                        <button className={`w-full h-full text-[15px] font-bold rounded-2xl transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg hover:-translate-y-0.5 ${feature.btnClass}`}>
+                        <button className={`flex h-full w-full items-center justify-center gap-2 rounded-2xl text-sm font-bold shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md ${feature.btnClass}`}>
                           <Icon className="w-5 h-5" /> {feature.linkText}
                         </button>
                       </Link>
@@ -316,11 +325,11 @@ export default function Landing() {
         </motion.section>
 
         {/* On-Demand Nanny Consultations */}
-        <section id="nanny-feature" className="py-24 relative overflow-hidden">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="bg-gradient-to-br from-orange-50/50 to-rose-50/50 rounded-[3rem] p-8 md:p-16 border border-white shadow-[0_8px_30px_-6px_rgba(251,113,133,0.1)] relative overflow-hidden grid lg:grid-cols-2 gap-12 items-center">
+        <section id="nanny-feature" className={`${sectionY} relative overflow-hidden`}>
+          <div className={pageContainer}>
+            <div className="relative grid items-center gap-5 overflow-hidden rounded-[1.5rem] border border-white bg-gradient-to-br from-orange-50/50 to-rose-50/50 p-4 shadow-[0_8px_30px_-6px_rgba(251,113,133,0.1)] sm:p-6 lg:grid-cols-2 lg:gap-7 lg:p-8">
               {/* Background Glow */}
-              <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-white/60 blur-[80px] rounded-full pointer-events-none"></div>
+              <div className="absolute right-0 top-0 h-[420px] w-[420px] rounded-full bg-white/60 blur-[70px] pointer-events-none"></div>
 
               {/* Text Content */}
               <motion.div 
@@ -330,53 +339,53 @@ export default function Landing() {
                 variants={fadeIn}
                 className="relative z-10"
               >
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white text-orange-600 text-xs font-bold uppercase tracking-widest shadow-sm border border-orange-100 mb-6">
-                  <Sparkles className="w-4 h-4" /> Coming Soon
+                <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-orange-100 bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-orange-600 shadow-sm">
+                  <Sparkles className="h-3.5 w-3.5" /> Coming Soon
                 </div>
-                <h2 className="text-3xl md:text-5xl font-black text-stone-800 leading-tight mb-6">
+                <h2 className="mb-4 text-[clamp(1.6rem,3vw,2.35rem)] font-black leading-[1.08] tracking-tight text-stone-800">
                   Bridging the Gap: <br /><span className="text-rose-500">On-Demand Nanny Consultations</span>
                 </h2>
-                <p className="text-stone-600 text-lg mb-8 leading-relaxed font-medium">
+                <p className="mb-5 max-w-xl text-[clamp(0.88rem,1.05vw,0.95rem)] font-medium leading-6 text-stone-600">
                   AI is highly efficient, but we know that some complex parenting moments simply require human empathy, warmth, and lived experience.
                 </p>
 
-                <div className="space-y-5">
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center text-rose-500 shadow-sm shrink-0 mt-1">
-                      <Video className="w-5 h-5" />
+                <div className="space-y-2.5">
+                  <div className="flex items-start gap-3">
+                    <div className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-rose-500 shadow-sm">
+                      <Video className="h-4.5 w-4.5" />
                     </div>
                     <div>
-                      <h4 className="text-lg font-bold text-stone-800">Expert Video Triage</h4>
-                      <p className="text-stone-500 text-sm font-medium leading-relaxed mt-1">Connect with <b>Certified Expert Nannies</b> with <b>8+ years of experience</b> for immediate, face-to-face guidance.</p>
+                      <h4 className="text-[15px] font-bold text-stone-800">Expert Video Triage</h4>
+                      <p className="mt-1 text-[13px] font-medium leading-6 text-stone-500">Connect with <b>Certified Expert Nannies</b> with <b>8+ years of experience</b> for immediate, face-to-face guidance.</p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center text-emerald-500 shadow-sm shrink-0 mt-1">
-                      <User className="w-5 h-5" />
+                  <div className="flex items-start gap-3">
+                    <div className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-emerald-500 shadow-sm">
+                      <User className="h-4.5 w-4.5" />
                     </div>
                     <div>
-                      <h4 className="text-lg font-bold text-stone-800">Your Digital Village</h4>
-                      <p className="text-stone-500 text-sm font-medium leading-relaxed mt-1">Replaces the lost guidance of the joint family with highly vetted nanny professionals specializing in newborn care.</p>
+                      <h4 className="text-[15px] font-bold text-stone-800">Your Digital Village</h4>
+                      <p className="mt-1 text-[13px] font-medium leading-6 text-stone-500">Replaces the lost guidance of the joint family with highly vetted nanny professionals specializing in newborn care.</p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center text-indigo-500 shadow-sm shrink-0 mt-1">
-                      <MessageSquare className="w-5 h-5" />
+                  <div className="flex items-start gap-3">
+                    <div className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-indigo-500 shadow-sm">
+                      <MessageSquare className="h-4.5 w-4.5" />
                     </div>
                     <div>
-                      <h4 className="text-lg font-bold text-stone-800">Verified Support Network</h4>
-                      <p className="text-stone-500 text-sm font-medium leading-relaxed mt-1">Every nanny in our network is hand-picked for their empathy, warmth, and years of lived professional experience.</p>
+                      <h4 className="text-[15px] font-bold text-stone-800">Verified Support Network</h4>
+                      <p className="mt-1 text-[13px] font-medium leading-6 text-stone-500">Every nanny in our network is hand-picked for their empathy, warmth, and years of lived professional experience.</p>
                     </div>
                   </div>
                 </div>
-                <div className="mt-10">
+                <div className="mt-6">
                   <a 
                     href="https://mumaa-vc-one.vercel.app/" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-rose-500 text-white font-black hover:bg-rose-600 hover:shadow-xl hover:-translate-y-1 transition-all shadow-lg text-lg"
+                    className="inline-flex items-center gap-2 rounded-xl bg-rose-500 px-4.5 py-2.5 text-sm font-black text-white shadow-lg transition-all hover:-translate-y-1 hover:bg-rose-600 hover:shadow-xl"
                   >
-                    <Video className="w-6 h-6" /> Start Live Consultation
+                    <Video className="h-5 w-5" /> Start Live Consultation
                   </a>
                 </div>
               </motion.div>
@@ -389,7 +398,7 @@ export default function Landing() {
                 transition={{ duration: 0.8 }}
                 className="relative flex justify-center items-center z-10"
               >
-                <div className="relative w-[280px] h-[580px] rounded-[3rem] overflow-hidden shadow-2xl border-[6px] border-stone-800 bg-stone-900">
+                <div className="relative aspect-[9/18.5] w-[min(60vw,200px)] overflow-hidden rounded-[1.75rem] border-[5px] border-stone-800 bg-stone-900 shadow-2xl lg:w-[215px]">
                   {/* Dynamic Island */}
                   {/* <div className="absolute top-2 left-1/2 -translate-x-1/2 w-20 h-5 bg-black rounded-full z-20"></div> */}
                   
@@ -416,14 +425,14 @@ export default function Landing() {
                 <motion.div 
                   animate={{ y: [0, -10, 0] }}
                   transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute -top-6 -right-6 bg-white/95 backdrop-blur-md px-5 py-3 rounded-2xl shadow-xl border border-stone-100 flex items-center gap-3 z-20"
+                  className="absolute -right-3 -top-4 z-20 flex items-center gap-2 rounded-xl border border-stone-100 bg-white/95 px-3 py-2 shadow-xl backdrop-blur-md"
                 >
-                  <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shadow-inner">
-                    <Video className="w-5 h-5" />
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 shadow-inner">
+                    <Video className="h-4 w-4" />
                   </div>
                   <div>
-                    <div className="text-[10px] font-black text-emerald-500 uppercase tracking-widest leading-none mb-1">Status</div>
-                    <div className="text-sm font-black text-stone-800 leading-none">Nanny Online</div>
+                    <div className="mb-1 text-[9px] font-black uppercase leading-none tracking-widest text-emerald-500">Status</div>
+                    <div className="text-xs font-black leading-none text-stone-800">Nanny Online</div>
                   </div>
                 </motion.div>
               </motion.div>
@@ -438,14 +447,14 @@ export default function Landing() {
           viewport={{ once: true, margin: "-100px" }}
           variants={staggerContainer}
           id="toys" 
-          className="py-24 relative bg-gradient-to-b from-stone-50 to-white"
+          className={`${sectionY} relative bg-gradient-to-b from-stone-50 to-white`}
         >
-            <div className="max-w-7xl mx-auto px-6">
-                <motion.div variants={fadeIn} className="text-center mb-20">
-                    <h2 className="text-4xl md:text-5xl font-extrabold text-stone-800 mb-6">Meet the <span className="text-orange-500">MUMAA Play Family</span></h2>
-                    <p className="text-stone-500 font-medium text-[1.1rem] max-w-2xl mx-auto">Physical companions powered by our calming AI. From storytellers to logical guides, safe and screen-free.</p>
+            <div className={pageContainer}>
+                <motion.div variants={fadeIn} className={sectionHeader}>
+                    <h2 className={`${sectionTitle} mb-4`}>Meet the <span className="text-orange-500">MUMAA Play Family</span></h2>
+                    <p className={sectionLead}>Physical companions powered by our calming AI. From storytellers to logical guides, safe and screen-free.</p>
                 </motion.div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+                <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-4">
                     {[
                         {name: 'Mimi', img: 'mimi.png', color: 'pink', border: 'hover:border-pink-300 hover:shadow-pink-100/50', dot: 'bg-pink-400', badge: 'text-pink-600 bg-pink-50', points: ['Screen-free fun', 'Sleep Companion', 'Voice Cloning', 'Safe WiFi Setup'], desc: 'The perfect starter AI companion. Mimi tells calming stories to comfort your child.'},
                         {name: 'Simba', img: 'simba.png', color: 'orange', border: 'hover:border-orange-300 hover:shadow-orange-100/50', dot: 'bg-orange-400', badge: 'text-orange-600 bg-orange-50', points: ['Screen-free fun', 'Sleep Guardian', 'Voice Cloning', 'Safe WiFi Setup'], desc: 'A brave lion protector. Roars softly when picked up to guard the bedroom door.'},
@@ -454,27 +463,27 @@ export default function Landing() {
                         {name: 'Chichi', img: 'chichi.png', color: 'sky', border: 'hover:border-sky-300 hover:shadow-sky-100/50', dot: 'bg-sky-400', badge: 'text-sky-600 bg-sky-50', points: ['Screen-free fun', 'Musical Play', 'Voice Cloning', 'Safe WiFi Setup'], desc: 'The gentle party starter! Chichi plays peaceful nursery rhymes and spins softly.'},
                         {name: 'Duke', img: 'duke.png', color: 'emerald', border: 'hover:border-emerald-300 hover:shadow-emerald-100/50', dot: 'bg-emerald-400', badge: 'text-emerald-600 bg-emerald-50', points: ['Screen-free fun', 'Sleep Guardian', 'Voice Cloning', 'Safe WiFi Setup'], desc: 'A smart guardian. Duke alerts you if the baby cries and plays soothing sounds remotely.'},
                     ].map((toy, i) => (
-                        <motion.div variants={fadeIn} key={i} className={`group relative bg-white border border-stone-100 rounded-[2.5rem] overflow-hidden transition-all duration-500 hover:-translate-y-2 shadow-lg flex flex-col ${toy.border}`}>
-                            <div className="aspect-square bg-stone-100 relative overflow-hidden flex items-center justify-center cursor-pointer">
+                        <motion.div variants={fadeIn} key={i} className={`group relative flex flex-col overflow-hidden rounded-[1.35rem] border border-stone-100 bg-white shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-md ${toy.border}`}>
+                            <div className="relative flex aspect-[1/0.92] cursor-pointer items-center justify-center overflow-hidden bg-stone-100">
                                 <img alt={toy.name} className="product-image transition-transform duration-1000 group-hover:scale-110 absolute inset-0 w-full h-full object-cover" src={`/images/${toy.img}`} />
-                                <div className={`absolute top-4 right-4 backdrop-blur text-xs font-bold px-4 py-2 rounded-xl border border-white/50 shadow-md z-10 flex items-center gap-1.5 ${toy.badge}`}>
-                                    <Sparkles className="w-3.5 h-3.5" /> AI Inside
+                                <div className={`absolute right-2.5 top-2.5 z-10 flex items-center gap-1 rounded-lg border border-white/50 px-2.5 py-1 text-[10px] font-bold shadow-sm backdrop-blur ${toy.badge}`}>
+                                    <Sparkles className="h-3 w-3" /> AI Inside
                                 </div>
                             </div>
-                            <div className="p-8 flex-1 flex flex-col border-t border-stone-100">
-                                <h3 className="text-3xl font-extrabold text-stone-800 mb-4 tracking-tight">{toy.name}</h3>
-                                <p className="text-stone-500 text-[15px] mb-8 font-medium leading-relaxed flex-1">{toy.desc}</p>
-                                <div className="mb-8 grid grid-cols-2 gap-4">
+                            <div className="flex flex-1 flex-col border-t border-stone-100 p-4.5 lg:p-5">
+                                <h3 className="mb-2 text-[clamp(1.15rem,1.8vw,1.55rem)] font-extrabold tracking-tight text-stone-800">{toy.name}</h3>
+                                <p className="mb-4 flex-1 text-[13px] font-medium leading-6 text-stone-500">{toy.desc}</p>
+                                <div className="mb-4 grid grid-cols-2 gap-x-2.5 gap-y-2">
                                     {toy.points.map((pt, j) => (
-                                        <div key={j} className="flex items-center gap-2 text-sm font-bold text-stone-600">
-                                            <div className={`w-2 h-2 rounded-full ${toy.dot}`}></div>{pt}
+                                        <div key={j} className="flex items-center gap-1.5 text-[12px] font-bold text-stone-600">
+                                            <div className={`h-1.5 w-1.5 rounded-full ${toy.dot}`}></div>{pt}
                                         </div>
                                     ))}
                                 </div>
-                                <div className="flex gap-3 h-14 mt-auto">
+                                <div className="mt-auto flex h-10 gap-3">
                                     <Link className="flex-1" to="/auth">
-                                        <button className="w-full h-full bg-stone-800 border border-stone-800 text-white text-[15px] font-bold rounded-2xl hover:bg-stone-700 transition-colors flex items-center justify-center gap-2 shadow-lg hover:-translate-y-0.5">
-                                            <MessageCircle className="w-5 h-5" /> Chat Mumaa
+                                        <button className="flex h-full w-full items-center justify-center gap-2 rounded-xl border border-stone-800 bg-stone-800 text-[13px] font-bold text-white shadow-sm transition-colors hover:-translate-y-0.5 hover:bg-stone-700">
+                                            <MessageCircle className="h-4.5 w-4.5" /> Chat Mumaa
                                         </button>
                                     </Link>
                                 </div>
@@ -492,14 +501,14 @@ export default function Landing() {
           viewport={{ once: true, margin: "-100px" }}
           variants={staggerContainer}
           id="faq-section" 
-          className="py-24 px-6 relative"
+          className={`${pageContainer} ${sectionY} relative`}
         >
-            <div className="container mx-auto max-w-3xl">
-                <motion.div variants={fadeIn} className="text-center mb-16">
-                    <h2 className="text-4xl md:text-5xl font-extrabold text-stone-800 mb-6">Common Questions</h2>
-                    <p className="text-stone-500 font-medium text-[1.1rem]">Everything you need to know about MUMAA.</p>
+            <div className="mx-auto max-w-3xl">
+                <motion.div variants={fadeIn} className={sectionHeader}>
+                    <h2 className={`${sectionTitle} mb-4`}>Common Questions</h2>
+                    <p className={sectionLead}>Everything you need to know about MUMAA.</p>
                 </motion.div>
-                <div className="space-y-5">
+                <div className="space-y-4">
                     {[
                         { q: "Is my baby's data safe and private?", a: "Absolutely. We adhere to strict privacy guidelines. All data (like photos or audio clips) is processed securely on demand and is never used to train external public models without explicit consent. You can delete your logs at any time." },
                         { q: "Do I need a subscription?", a: "MUMAA's core tracking tools, AI chat, and basic cry analysis are completely free. Premium features like advanced detailed vision checks and unlimited generated lullabies may be part of future premium tiers." },
@@ -507,13 +516,13 @@ export default function Landing() {
                         { q: "Is the Cry Analyzer medically certified?", a: "Our Cry Translator is a supportive AI tool designed to provide gentle suggestions based on acoustic patterns, but it is not a medical device. Always consult your pediatrician if your baby's crying seems unusual or if they show signs of distress or illness." },
                         { q: "Does it understand Indian languages?", a: "Yes! You can configure the AI Chat and content generators to respond in English, Hindi (Devanagari), or Hinglish. We also specialize in traditional Indian postpartum and weaning diet suggestions." }
                     ].map((faq, index) => (
-                        <motion.div variants={fadeIn} key={index} className={`border rounded-[2rem] bg-white overflow-hidden shadow-sm transition-colors duration-300 ${activeFaq === index ? 'border-orange-200 shadow-md ring-4 ring-orange-50' : 'border-stone-200'}`}>
-                            <button onClick={() => toggleFaq(index)} className="w-full flex items-center justify-between p-8 text-left hover:bg-stone-50 transition-colors">
-                                <span className={`font-extrabold text-lg ${activeFaq === index ? 'text-orange-600' : 'text-stone-800'}`}>{faq.q}</span>
+                        <motion.div variants={fadeIn} key={index} className={`overflow-hidden rounded-[1.35rem] border bg-white shadow-sm transition-colors duration-300 ${activeFaq === index ? 'border-orange-200 shadow-md ring-4 ring-orange-50' : 'border-stone-200'}`}>
+                            <button onClick={() => toggleFaq(index)} className="flex w-full items-center justify-between gap-4 p-4 text-left transition-colors hover:bg-stone-50 sm:p-5">
+                                <span className={`text-[15px] font-extrabold sm:text-base ${activeFaq === index ? 'text-orange-600' : 'text-stone-800'}`}>{faq.q}</span>
                                 <Plus className={`w-6 h-6 transition-transform duration-500 ${activeFaq === index ? 'rotate-45 text-orange-500' : 'text-stone-400'}`} />
                             </button>
                             <div className={`overflow-hidden transition-all duration-500 ease-in-out ${activeFaq === index ? 'max-h-[500px] opacity-100 bg-stone-50/50' : 'max-h-0 opacity-0 bg-white'}`}>
-                                <div className="p-8 pt-0 text-stone-500 font-medium text-[15px] leading-relaxed" dangerouslySetInnerHTML={{ __html: faq.a }}></div>
+                                <div className="p-4 pt-0 text-sm font-medium leading-6 text-stone-500 sm:p-5 sm:pt-0" dangerouslySetInnerHTML={{ __html: faq.a }}></div>
                             </div>
                         </motion.div>
                     ))}
@@ -522,12 +531,12 @@ export default function Landing() {
         </motion.section>
 
         {/* Contact Section */}
-        <section id="contact" className="py-24 border-t border-stone-200/50 bg-stone-50/50 relative overflow-hidden">
+        <section id="contact" className={`${sectionY} relative overflow-hidden border-t border-stone-200/50 bg-stone-50/50`}>
             <div className="absolute top-0 right-0 w-1/3 h-full bg-orange-100/40 blur-[120px] pointer-events-none"></div>
             <div className="absolute bottom-0 left-0 w-1/3 h-full bg-indigo-100/40 blur-[120px] pointer-events-none"></div>
 
-            <div className="container mx-auto px-6 relative z-10 max-w-6xl">
-                <div className="flex flex-col lg:flex-row gap-16 items-center">
+            <div className={`${pageContainer} relative z-10`}>
+                <div className="flex flex-col items-center gap-6 lg:flex-row lg:gap-10">
                     <motion.div 
                       initial="hidden"
                       whileInView="visible"
@@ -535,26 +544,26 @@ export default function Landing() {
                       variants={fadeIn}
                       className="flex-1 text-center lg:text-left"
                     >
-                        <h2 className="text-5xl lg:text-6xl font-extrabold text-stone-800 mb-6">We're Here For You, <br /><span className="text-orange-500">Mama.</span></h2>
-                        <p className="text-stone-500 font-medium text-lg mb-12 leading-relaxed max-w-md mx-auto lg:mx-0">Have a question about the app, need technical help, or just want to share feedback? Send us a note.</p>
+                        <h2 className={`${sectionTitle} mb-4`}>We're Here For You, <br /><span className="text-orange-500">Mama.</span></h2>
+                        <p className="mx-auto mb-6 max-w-md text-[clamp(0.92rem,1.15vw,1rem)] font-medium leading-6 text-stone-500 lg:mx-0">Have a question about the app, need technical help, or just want to share feedback? Send us a note.</p>
 
-                        <div className="space-y-6 inline-flex flex-col text-left">
-                            <div className="flex items-center gap-6 p-5 bg-white rounded-3xl shadow-md border border-white hover:-translate-y-1 transition-transform">
-                                <div className="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-500 border border-orange-100 shadow-inner">
+                        <div className="inline-flex flex-col space-y-3 text-left">
+                            <div className="flex items-center gap-3 rounded-2xl border border-white bg-white p-3.5 shadow-sm transition-transform hover:-translate-y-1">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-orange-100 bg-orange-50 text-orange-500 shadow-inner">
                                     <Mail className="w-6 h-6" />
                                 </div>
                                 <div>
                                     <p className="text-[11px] font-bold text-stone-400 uppercase tracking-widest mb-1">Email Us</p>
-                                    <p className="font-extrabold text-stone-700 text-lg">aimumaa1201@gmail.com</p>
+                                    <p className="text-[15px] font-extrabold text-stone-700 sm:text-base">aimumaa1201@gmail.com</p>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-6 p-5 bg-white rounded-3xl shadow-md border border-white hover:-translate-y-1 transition-transform">
-                                <div className="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-500 border border-indigo-100 shadow-inner">
+                            <div className="flex items-center gap-3 rounded-2xl border border-white bg-white p-3.5 shadow-sm transition-transform hover:-translate-y-1">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-indigo-100 bg-indigo-50 text-indigo-500 shadow-inner">
                                     <MessageSquare className="w-6 h-6" />
                                 </div>
                                 <div>
                                     <p className="text-[11px] font-bold text-stone-400 uppercase tracking-widest mb-1">Support</p>
-                                    <p className="font-extrabold text-stone-700 text-lg">24/7 AI Chat Companion</p>
+                                    <p className="text-[15px] font-extrabold text-stone-700 sm:text-base">24/7 AI Chat Companion</p>
                                 </div>
                             </div>
                         </div>
@@ -565,39 +574,39 @@ export default function Landing() {
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.8 }}
-                      className="flex-1 w-full bg-white border border-white p-10 lg:p-12 rounded-[3rem] shadow-2xl"
+                      className="w-full flex-1 rounded-[1.75rem] border border-white bg-white p-5 shadow-xl sm:p-7 lg:p-8"
                     >
-                        <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-3">
+                        <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+                            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                <div className="space-y-2.5">
                                     <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Your Name</label>
                                     <div className="relative">
                                         <User className="absolute left-5 top-1/2 -translate-y-1/2 text-stone-400 w-5 h-5" />
-                                        <input required placeholder="Priya Sharma" className="w-full bg-stone-50/50 border border-stone-200 text-stone-800 font-bold pl-14 pr-5 py-4 rounded-2xl focus:outline-none focus:border-orange-300 focus:ring-4 focus:ring-orange-50 transition-all hover:bg-stone-50" />
+                                        <input required placeholder="Priya Sharma" className="w-full rounded-2xl border border-stone-200 bg-stone-50/50 py-3 pl-12 pr-4 text-sm font-bold text-stone-800 transition-all hover:bg-stone-50 focus:border-orange-300 focus:outline-none focus:ring-4 focus:ring-orange-50" />
                                     </div>
                                 </div>
-                                <div className="space-y-3">
+                                <div className="space-y-2.5">
                                     <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Email Address</label>
                                     <div className="relative">
                                         <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-stone-400 w-5 h-5" />
-                                        <input required placeholder="priya@example.com" type="email" className="w-full bg-stone-50/50 border border-stone-200 text-stone-800 font-bold pl-14 pr-5 py-4 rounded-2xl focus:outline-none focus:border-orange-300 focus:ring-4 focus:ring-orange-50 transition-all hover:bg-stone-50" />
+                                        <input required placeholder="priya@example.com" type="email" className="w-full rounded-2xl border border-stone-200 bg-stone-50/50 py-3 pl-12 pr-4 text-sm font-bold text-stone-800 transition-all hover:bg-stone-50 focus:border-orange-300 focus:outline-none focus:ring-4 focus:ring-orange-50" />
                                     </div>
                                 </div>
                             </div>
-                            <div className="space-y-3">
+                            <div className="space-y-2.5">
                                 <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">I am interested in</label>
-                                <select className="w-full bg-stone-50/50 border border-stone-200 text-stone-800 font-bold px-6 py-4 rounded-2xl focus:outline-none focus:border-orange-300 focus:ring-4 focus:ring-orange-50 transition-all appearance-none cursor-pointer hover:bg-stone-50">
+                                <select className="w-full cursor-pointer appearance-none rounded-2xl border border-stone-200 bg-stone-50/50 px-5 py-3 text-sm font-bold text-stone-800 transition-all hover:bg-stone-50 focus:border-orange-300 focus:outline-none focus:ring-4 focus:ring-orange-50">
                                     <option>General Support</option>
                                     <option>Feedback on App</option>
                                     <option>Bug Report</option>
                                     <option>Partnership</option>
                                 </select>
                             </div>
-                            <div className="space-y-3">
+                            <div className="space-y-2.5">
                                 <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Message</label>
-                                <textarea rows={4} required placeholder="Tell us how we can help..." className="w-full bg-stone-50/50 border border-stone-200 text-stone-800 font-bold px-6 py-5 rounded-2xl focus:outline-none focus:border-orange-300 focus:ring-4 focus:ring-orange-50 transition-all resize-none hover:bg-stone-50"></textarea>
+                                <textarea rows={4} required placeholder="Tell us how we can help..." className="w-full resize-none rounded-2xl border border-stone-200 bg-stone-50/50 px-5 py-3.5 text-sm font-bold text-stone-800 transition-all hover:bg-stone-50 focus:border-orange-300 focus:outline-none focus:ring-4 focus:ring-orange-50"></textarea>
                             </div>
-                            <button type="submit" className="w-full gradient-peach text-orange-900 font-bold text-lg py-5 rounded-2xl hover:shadow-xl hover:-translate-y-1 transition-all flex items-center justify-center gap-2 shadow-md">
+                            <button type="submit" className="gradient-peach flex w-full items-center justify-center gap-2 rounded-2xl py-3.5 text-[15px] font-bold text-orange-900 shadow-md transition-all hover:-translate-y-1 hover:shadow-xl">
                                 Send Message <Send className="w-5 h-5" />
                             </button>
                         </form>
@@ -614,39 +623,39 @@ export default function Landing() {
       
       {/* Footer */}
       <footer className="bg-white border-t border-stone-200 text-sm mt-auto z-10">
-          <div className="max-w-7xl mx-auto px-6 pt-20 pb-10">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
+          <div className={`${pageContainer} pb-8 pt-14 lg:pt-16`}>
+              <div className="mb-10 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-5 lg:gap-10">
                   <div className="col-span-1 lg:col-span-2">
-                      <a className="flex items-center gap-4 mb-8 select-none" href="#">
-                          <img src="/images/MumaaAIlogo.png" alt="Mumaa Logo" className="w-12 h-12 object-cover rounded-2xl shadow-sm border border-stone-100" />
-                          <span className="text-3xl font-black tracking-tighter text-stone-800">AI MUMAA</span>
+                      <a className="mb-6 flex items-center gap-3 select-none" href="#">
+                          <img src="/images/MumaaAIlogo.png" alt="Mumaa Logo" className="h-11 w-11 rounded-2xl border border-stone-100 object-cover shadow-sm" />
+                          <span className="text-2xl font-black tracking-tight text-stone-800">AI MUMAA</span>
                       </a>
-                      <p className="text-stone-500 font-medium text-[15px] leading-relaxed max-w-sm mb-8">
+                      <p className="mb-6 max-w-sm text-[15px] font-medium leading-7 text-stone-500">
                           India's most calming AI parenting companion. Reassuring insights, secure analysis, and absolute peace of mind.
                       </p>
-                      <div className="flex items-center gap-4">
-                          <a href="#" className="w-12 h-12 rounded-full bg-stone-50 border border-stone-200 flex items-center justify-center text-stone-400 hover:text-rose-500 hover:border-rose-200 hover:bg-rose-50 transition-all shadow-sm hover:-translate-y-1">
+                      <div className="flex items-center gap-3">
+                          <a href="#" className="flex h-10 w-10 items-center justify-center rounded-full border border-stone-200 bg-stone-50 text-stone-400 shadow-sm transition-all hover:-translate-y-1 hover:border-rose-200 hover:bg-rose-50 hover:text-rose-500">
                               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
                           </a>
-                          <a href="#" className="w-12 h-12 rounded-full bg-stone-50 border border-stone-200 flex items-center justify-center text-stone-400 hover:text-blue-600 hover:border-blue-200 hover:bg-blue-50 transition-all shadow-sm hover:-translate-y-1">
+                          <a href="#" className="flex h-10 w-10 items-center justify-center rounded-full border border-stone-200 bg-stone-50 text-stone-400 shadow-sm transition-all hover:-translate-y-1 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600">
                               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
                           </a>
-                          <a href="#" className="w-12 h-12 rounded-full bg-stone-50 border border-stone-200 flex items-center justify-center text-stone-400 hover:text-sky-500 hover:border-sky-200 hover:bg-sky-50 transition-all shadow-sm hover:-translate-y-1">
+                          <a href="#" className="flex h-10 w-10 items-center justify-center rounded-full border border-stone-200 bg-stone-50 text-stone-400 shadow-sm transition-all hover:-translate-y-1 hover:border-sky-200 hover:bg-sky-50 hover:text-sky-500">
                               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
                           </a>
                       </div>
                   </div>
                   <div>
-                      <h4 className="text-stone-800 font-extrabold mb-6 text-[11px] uppercase tracking-widest">Platform</h4>
-                      <ul className="space-y-4 text-stone-500 font-medium text-[15px]">
+                      <h4 className="mb-4 text-[11px] font-extrabold uppercase tracking-widest text-stone-800">Platform</h4>
+                      <ul className="space-y-3 text-[15px] font-medium text-stone-500">
                           <li><Link className="hover:text-orange-500 transition-colors" to="/auth">AI Chat App</Link></li>
                           <li><a className="hover:text-orange-500 transition-colors" href="/MummA_Cry_Analyzer (2).apk">Download APK</a></li>
                           <li><a className="hover:text-orange-500 transition-colors" href="#features">All Features</a></li>
                       </ul>
                   </div>
                   <div>
-                      <h4 className="text-stone-800 font-extrabold mb-6 text-[11px] uppercase tracking-widest">Company</h4>
-                      <ul className="space-y-4 text-stone-500 font-medium text-[15px]">
+                      <h4 className="mb-4 text-[11px] font-extrabold uppercase tracking-widest text-stone-800">Company</h4>
+                      <ul className="space-y-3 text-[15px] font-medium text-stone-500">
                           <li><a className="hover:text-orange-500 transition-colors" href="#trust">About Us</a></li>
                           <li><a className="hover:text-orange-500 transition-colors" href="#toys">Play Family</a></li>
                           <li><a className="hover:text-orange-500 transition-colors" href="#contact">Contact Support</a></li>
@@ -654,15 +663,15 @@ export default function Landing() {
                       </ul>
                   </div>
                   <div>
-                      <h4 className="text-stone-800 font-extrabold mb-6 text-[11px] uppercase tracking-widest">Policies</h4>
-                      <ul className="space-y-4 text-stone-500 font-medium text-[15px]">
+                      <h4 className="mb-4 text-[11px] font-extrabold uppercase tracking-widest text-stone-800">Policies</h4>
+                      <ul className="space-y-3 text-[15px] font-medium text-stone-500">
                           <li><a className="hover:text-orange-500 transition-colors" href="#">Privacy Policy</a></li>
                           <li><a className="hover:text-orange-500 transition-colors" href="#">Terms & Conditions</a></li>
                           <li><a className="hover:text-orange-500 transition-colors" href="#">Data Security</a></li>
                       </ul>
                   </div>
               </div>
-              <div className="border-t border-stone-200 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="flex flex-col items-center justify-between gap-4 border-t border-stone-200 pt-6 md:flex-row">
                   <p className="text-stone-400 font-medium text-xs">© 2026 Mumaa AI · All rights reserved.</p>
                   <p className="text-stone-400 font-medium text-xs">Made with <span className="text-rose-500 animate-pulse">♥</span> for parents everywhere</p>
               </div>
