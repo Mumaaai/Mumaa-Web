@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
-  Sparkles, Menu, ShieldCheck, ArrowRight, Download, Check, Star, 
+  Sparkles, Menu, ShieldCheck, ArrowRight, Download, Check, 
   Video, AudioWaveform, MessageCircleHeart, Apple, Clock, 
   Leaf, MessageCircle, Plus, Mail, 
   MessageSquare, User, Send
@@ -207,7 +207,7 @@ export default function Landing() {
         </motion.section>
 
         {/* Testimonials */}
-        <section className="py-20 overflow-hidden border-y border-stone-200/50 bg-stone-50/50 relative">
+        {/* <section className="py-20 overflow-hidden border-y border-stone-200/50 bg-stone-50/50 relative">
             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-stone-50/80 via-transparent to-stone-50/80 z-10 pointer-events-none"></div>
             <div className="text-center mb-12 relative z-20">
                 <h2 className="text-3xl font-extrabold text-stone-800">Loved by Mothers Everywhere</h2>
@@ -226,7 +226,7 @@ export default function Landing() {
                     </div>
                 ))}
             </div>
-        </section>
+        </section> */}
 
         {/* App Features */}
         <motion.section 
@@ -293,6 +293,107 @@ export default function Landing() {
             </div>
           </div>
         </motion.section>
+
+        {/* On-Demand Nanny Consultations */}
+        <section id="nanny-feature" className="py-24 relative overflow-hidden">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="bg-gradient-to-br from-orange-50/50 to-rose-50/50 rounded-[3rem] p-8 md:p-16 border border-white shadow-[0_8px_30px_-6px_rgba(251,113,133,0.1)] relative overflow-hidden grid lg:grid-cols-2 gap-12 items-center">
+              {/* Background Glow */}
+              <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-white/60 blur-[80px] rounded-full pointer-events-none"></div>
+
+              {/* Text Content */}
+              <motion.div 
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={fadeIn}
+                className="relative z-10"
+              >
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white text-orange-600 text-xs font-bold uppercase tracking-widest shadow-sm border border-orange-100 mb-6">
+                  <Sparkles className="w-4 h-4" /> Coming Soon
+                </div>
+                <h2 className="text-3xl md:text-5xl font-black text-stone-800 leading-tight mb-6">
+                  Bridging the Gap: <br /><span className="text-rose-500">On-Demand Nanny Consultations</span>
+                </h2>
+                <p className="text-stone-600 text-lg mb-8 leading-relaxed font-medium">
+                  AI is highly efficient, but we know that some complex parenting moments simply require human empathy, warmth, and lived experience.
+                </p>
+
+                <div className="space-y-5">
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center text-rose-500 shadow-sm shrink-0 mt-1">
+                      <Video className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-bold text-stone-800">Instant Video Triage</h4>
+                      <p className="text-stone-500 text-sm font-medium leading-relaxed mt-1">Get immediate, face-to-face guidance for tricky sleep routines, feeding challenges, and behavioral questions.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center text-emerald-500 shadow-sm shrink-0 mt-1">
+                      <User className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-bold text-stone-800">Your Digital Village</h4>
+                      <p className="text-stone-500 text-sm font-medium leading-relaxed mt-1">Replaces the lost guidance of the joint family with certified, highly vetted nanny professionals.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center text-indigo-500 shadow-sm shrink-0 mt-1">
+                      <MessageSquare className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-bold text-stone-800">A Living Support Network</h4>
+                      <p className="text-stone-500 text-sm font-medium leading-relaxed mt-1">Transforming MUMAA from a smart digital tool into a dynamic, human-centered care network.</p>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Visual Mockup */}
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+                className="relative flex justify-center items-center h-full min-h-[400px] z-10"
+              >
+                {/* Phone Frame */}
+                <div className="relative w-[280px] h-[580px] bg-stone-900 rounded-[3rem] border-[8px] border-stone-800 shadow-2xl overflow-hidden flex flex-col">
+                  {/* Dynamic Island */}
+                  <div className="absolute top-2 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-full z-20"></div>
+                  {/* Video Feed */}
+                  <img src="images/nanny.png" className="w-full h-full object-cover" alt="Nanny Video Call" />
+
+                  {/* Video Controls Overlay */}
+                  <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-black/40 backdrop-blur-md px-6 py-3 rounded-full w-max">
+                    <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white backdrop-blur">
+                      <AudioWaveform className="w-5 h-5" />
+                    </div>
+                    <div className="w-12 h-12 rounded-full bg-red-500 flex items-center justify-center text-white shadow-lg">
+                      <Video className="w-6 h-6 text-white scale-x-[-1]" />
+                    </div>
+                    <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white backdrop-blur">
+                      <Video className="w-5 h-5" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Floating UI Elements */}
+                <motion.div 
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute top-20 -left-6 bg-white/90 backdrop-blur-md p-3 rounded-2xl shadow-xl border border-stone-100 flex items-center gap-3"
+                >
+                  <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center">
+                    <Clock className="w-4 h-4" />
+                  </div>
+                  <div className="text-[10px] font-black text-stone-800 uppercase tracking-tighter">Live Session</div>
+                </motion.div>
+              </motion.div>
+            </div>
+          </div>
+        </section>
 
         {/* Play Family */}
         <motion.section 
