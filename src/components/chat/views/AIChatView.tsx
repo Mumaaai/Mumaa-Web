@@ -23,7 +23,7 @@ interface AIChatViewProps {
   babyProfile: any;
   sessionId: string;
   onSessionChange: (id: string) => void;
-  onHistoryRefresh?: () => void;
+  onHistoryRefresh?: (title?: string, sessionId?: string) => void;
 }
 
 export default function AIChatView({ user, babyProfile, sessionId, onSessionChange, onHistoryRefresh }: AIChatViewProps) {
@@ -48,16 +48,26 @@ export default function AIChatView({ user, babyProfile, sessionId, onSessionChan
   const [isLoading, setIsLoading] = useState(false);
   const [streamingText, setStreamingText] = useState('');
   const [isFabOpen, setIsFabOpen] = useState(false);
+  const [sessionTitle, setSessionTitle] = useState<string>('');
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  const prevSessionIdRef = useRef<string | null>(null);
+
   // Load history when sessionId changes
   useEffect(() => {
-    if (sessionId) {
-      fetchHistory(sessionId);
-    } else {
+    if (sessionId && sessionId !== prevSessionIdRef.current) {
+      // Only clear if it's a genuine switch to an existing session
+      // If we just created this session ID in handleSend, messages will already be set
+      if (messages.length === 0) {
+        fetchHistory(sessionId);
+      }
+      prevSessionIdRef.current = sessionId;
+    } else if (!sessionId) {
       setMessages([]);
+      setSessionTitle('');
+      prevSessionIdRef.current = null;
     }
   }, [sessionId]);
 
@@ -70,6 +80,13 @@ export default function AIChatView({ user, babyProfile, sessionId, onSessionChan
           sender: m.role === 'user' ? 'user' : 'ai',
           text: m.content
         })));
+      }
+      
+      // Also fetch session details to get the title
+      const sessions = await api.get(`/chat/sessions/${user.id}`);
+      const currentSession = sessions.find((s: any) => s.session_id === id);
+      if (currentSession) {
+        setSessionTitle(currentSession.title);
       }
     } catch (e) {
       console.error("Failed to fetch history", e);
@@ -95,21 +112,26 @@ export default function AIChatView({ user, babyProfile, sessionId, onSessionChan
     return currentText;
   };
 
-  const generateTitle = async (firstMsg: string, aiResponse: string) => {
-    if (!window.puter) return "New Chat";
+  const generateTitle = async (msgs: Message[]) => {
+    if (!window.puter) return null;
     try {
+      const context = msgs.map(m => `${m.sender}: ${m.text}`).join('\n');
       const response = await window.puter.ai.chat([
-        { role: 'system', content: 'Generate a short, friendly, 2-4 word title for a parenting chat based on this exchange. No quotes, just the title.' },
-        { role: 'user', content: `User: ${firstMsg}\nAI: ${aiResponse}` }
+        { 
+          role: 'system', 
+          content: 'Generate a short, warm, 2-3 word title for a parenting chat based on the context. If the context is just greetings or too brief to determine a topic, return exactly "New Parenting Chat". No quotes, just the title.' 
+        },
+        { role: 'user', content: `Context:\n${context}` }
       ], { model: 'gpt-4o-mini' });
-      return response?.message?.content || "New Chat";
+      const title = response?.message?.content?.replace(/["']/g, '').trim();
+      return title || null;
     } catch (e) {
-      return "New Chat";
+      return null;
     }
   };
 
-  const handleSend = async (e?: React.FormEvent) => {
-    e?.preventDefault();
+  const handleSend = async (e?: React.SyntheticEvent) => {
+    if (e) e.preventDefault();
     if (!input.trim() || isLoading) return;
 
     const userText = input.trim();
@@ -121,105 +143,108 @@ export default function AIChatView({ user, babyProfile, sessionId, onSessionChan
       onSessionChange(activeSessionId);
     }
 
+    // 1. Immediate UI Update
     const newUserMsg: Message = { id: Date.now().toString(), sender: 'user', text: userText };
-    setMessages(prev => [...prev, newUserMsg]);
+    const messagesForContext = [...messages, newUserMsg];
+    setMessages(messagesForContext);
     setInput('');
     setIsLoading(true);
     setIsFabOpen(false);
 
-    try {
-      await api.post('/chat/message', {
-        userId: user.id,
-        sessionId: activeSessionId,
-        role: 'user',
-        content: userText
-      });
-    } catch (e) {
-      console.error("Failed to save user message", e);
-    }
-
-    try {
-      if (window.puter) {
-        const chatContext = messages.slice(-10).map(m => ({
-          role: m.sender === 'user' ? 'user' : 'assistant',
-          content: m.text
-        }));
-
-        const response = await window.puter.ai.chat([
-          { 
-            role: 'system', 
-            content: `You are MUMAA, a calm, peaceful, and gentle AI parenting companion. 
-            You speak with warmth and empathy. Keep your advice practical but non-judgmental. 
-            User's name: ${babyProfile?.mom_name || user?.name || 'Mumaa'}.
-            User's baby name: ${babyProfile?.name || 'Baby'}.
-            User's baby precise age: ${calculateAge(babyProfile?.date_of_birth)}.
-            Preferred Language: ${babyProfile?.preferred_language || 'Hinglish'}.
-            AI Personality: ${babyProfile?.ai_detail || 'Balanced'}.
-            
-            CRITICAL CONTEXT RULES:
-            - ALWAYS tailor your advice to the baby's SPECIFIC age: ${calculateAge(babyProfile?.date_of_birth)}.
-            - Do NOT provide general ranges (e.g., "0-6 months"). 
-            - Focus ONLY on what is relevant for a ${calculateAge(babyProfile?.date_of_birth)} baby.
-            - If the user asks for a schedule or diet, provide it specifically for their baby's age.
-            
-            FORMATTING RULES:
-            - Use Markdown for structure.
-            - Use bold text for key advice.
-            - Use bullet points for lists.
-            - Use subheaders (##) for different sections.
-            - Keep paragraphs short and breathable.
-            - Use emojis gently to add warmth.
-            
-            Use the baby's name occasionally. Be supportive and maternal.` 
-          },
-          ...chatContext,
-          { role: 'user', content: userText }
-        ], { model: 'gpt-4o-mini' });
-
-        const aiText = response?.message?.content || "I am here for you, dear. Let's try that again.";
-        
-        setIsLoading(false);
-        const streamedText = await streamResponse(aiText);
-        
-        const aiResponse: Message = { 
-          id: (Date.now() + 1).toString(), 
-          sender: 'ai', 
-          text: streamedText
-        };
-        setMessages(prev => [...prev, aiResponse]);
-        setStreamingText('');
-
-        await api.post('/chat/message', {
+    // 2. Background Persistence & AI Response
+    (async () => {
+      try {
+        // Save user message in background
+        api.post('/chat/message', {
           userId: user.id,
           sessionId: activeSessionId,
-          role: 'assistant',
-          content: streamedText
-        });
+          role: 'user',
+          content: userText
+        }).catch(err => console.error("Failed to save user message", err));
 
-        // If new session, generate title and update history
-        if (isNewSession) {
-          const title = await generateTitle(userText, streamedText);
-          try {
-            await api.put(`/chat/session/${activeSessionId}`, { title });
-            onHistoryRefresh?.();
-          } catch (e) {
-            console.error("Failed to update session title", e);
-          }
+        // Background title handling
+        const isGenericTitle = !sessionTitle || sessionTitle === 'New Chat' || sessionTitle === 'Chat Session' || sessionTitle === 'New Parenting Chat';
+        if (isGenericTitle) {
+          generateTitle(messagesForContext).then(async (properTitle) => {
+            if (properTitle && properTitle !== "New Parenting Chat") {
+              setSessionTitle(properTitle);
+              await api.put(`/chat/session/${activeSessionId}`, { title: properTitle });
+              onHistoryRefresh?.(properTitle, activeSessionId);
+            } else if (isNewSession) {
+              setSessionTitle("New Parenting Chat");
+              await api.put(`/chat/session/${activeSessionId}`, { title: "New Parenting Chat" });
+              onHistoryRefresh?.("New Parenting Chat", activeSessionId);
+            }
+          }).catch(err => console.error("Title generation background error", err));
+        } else {
+          onHistoryRefresh?.(sessionTitle, activeSessionId);
         }
 
-      } else {
-        throw new Error('Puter not loaded');
+        // 3. AI Response Flow
+        if (window.puter) {
+          const chatContext = messages.slice(-10).map(m => ({
+            role: m.sender === 'user' ? 'user' : 'assistant',
+            content: m.text
+          }));
+
+          const response = await window.puter.ai.chat([
+            { 
+              role: 'system', 
+              content: `You are MUMAA, a calm, peaceful, and gentle AI parenting companion. 
+              You speak with warmth and empathy. Keep your advice practical but non-judgmental. 
+              User's name: ${babyProfile?.mom_name || user?.name || 'Mumaa'}.
+              User's baby name: ${babyProfile?.name || 'Baby'}.
+              User's baby precise age: ${calculateAge(babyProfile?.date_of_birth)}.
+              Preferred Language: ${babyProfile?.preferred_language || 'Hinglish'}.
+              AI Personality: ${babyProfile?.ai_detail || 'Balanced'}.
+              
+              CRITICAL CONTEXT RULES:
+              - ALWAYS tailor your advice to the baby's SPECIFIC age: ${calculateAge(babyProfile?.date_of_birth)}.
+              - Do NOT provide general ranges (e.g., "0-6 months"). 
+              - Focus ONLY on what is relevant for a ${calculateAge(babyProfile?.date_of_birth)} baby.
+              - If the user asks for a schedule or diet, provide it specifically for their baby's age.
+              
+              FORMATTING RULES:
+              - Use Markdown for structure.
+              - Use bold text for key advice.
+              - Use bullet points for lists.
+              - Use subheaders (##) for different sections.
+              - Keep paragraphs short and breathable.
+              - Use emojis gently to add warmth.
+              
+              Use the baby's name occasionally. Be supportive and maternal.` 
+            },
+            ...chatContext,
+            { role: 'user', content: userText }
+          ], { model: 'gpt-4o-mini' });
+
+          const aiText = response?.message?.content || "I am here for you, dear.";
+          setIsLoading(false);
+          const streamedText = await streamResponse(aiText);
+          
+          const aiResponse: Message = { 
+            id: (Date.now() + 1).toString(), 
+            sender: 'ai', 
+            text: streamedText
+          };
+          setMessages(prev => [...prev, aiResponse]);
+          setStreamingText('');
+
+          // Save AI response in background
+          api.post('/chat/message', {
+            userId: user.id,
+            sessionId: activeSessionId,
+            role: 'assistant',
+            content: streamedText
+          }).then(() => onHistoryRefresh?.(sessionTitle, activeSessionId))
+            .catch(err => console.error("Failed to save AI response", err));
+
+        }
+      } catch (err) {
+        console.error('Chat handleSend background error:', err);
+        setIsLoading(false);
       }
-    } catch (err) {
-      console.error('Chat error:', err);
-      setIsLoading(false);
-      const errorMsg: Message = { 
-        id: (Date.now() + 1).toString(), 
-        sender: 'ai', 
-        text: "I'm having a quiet moment. Could you repeat that for me, please?" 
-      };
-      setMessages(prev => [...prev, errorMsg]);
-    }
+    })();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -260,6 +285,20 @@ export default function AIChatView({ user, babyProfile, sessionId, onSessionChan
 
   return (
     <div className="flex flex-col h-full w-full absolute inset-0 bg-[#FFF8F3]">
+      {/* Session Title Header - Added for better context */}
+      <AnimatePresence>
+        {messages.length > 0 && sessionTitle && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="w-full py-3 px-6 bg-white/50 backdrop-blur-sm border-b border-stone-100 flex items-center justify-center gap-2 z-10 shrink-0"
+          >
+            <div className="w-2 h-2 rounded-full bg-orange-400 animate-pulse" />
+            <span className="text-sm font-bold text-stone-600 tracking-tight">{sessionTitle}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Centered Scrollable Area */}
       <div className="flex-1 overflow-y-auto chat-scroll no-scrollbar" onClick={() => setIsFabOpen(false)}>
         <div className="max-w-3xl mx-auto px-4 md:px-6 py-12 md:py-20 flex flex-col min-h-full">

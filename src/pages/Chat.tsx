@@ -20,6 +20,7 @@ import JournalView from '../components/chat/views/JournalView';
 import LullabyView from '../components/chat/views/LullabyView';
 import PhotoView from '../components/chat/views/PhotoView';
 import BabyProfileModal from '../components/chat/ProfileSetupModal';
+import HistorySidebar from '../components/chat/HistorySidebar';
 
 export default function Chat() {
   const navigate = useNavigate();
@@ -30,6 +31,8 @@ export default function Chat() {
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const [chatSessions, setChatSessions] = useState<any[]>([]);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isHistorySidebarOpen, setIsHistorySidebarOpen] = useState(false);
+  const [knownTitles, setKnownTitles] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const session = localStorage.getItem('mumaa_session');
@@ -65,7 +68,17 @@ export default function Chat() {
   const fetchChatSessions = async (userId: string) => {
     try {
       const sessions = await api.get(`/chat/sessions/${userId}`);
-      setChatSessions(sessions || []);
+      // Sort sessions by created_at descending (latest first)
+      const sortedSessions = (sessions || []).map((s: any) => ({
+        ...s,
+        // Prefer knownTitle if the API still returns a generic one
+        title: (knownTitles[s.session_id] && (s.title === 'Parenting Chat' || s.title === 'New Parenting Chat' || !s.title)) 
+          ? knownTitles[s.session_id] 
+          : s.title
+      })).sort((a: any, b: any) => 
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+      setChatSessions(sortedSessions);
     } catch (e) {
       console.error("Failed to fetch chat sessions", e);
     }
@@ -86,7 +99,20 @@ export default function Chat() {
           babyProfile={babyProfile} 
           sessionId={currentSessionId || ''} 
           onSessionChange={setCurrentSessionId}
-          onHistoryRefresh={() => fetchChatSessions(user.id)}
+          onHistoryRefresh={(title, sid) => {
+            if (title && sid) {
+              setKnownTitles(prev => ({ ...prev, [sid]: title }));
+              setChatSessions(prev => {
+                const exists = prev.some(s => s.session_id === sid);
+                if (exists) {
+                  return prev.map(s => s.session_id === sid ? { ...s, title } : s);
+                } else {
+                  return [{ session_id: sid, title, created_at: new Date().toISOString() }, ...prev];
+                }
+              });
+            }
+            fetchChatSessions(user.id);
+          }}
         />
       );
       case 'dashboard': return <DashboardView />;
@@ -109,7 +135,20 @@ export default function Chat() {
           babyProfile={babyProfile} 
           sessionId={currentSessionId || ''} 
           onSessionChange={setCurrentSessionId}
-          onHistoryRefresh={() => fetchChatSessions(user.id)}
+          onHistoryRefresh={(title, sid) => {
+            if (title && sid) {
+              setKnownTitles(prev => ({ ...prev, [sid]: title }));
+              setChatSessions(prev => {
+                const exists = prev.some(s => s.session_id === sid);
+                if (exists) {
+                  return prev.map(s => s.session_id === sid ? { ...s, title } : s);
+                } else {
+                  return [{ session_id: sid, title, created_at: new Date().toISOString() }, ...prev];
+                }
+              });
+            }
+            fetchChatSessions(user.id);
+          }}
         />
       );
     }
@@ -141,12 +180,10 @@ export default function Chat() {
           activeTab={activeTab}
           user={user}
           babyProfile={babyProfile}
-          chatSessions={chatSessions}
-          onSessionSelect={(id) => {
-            setCurrentSessionId(id);
-            setActiveTab('chat');
-          }}
+          activeSessionTitle={chatSessions.find(s => s.session_id === currentSessionId)?.title}
           onNewChat={startNewChat}
+          onHistoryToggle={() => setIsHistorySidebarOpen(!isHistorySidebarOpen)}
+          isHistoryOpen={isHistorySidebarOpen}
         />
 
         {/* Dynamic Content Container */}
@@ -172,6 +209,18 @@ export default function Chat() {
           }
         }}
         initialData={babyProfile}
+      />
+
+      <HistorySidebar 
+        isOpen={isHistorySidebarOpen}
+        onClose={() => setIsHistorySidebarOpen(false)}
+        chatSessions={chatSessions}
+        onSessionSelect={(id) => {
+          setCurrentSessionId(id);
+          setActiveTab('chat');
+        }}
+        onNewChat={startNewChat}
+        currentSessionId={currentSessionId}
       />
     </div>
   );
