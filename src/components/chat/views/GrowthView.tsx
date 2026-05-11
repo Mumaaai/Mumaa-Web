@@ -159,6 +159,7 @@ interface GrowthRecord {
 }
 
 interface Props {
+  user?: any;
   babyProfile?: any;
 }
 
@@ -214,8 +215,14 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   );
 };
 
+// ─── Trend icon ──────────────────────────────────────────────────────────────
+const TrendIcon = ({ trend }: { trend: string }) =>
+  trend === 'up' ? <TrendingUp className="w-4 h-4 text-emerald-500" /> :
+  trend === 'down' ? <TrendingDown className="w-4 h-4 text-rose-500" /> :
+  <Minus className="w-4 h-4 text-stone-400" />;
+
 // ─── Main Component ───────────────────────────────────────────────────────────
-export default function GrowthView({ babyProfile }: Props) {
+export default function GrowthView({ user, babyProfile }: Props) {
   const [records, setRecords] = useState<GrowthRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -228,9 +235,9 @@ export default function GrowthView({ babyProfile }: Props) {
 
   // ─── Fetch records ──────────────────────────────────────────────────────────
   const fetchRecords = useCallback(async () => {
-    if (!babyProfile?.id) { setLoading(false); return; }
+    if (!user?.id) { setLoading(false); return; }
     try {
-      const data = await api.get(`/growth/${babyProfile.id}`);
+      const data = await api.get(`/growth/${user.id}`);
       if (Array.isArray(data)) {
         const sorted = [...data].sort((a, b) => new Date(a.recorded_at).getTime() - new Date(b.recorded_at).getTime());
         setRecords(sorted);
@@ -240,7 +247,7 @@ export default function GrowthView({ babyProfile }: Props) {
     } finally {
       setLoading(false);
     }
-  }, [babyProfile?.id]);
+  }, [user?.id]);
 
   useEffect(() => { fetchRecords(); }, [fetchRecords]);
 
@@ -320,16 +327,26 @@ export default function GrowthView({ babyProfile }: Props) {
 
   // ─── Save record ─────────────────────────────────────────────────────────────
   const handleSave = async () => {
-    if (!babyProfile?.id) return;
-    if (!formData.weight_kg && !formData.height_cm) return;
+    console.log('handleSave called', { user, formData });
+    if (!user?.id) {
+      console.warn('Cannot save: user.id is missing');
+      return;
+    }
+    if (!formData.weight_kg && !formData.height_cm) {
+      console.warn('Cannot save: weight and height are both empty');
+      return;
+    }
     setSaving(true);
     try {
-      await api.post('/growth', {
-        baby_id: babyProfile.id,
+      const payload = {
+        userId: user.id,
         weight_kg: formData.weight_kg ? parseFloat(formData.weight_kg) : null,
         height_cm: formData.height_cm ? parseFloat(formData.height_cm) : null,
         recorded_at: new Date(formData.recorded_at).toISOString(),
-      });
+      };
+      console.log('Sending POST /growth', payload);
+      const res = await api.post('/growth', payload);
+      console.log('POST /growth response', res);
       setSaveSuccess(true);
       await fetchRecords();
       setTimeout(() => {
@@ -344,11 +361,6 @@ export default function GrowthView({ babyProfile }: Props) {
     }
   };
 
-  // ─── Trend icon ──────────────────────────────────────────────────────────────
-  const TrendIcon = ({ trend }: { trend: string }) =>
-    trend === 'up' ? <TrendingUp className="w-4 h-4 text-emerald-500" /> :
-    trend === 'down' ? <TrendingDown className="w-4 h-4 text-rose-500" /> :
-    <Minus className="w-4 h-4 text-stone-400" />;
 
   // ─── Render ──────────────────────────────────────────────────────────────────
   return (

@@ -121,7 +121,7 @@ export default function Chat() {
       );
       case 'dashboard': return <DashboardView />;
       case 'feeding': return <FeedingView />;
-      case 'growth': return <GrowthView />;
+      case 'growth': return <GrowthView user={user} babyProfile={babyProfile} />;
       case 'vaccination': return <VaccinationView />;
       case 'milestones': return <MilestonesView />;
       case 'guide': return <GuideView />;
