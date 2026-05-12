@@ -6,7 +6,7 @@ import {
   Video, AudioWaveform, MessageCircleHeart, Apple, Clock, 
   Leaf, MessageCircle, Plus, Mail, ShoppingBag,
   MessageSquare, User, Send, Heart, Mic, PlayCircle, 
-  Gamepad2, Brain, Volume2, X
+  Brain, Volume2, X, Blocks
 } from 'lucide-react';
 
 const fadeIn = {
@@ -110,7 +110,7 @@ export default function Landing() {
 
       <main className="flex-grow pt-20 lg:pt-24">
         {/* Hero Section */}
-        <section id="hero" className="relative max-w-7xl mx-auto px-6 pt-10 pb-24 grid lg:grid-cols-2 gap-12 items-center min-h-[85vh]">
+        <section id="hero" className="relative max-w-[1120px] mx-auto px-6 sm:px-8 pt-10 pb-24 grid lg:grid-cols-2 gap-12 items-center min-h-[85vh]">
           <motion.div 
             variants={staggerContainer}
             initial="hidden"
@@ -274,7 +274,7 @@ export default function Landing() {
                   containerClass: 'hover:border-rose-200 hover:shadow-rose-100/50', bgClass: 'bg-rose-50', iconBg: 'bg-rose-100', iconColor: 'text-rose-500', textHover: 'group-hover:text-rose-500', dotClass: 'bg-rose-400', btnClass: 'gradient-rose text-rose-900 border border-white'
                 },
                 {
-                  title: 'AI Saheli', badge: '24/7 Expert', badgeClass: 'text-indigo-600 bg-indigo-50 border-indigo-100', color: 'indigo', icon: MessageCircleHeart, desc: 'Your 24/7 empathetic assistant covering 20+ categories with Hinglish support.', points: ['20+ Categories', 'Hinglish Chat', 'Context-Aware', 'Expert Guidance'], link: '/auth', linkText: 'Chat Now',
+                  title: 'Chat Saheli', badge: '24/7 Expert', badgeClass: 'text-indigo-600 bg-indigo-50 border-indigo-100', color: 'indigo', icon: MessageCircleHeart, desc: 'Your 24/7 empathetic assistant covering 20+ categories with Hinglish support.', points: ['20+ Categories', 'Hinglish Chat', 'Context-Aware', 'Expert Guidance'], link: '/auth', linkText: 'Chat Now',
                   containerClass: 'hover:border-indigo-200 hover:shadow-indigo-100/50', bgClass: 'bg-indigo-50', iconBg: 'bg-indigo-100', iconColor: 'text-indigo-500', textHover: 'group-hover:text-indigo-500', dotClass: 'bg-indigo-400', btnClass: 'gradient-lavender text-indigo-900 border border-white'
                 },
                 {
@@ -286,7 +286,7 @@ export default function Landing() {
                   containerClass: 'hover:border-orange-200 hover:shadow-orange-100/50', bgClass: 'bg-orange-50', iconBg: 'bg-orange-100', iconColor: 'text-orange-500', textHover: 'group-hover:text-orange-500', dotClass: 'bg-orange-400', btnClass: 'gradient-peach text-orange-900 border border-white'
                 },
                 {
-                  title: 'Care Guides', badge: 'Visual', badgeClass: 'text-emerald-600 bg-emerald-50 border-emerald-100', color: 'emerald', icon: PlayCircle, desc: 'Short, expert-curated video guides covering baby care and parenting tips.', points: ['Short Guides', 'Expert Tips', 'Care Techniques', 'Quick Ideas'], link: '/auth', linkText: 'Watch Now',
+                  title: 'Video Guidance', badge: 'Visual', badgeClass: 'text-emerald-600 bg-emerald-50 border-emerald-100', color: 'emerald', icon: PlayCircle, desc: 'Short, expert-curated video guides covering baby care and parenting tips.', points: ['Short Guides', 'Expert Tips', 'Care Techniques', 'Quick Ideas'], link: '/auth', linkText: 'Watch Now',
                   containerClass: 'hover:border-emerald-200 hover:shadow-emerald-100/50', bgClass: 'bg-emerald-50', iconBg: 'bg-emerald-100', iconColor: 'text-emerald-500', textHover: 'group-hover:text-emerald-500', dotClass: 'bg-emerald-400', btnClass: 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200'
                 },
                 {
@@ -294,24 +294,24 @@ export default function Landing() {
                   containerClass: 'hover:border-sky-200 hover:shadow-sky-100/50', bgClass: 'bg-sky-50', iconBg: 'bg-sky-100', iconColor: 'text-sky-500', textHover: 'group-hover:text-sky-500', dotClass: 'bg-sky-400', btnClass: 'gradient-blue text-sky-900 border border-white'
                 },
                 {
-                  title: 'Play Tools', badge: 'Growth', badgeClass: 'text-pink-600 bg-pink-50 border-pink-100', color: 'pink', icon: Gamepad2, desc: 'Age-wise toy recommendations that support sensory and motor development.', points: ['Sensory Support', 'Motor Skills', 'Cognitive Growth', 'Age-Wise'], link: '/auth', linkText: 'Shop Now',
-                  containerClass: 'hover:border-pink-200 hover:shadow-pink-100/50', bgClass: 'bg-pink-50', iconBg: 'bg-pink-100', iconColor: 'text-pink-500', textHover: 'group-hover:text-pink-500', dotClass: 'bg-pink-400', btnClass: 'bg-pink-50 hover:bg-pink-100 text-pink-700 border border-pink-200'
-                },
-                {
-                  title: 'Mind Games', badge: 'Brain', badgeClass: 'text-violet-600 bg-violet-50 border-violet-100', color: 'violet', icon: Brain, desc: 'Interactive games scientifically designed to stimulate baby\'s brain development.', points: ['Brain Training', 'Interactive Play', 'Learning Games', 'Research Based'], link: '/auth', linkText: 'Play Now',
+                  title: 'Development Toys', badge: 'Physical', badgeClass: 'text-violet-600 bg-violet-50 border-violet-100', color: 'violet', icon: Blocks, desc: 'Age-wise curated toy recommendations that actively support sensory, motor and cognitive development.', points: ['Sensory Play', 'Motor Skills', 'Cognitive Growth', 'Safe Materials'], link: '/auth', linkText: 'Explore Now',
                   containerClass: 'hover:border-violet-200 hover:shadow-violet-100/50', bgClass: 'bg-violet-50', iconBg: 'bg-violet-100', iconColor: 'text-violet-500', textHover: 'group-hover:text-violet-500', dotClass: 'bg-violet-400', btnClass: 'bg-violet-50 hover:bg-violet-100 text-violet-700 border border-violet-200'
                 },
                 {
-                  title: 'Voice Personalization', badge: 'Soothing', badgeClass: 'text-purple-600 bg-purple-50 border-purple-100', color: 'purple', icon: Mic, desc: 'Personalize soothing audio and lullabies using the mother\'s unique voice.', points: ['Voice Matching', 'Secure Tech', 'Soothing Audio', 'Lullabies'], link: '/auth', linkText: 'Personalize',
+                  title: 'Voice Cloning', badge: 'Soothing', badgeClass: 'text-purple-600 bg-purple-50 border-purple-100', color: 'purple', icon: Mic, desc: 'Personalize soothing audio and lullabies using unique AI voice cloning technology.', points: ['Voice Matching', 'Secure Tech', 'Soothing Audio', 'Gender Neutral'], link: '/auth', linkText: 'Clone Voice',
                   containerClass: 'hover:border-purple-200 hover:shadow-purple-100/50', bgClass: 'bg-purple-50', iconBg: 'bg-purple-100', iconColor: 'text-purple-500', textHover: 'group-hover:text-purple-500', dotClass: 'bg-purple-400', btnClass: 'bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200'
                 },
                 {
-                  title: 'Sleep Sanctuary', badge: 'Calm', badgeClass: 'text-cyan-600 bg-cyan-50 border-cyan-100', color: 'cyan', icon: Volume2, desc: 'A library of white noise and nature sounds to help babies sleep faster.', points: ['White Noise', 'Nature Sounds', 'Sleep Library', 'Settling Audio'], link: '/auth', linkText: 'Play Audio',
+                  title: 'Soothing Sounds', badge: 'Calm', badgeClass: 'text-cyan-600 bg-cyan-50 border-cyan-100', color: 'cyan', icon: Volume2, desc: 'A library of white noise and nature sounds to help babies sleep faster and stay calm.', points: ['White Noise', 'Nature Sounds', 'Sleep Library', 'Settling Audio'], link: '/auth', linkText: 'Listen Now',
                   containerClass: 'hover:border-cyan-200 hover:shadow-cyan-100/50', bgClass: 'bg-cyan-50', iconBg: 'bg-cyan-100', iconColor: 'text-cyan-500', textHover: 'group-hover:text-cyan-500', dotClass: 'bg-cyan-400', btnClass: 'bg-cyan-50 hover:bg-cyan-100 text-cyan-700 border border-cyan-200'
                 },
                 {
                   title: 'Traditional Wisdom', badge: 'Heritage', badgeClass: 'text-amber-600 bg-amber-50 border-amber-100', color: 'amber', icon: Leaf, desc: 'Home remedies, Ayurvedic basics and traditional elder wisdom.', points: ['Home Remedies', 'Ayurvedics', 'Elder Guidance', 'Natural Care'], link: '/auth', linkText: 'Explore',
                   containerClass: 'hover:border-amber-200 hover:shadow-amber-100/50', bgClass: 'bg-amber-50', iconBg: 'bg-amber-100', iconColor: 'text-amber-500', textHover: 'group-hover:text-amber-500', dotClass: 'bg-amber-400', btnClass: 'bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200'
+                },
+                {
+                  title: 'Mind Games', badge: 'Cognitive', badgeClass: 'text-fuchsia-600 bg-fuchsia-50 border-fuchsia-100', color: 'fuchsia', icon: Brain, desc: 'Interactive games and activities scientifically designed to stimulate brain development and learning.', points: ['Memory Boost', 'Problem Solving', 'Focus Training', 'Learning Play'], link: '/auth', linkText: 'Play Now',
+                  containerClass: 'hover:border-fuchsia-200 hover:shadow-fuchsia-100/50', bgClass: 'bg-fuchsia-50', iconBg: 'bg-fuchsia-100', iconColor: 'text-fuchsia-500', textHover: 'group-hover:text-fuchsia-500', dotClass: 'bg-fuchsia-400', btnClass: 'bg-fuchsia-50 hover:bg-fuchsia-100 text-fuchsia-700 border border-fuchsia-200'
                 },
               ].map((feature, i) => {
                 const Icon = feature.icon;
@@ -677,7 +677,7 @@ export default function Landing() {
                   <div>
                       <h4 className="text-stone-800 font-extrabold mb-6 text-[11px] uppercase tracking-widest">Platform</h4>
                       <ul className="space-y-4 text-stone-500 font-medium text-[15px]">
-                          <li><Link className="hover:text-orange-500 transition-colors" to="/auth">AI Chat App</Link></li>
+                          <li><Link className="hover:text-orange-500 transition-colors" to="/auth">Call Saheli</Link></li>
                           <li><Link className="hover:text-orange-500 transition-colors" to="/marketplace">Dumamu Store</Link></li>
                           <li><a className="hover:text-orange-500 transition-colors" href="/MummA_Cry_Analyzer (2).apk">Download APK</a></li>
                           <li><a className="hover:text-orange-500 transition-colors" href="#features">All Features</a></li>

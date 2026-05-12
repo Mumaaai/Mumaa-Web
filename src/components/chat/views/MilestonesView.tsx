@@ -139,45 +139,47 @@ export default function MilestonesView({ user, babyProfile }: MilestonesViewProp
         </div>
 
         {/* Development Map Card */}
-        <motion.div initial="hidden" animate="visible" variants={fadeIn} className="bg-white rounded-[2.5rem] border border-stone-100 shadow-xl overflow-hidden relative">
-            <div className="p-8 md:p-10 flex flex-col md:flex-row justify-between gap-8">
+        <motion.div initial="hidden" animate="visible" variants={fadeIn} className="bg-gradient-to-br from-white to-orange-50/30 rounded-[2.5rem] border border-stone-100 shadow-xl overflow-hidden relative group">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-orange-100/20 rounded-full blur-3xl -mr-32 -mt-32 transition-transform group-hover:scale-110" />
+            <div className="p-8 md:p-10 flex flex-col md:flex-row justify-between gap-8 relative z-10">
                 <div className="space-y-6 flex-1">
                     <div>
-                        <h2 className="text-2xl font-black text-stone-800">Development Map</h2>
-                        <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-orange-50 text-orange-600 rounded-lg text-[10px] font-black uppercase tracking-widest">
+                        <h2 className="text-2xl font-black text-stone-900">Development Map</h2>
+                        <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-orange-100 text-orange-700 rounded-lg text-[10px] font-black uppercase tracking-widest border border-orange-200">
                             Age: {babyProfile?.dob ? Math.floor((new Date().getTime() - new Date(babyProfile.dob).getTime()) / (1000 * 60 * 60 * 24 * 30.44)) : 0} months
                         </div>
                     </div>
 
-                    <div className="space-y-3">
-                        <div className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em]">Trophy Case</div>
-                        <div className="flex flex-wrap gap-2">
+                    <div className="space-y-4">
+                        <div className="text-[10px] font-black text-stone-500 uppercase tracking-[0.2em]">Trophy Case</div>
+                        <div className="flex flex-wrap gap-2.5">
                             {milestones.filter(m => m.status === 'achieved').length > 0 ? (
                                 milestones.filter(m => m.status === 'achieved').map(m => (
-                                    <div key={m.id} className="flex items-center gap-2 bg-amber-50 border border-amber-100 px-4 py-2 rounded-full text-[11px] font-black text-amber-700 shadow-sm transition-all hover:scale-105">
-                                        <Award className="w-3.5 h-3.5" />
+                                    <div key={m.id} className="flex items-center gap-2 bg-white border border-amber-200 px-4 py-2.5 rounded-2xl text-[11px] font-black text-amber-800 shadow-sm transition-all hover:scale-105 hover:bg-amber-50">
+                                        <Award className="w-4 h-4 text-amber-500" />
                                         <span>{m.milestone_name}</span>
                                     </div>
                                 ))
                             ) : (
-                                <div className="text-stone-300 font-bold text-xs italic">No trophies yet. Keep growing!</div>
+                                <div className="text-stone-400 font-bold text-sm italic py-2">No trophies yet. Keep growing!</div>
                             )}
                         </div>
                     </div>
                 </div>
 
                 <div className="flex flex-col items-center justify-center shrink-0">
-                    <div className="relative w-32 h-32">
-                        <svg className="w-32 h-32 transform -rotate-90">
-                            <circle cx="64" cy="64" r="56" fill="none" stroke="#F5F5F4" strokeWidth="12" />
-                            <circle cx="64" cy="64" r="56" fill="none" stroke="#F97316" strokeWidth="12" 
-                                    strokeDasharray={352} 
-                                    strokeDashoffset={352 - (352 * (progress / 100))} 
+                    <div className="relative w-36 h-36">
+                        <svg className="w-36 h-36 transform -rotate-90">
+                            <circle cx="72" cy="72" r="64" fill="none" stroke="#F5F5F4" strokeWidth="14" />
+                            <circle cx="72" cy="72" r="64" fill="none" stroke="#F97316" strokeWidth="14" 
+                                    strokeDasharray={402} 
+                                    strokeDashoffset={402 - (402 * (progress / 100))} 
                                     strokeLinecap="round" 
                                     className="transition-all duration-1000" />
                         </svg>
-                        <div className="absolute inset-0 flex items-center justify-center text-2xl font-black text-orange-600">
-                            {progress}%
+                        <div className="absolute inset-0 flex flex-col items-center justify-center">
+                            <span className="text-3xl font-black text-stone-900 leading-none">{progress}%</span>
+                            <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest mt-1">Complete</span>
                         </div>
                     </div>
                 </div>
@@ -199,22 +201,25 @@ export default function MilestonesView({ user, babyProfile }: MilestonesViewProp
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: i * 0.05 }}
-                            className={`group relative bg-white border p-6 rounded-[2rem] flex items-center gap-5 transition-all hover:shadow-lg ${m.status === 'achieved' ? 'border-emerald-200 bg-emerald-50/10 shadow-emerald-50' : 'border-stone-100 shadow-sm'}`}
+                            className={`group relative bg-white border p-6 rounded-[2.5rem] flex items-center gap-6 transition-all hover:shadow-xl ${m.status === 'achieved' ? 'border-emerald-200 bg-emerald-50/20 shadow-emerald-50' : 'border-stone-200 shadow-sm'}`}
                         >
                             <button 
                                 onClick={() => toggleMilestone(m)}
-                                className={`w-10 h-10 rounded-full border-2 shrink-0 flex items-center justify-center transition-all ${m.status === 'achieved' ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-stone-200 hover:border-emerald-400'}`}
+                                className={`w-12 h-12 rounded-full border-2 shrink-0 flex items-center justify-center transition-all ${m.status === 'achieved' ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-stone-300 hover:border-emerald-400 bg-stone-50'}`}
                             >
-                                {m.status === 'achieved' && <Check className="w-5 h-5" />}
+                                {m.status === 'achieved' ? <Check className="w-6 h-6" /> : <div className="w-2 h-2 rounded-full bg-stone-300 group-hover:bg-emerald-400 transition-colors" />}
                             </button>
 
                             <div className="flex-1 min-w-0 text-left">
-                                <h4 className="font-black text-stone-800 truncate">{m.milestone_name}</h4>
-                                <p className="text-[12px] text-stone-400 font-medium line-clamp-1">{m.description}</p>
-                                <div className="text-[10px] font-black text-stone-300 uppercase tracking-widest mt-1">{m.age_range}</div>
+                                <h4 className="text-lg font-black text-stone-900 truncate mb-0.5">{m.milestone_name}</h4>
+                                <p className="text-[13px] text-stone-600 font-bold leading-snug line-clamp-2">{m.description}</p>
+                                <div className="flex items-center gap-2 mt-2">
+                                    <span className="text-[10px] font-black text-stone-500 uppercase tracking-widest bg-stone-100 px-2 py-0.5 rounded-md">{m.age_range}</span>
+                                    {m.status === 'achieved' && <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-100 px-2 py-0.5 rounded-md">Achieved</span>}
+                                </div>
                             </div>
 
-                            <div className="text-3xl opacity-40 group-hover:opacity-100 group-hover:scale-110 transition-all shrink-0">
+                            <div className="text-4xl opacity-30 group-hover:opacity-100 group-hover:scale-110 transition-all shrink-0 grayscale group-hover:grayscale-0">
                                 {m.badge}
                             </div>
                         </motion.div>

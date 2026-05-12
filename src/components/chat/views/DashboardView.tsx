@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  Milk, Baby, MoonStar, Star, Plus, 
-  Utensils, List,
+  Milk, MoonStar, Star, Plus, 
+  Utensils, List, TrendingUp,
   ShieldCheck, LayoutDashboard
 } from 'lucide-react';
 import { api } from '../../../api';
@@ -12,7 +12,6 @@ interface DashboardData {
   babyDob: string;
   todayStats: {
     feedings: number;
-    diapers: number;
     sleepHours: number;
   };
   recentActivity: any[];
@@ -74,9 +73,9 @@ export default function DashboardView({ user, babyProfile, onTabChange }: Dashbo
 
   const stats = [
     { label: 'Feeds', value: data?.todayStats.feedings || 0, unit: 'Today', icon: Milk, color: 'orange', bg: 'bg-orange-50', iconBg: 'bg-orange-100', iconColor: 'text-orange-500' },
-    { label: 'Diapers', value: data?.todayStats.diapers || 0, unit: 'Today', icon: Baby, color: 'sky', bg: 'bg-sky-50', iconBg: 'bg-sky-100', iconColor: 'text-sky-500' },
     { label: 'Sleep', value: `${data?.todayStats.sleepHours || 0}h`, unit: 'Today', icon: MoonStar, color: 'indigo', bg: 'bg-indigo-50', iconBg: 'bg-indigo-100', iconColor: 'text-indigo-500' },
     { label: 'Leaps', value: data?.milestonesAchieved || 0, unit: 'Done', icon: Star, color: 'rose', bg: 'bg-rose-50', iconBg: 'bg-rose-100', iconColor: 'text-rose-500' },
+    { label: 'Growth', value: 'Ready', unit: 'Check', icon: TrendingUp, color: 'emerald', bg: 'bg-emerald-50', iconBg: 'bg-emerald-100', iconColor: 'text-emerald-500' },
   ];
 
   return (
@@ -122,20 +121,13 @@ export default function DashboardView({ user, babyProfile, onTabChange }: Dashbo
         {/* Quick Actions */}
         <motion.div initial="hidden" animate="visible" variants={fadeIn}>
           <h3 className="text-[11px] font-black text-stone-400 mb-4 px-1 uppercase tracking-widest">Quick Log</h3>
-          <div className="grid grid-cols-3 gap-3 md:gap-4">
+          <div className="grid grid-cols-2 gap-3 md:gap-4">
             <button 
               onClick={() => onTabChange('feeding')}
               className="bg-white border-2 border-stone-50 hover:border-orange-200 hover:bg-orange-50 text-stone-700 py-6 rounded-[2.5rem] text-sm font-black transition-all flex flex-col items-center gap-3 shadow-sm group"
             >
               <div className="p-3 bg-orange-100 text-orange-600 rounded-2xl group-hover:scale-110 transition-transform"><Plus className="w-6 h-6" /></div>
               <span>Log Feed</span>
-            </button>
-            <button 
-              onClick={() => onTabChange('feeding')}
-              className="bg-white border-2 border-stone-50 hover:border-sky-200 hover:bg-sky-50 text-stone-700 py-6 rounded-[2.5rem] text-sm font-black transition-all flex flex-col items-center gap-3 shadow-sm group"
-            >
-              <div className="p-3 bg-sky-100 text-sky-600 rounded-2xl group-hover:scale-110 transition-transform"><Plus className="w-6 h-6" /></div>
-              <span>Log Diaper</span>
             </button>
             <button 
               onClick={() => onTabChange('feeding')}
@@ -202,11 +194,9 @@ export default function DashboardView({ user, babyProfile, onTabChange }: Dashbo
                   <div key={i} className="flex items-center gap-4 p-3 hover:bg-stone-50 rounded-2xl transition-colors group">
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-sm ${
                       log.activity_type === 'feeding' ? 'bg-orange-100 text-orange-500' :
-                      log.activity_type === 'diaper' ? 'bg-sky-100 text-sky-500' :
                       'bg-indigo-100 text-indigo-500'
                     }`}>
                       {log.activity_type === 'feeding' ? <Utensils className="w-5 h-5" /> :
-                       log.activity_type === 'diaper' ? <Baby className="w-5 h-5" /> :
                        <MoonStar className="w-5 h-5" />}
                     </div>
                     <div className="flex-1 min-w-0">

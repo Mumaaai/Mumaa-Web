@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Milk, Baby, MoonStar, Play, Square, 
+  Milk, MoonStar, Play, Square, 
   List, Utensils, History, Clock, Check
 } from 'lucide-react';
 import { api } from '../../../api';
 
 interface ActivityLog {
   id: string;
-  activity_type: 'feeding' | 'diaper' | 'sleep';
+  activity_type: 'feeding' | 'sleep';
   detail: string;
   start_time: string;
   end_time?: string;
@@ -135,11 +135,11 @@ export default function FeedingView({ user, babyProfile, onActivityLogged }: Fee
             initial="hidden" 
             animate="visible" 
             variants={fadeIn}
-            className="bg-white rounded-[2.5rem] p-7 border border-stone-100 shadow-sm relative overflow-hidden"
+            className="bg-white rounded-[2.5rem] p-7 border border-stone-100 shadow-sm relative overflow-hidden md:col-span-2"
           >
             <h3 className="text-lg font-black text-stone-800 mb-6 flex items-center gap-3">
               <div className="p-2 bg-orange-50 text-orange-500 rounded-xl shadow-inner"><Milk className="w-5 h-5" /></div>
-              Log Feed
+              Log Feedings
             </h3>
             <div className="grid grid-cols-3 gap-3">
               {[
@@ -159,34 +159,6 @@ export default function FeedingView({ user, babyProfile, onActivityLogged }: Fee
             </div>
           </motion.div>
 
-          {/* Diaper Panel */}
-          <motion.div 
-            initial="hidden" 
-            animate="visible" 
-            variants={fadeIn}
-            className="bg-white rounded-[2.5rem] p-7 border border-stone-100 shadow-sm relative overflow-hidden"
-          >
-            <h3 className="text-lg font-black text-stone-800 mb-6 flex items-center gap-3">
-              <div className="p-2 bg-sky-50 text-sky-500 rounded-xl shadow-inner"><Baby className="w-5 h-5" /></div>
-              Diaper Change
-            </h3>
-            <div className="grid grid-cols-3 gap-3">
-              {[
-                { label: 'Wet', emoji: '💧', type: 'wet' },
-                { label: 'Dirty', emoji: '💩', type: 'dirty' },
-                { label: 'Both', emoji: '🔄', type: 'both' },
-              ].map((item) => (
-                <button 
-                  key={item.type}
-                  onClick={() => logActivity('diaper', item.label)}
-                  className="bg-stone-50 border-2 border-transparent hover:border-sky-200 hover:bg-sky-50 rounded-3xl p-5 transition-all btn-press flex flex-col items-center justify-center gap-3 group shadow-sm"
-                >
-                  <div className="text-3xl group-hover:scale-125 transition-transform duration-300">{item.emoji}</div>
-                  <div className="text-[11px] font-black text-stone-500 uppercase tracking-widest group-hover:text-stone-900">{item.label}</div>
-                </button>
-              ))}
-            </div>
-          </motion.div>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
@@ -276,11 +248,9 @@ export default function FeedingView({ user, babyProfile, onActivityLogged }: Fee
                   <div key={log.id} className="flex items-center gap-4 p-4 bg-stone-50/80 rounded-[1.8rem] border border-stone-100/50 group transition-all hover:bg-white hover:shadow-sm">
                     <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-sm ${
                       log.activity_type === 'feeding' ? 'bg-orange-100 text-orange-500' :
-                      log.activity_type === 'diaper' ? 'bg-sky-100 text-sky-500' :
                       'bg-indigo-100 text-indigo-500'
                     }`}>
                       {log.activity_type === 'feeding' ? <Utensils className="w-6 h-6" /> :
-                       log.activity_type === 'diaper' ? <Baby className="w-6 h-6" /> :
                        <MoonStar className="w-6 h-6" />}
                     </div>
                     <div className="flex-1 min-w-0">

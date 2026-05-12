@@ -659,29 +659,38 @@ export default function GrowthView({ user, babyProfile }: Props) {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {READING_MATERIALS.map((article, i) => (
               <motion.div
                 key={article.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.28 + i * 0.04 }}
-                className={`bg-gradient-to-br ${article.gradient} rounded-3xl border border-white/80 p-5 cursor-pointer card-hover`}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 + i * 0.05 }}
+                className={`bg-white rounded-[2rem] border border-stone-100 p-6 cursor-pointer shadow-sm hover:shadow-md transition-all relative overflow-hidden group`}
                 onClick={() => setExpandedArticle(expandedArticle === article.id ? null : article.id)}
               >
-                <div className="flex items-start gap-3 mb-3">
-                  <div className="text-2xl leading-none mt-0.5">{article.icon}</div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1.5">
-                      <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${article.tagColor}`}>
+                <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${article.gradient} rounded-bl-[4rem] -mr-8 -mt-8 opacity-40 transition-transform group-hover:scale-110`} />
+                
+                <div className="relative z-10 flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-stone-50 flex items-center justify-center text-3xl shadow-inner shrink-0">
+                    {article.icon}
+                  </div>
+                  <div className="flex-1 min-w-0 pt-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className={`text-[10px] font-black uppercase tracking-[0.15em] px-2.5 py-1 rounded-lg ${article.tagColor}`}>
                         {article.tag}
                       </span>
-                      <span className="text-[10px] font-bold text-stone-400">{article.readTime} read</span>
+                      <span className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">{article.readTime} read</span>
                     </div>
-                    <h3 className="font-black text-stone-800 text-sm leading-snug">{article.title}</h3>
+                    <h3 className="font-black text-stone-800 text-lg leading-tight mb-2 group-hover:text-orange-600 transition-colors">
+                      {article.title}
+                    </h3>
+                    <p className="text-stone-500 text-[13px] font-medium leading-relaxed">
+                      {article.summary}
+                    </p>
                   </div>
                 </div>
-                <p className="text-stone-600 text-xs font-semibold leading-relaxed mb-3">{article.summary}</p>
 
                 <AnimatePresence>
                   {expandedArticle === article.id && (
@@ -689,13 +698,13 @@ export default function GrowthView({ user, babyProfile }: Props) {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      className="overflow-hidden"
+                      className="overflow-hidden relative z-10"
                     >
-                      <div className="border-t border-white/60 pt-3 mt-1 space-y-2">
+                      <div className="border-t border-stone-100 pt-5 mt-5 space-y-3">
                         {article.keyPoints.map((point, j) => (
-                          <div key={j} className="flex items-start gap-2">
-                            <div className="w-1.5 h-1.5 rounded-full bg-stone-400 mt-1.5 shrink-0" />
-                            <p className="text-xs font-semibold text-stone-600">{point}</p>
+                          <div key={j} className="flex items-start gap-3">
+                            <div className="w-1.5 h-1.5 rounded-full bg-orange-400 mt-2 shrink-0" />
+                            <p className="text-[13px] font-semibold text-stone-600 leading-snug">{point}</p>
                           </div>
                         ))}
                       </div>
@@ -703,10 +712,13 @@ export default function GrowthView({ user, babyProfile }: Props) {
                   )}
                 </AnimatePresence>
 
-                <div className="flex items-center justify-end">
-                  <div className="flex items-center gap-1 text-[11px] font-black text-stone-500">
+                <div className="relative z-10 flex items-center justify-between mt-6 pt-4 border-t border-stone-50">
+                  <div className="text-[11px] font-black text-stone-400 uppercase tracking-widest">
+                    Evidence Based Guidance
+                  </div>
+                  <div className="flex items-center gap-1.5 text-[11px] font-black text-orange-600 uppercase tracking-widest">
                     {expandedArticle === article.id ? 'Show less' : 'Read more'}
-                    <ChevronRight className={`w-3.5 h-3.5 transition-transform ${expandedArticle === article.id ? 'rotate-90' : ''}`} />
+                    <ChevronRight className={`w-4 h-4 transition-transform ${expandedArticle === article.id ? 'rotate-90' : ''}`} />
                   </div>
                 </div>
               </motion.div>
@@ -714,13 +726,14 @@ export default function GrowthView({ user, babyProfile }: Props) {
           </div>
 
           {/* Reassurance footer */}
-          <div className="mt-6 bg-white rounded-3xl border border-amber-100 p-5 flex items-start gap-4">
-            <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center shrink-0 mt-0.5">
-              <Sparkles className="w-5 h-5 text-amber-500" />
+          <div className="mt-8 bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-[2.5rem] border border-white shadow-xl p-8 flex flex-col md:flex-row items-center gap-6 text-center md:text-left relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/20 rounded-full blur-3xl -mr-16 -mt-16" />
+            <div className="w-16 h-16 rounded-[2rem] bg-white flex items-center justify-center shrink-0 shadow-sm border border-amber-100/50 relative z-10">
+              <Sparkles className="w-8 h-8 text-amber-500" />
             </div>
-            <div>
-              <h3 className="font-black text-stone-800 text-sm mb-1">Remember, growth is a journey 💛</h3>
-              <p className="text-stone-500 text-xs font-semibold leading-relaxed">
+            <div className="relative z-10">
+              <h3 className="font-black text-stone-800 text-lg mb-2">Remember, growth is a journey 💛</h3>
+              <p className="text-stone-600 text-sm font-bold leading-relaxed max-w-2xl">
                 Every baby grows at their own pace. Charts and percentiles are tools for your pediatrician — not a report card for you or your baby. 
                 You're doing great just by tracking and caring. When in doubt, always reach out to your doctor.
               </p>

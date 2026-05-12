@@ -52,7 +52,7 @@ export default function HistorySidebar({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-stone-900/10 backdrop-blur-[2px] z-[45] md:hidden"
+            className="fixed inset-0 bg-stone-900/10 backdrop-blur-[2px] z-[45]"
           />
           
           <motion.div
@@ -116,7 +116,7 @@ export default function HistorySidebar({
                         <div className={`text-[15px] font-bold truncate transition-colors ${
                           isActive ? 'text-orange-900' : 'text-stone-700 group-hover:text-stone-900'
                         }`}>
-                          {session.title || 'Parenting Chat'}
+                          {session.title || 'Saheli Session'}
                         </div>
                         <div className="flex items-center gap-2 mt-1">
                           <Clock className={`w-3 h-3 ${isActive ? 'text-orange-300' : 'text-stone-400'}`} />

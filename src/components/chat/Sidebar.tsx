@@ -4,9 +4,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, Baby, MessageCircleHeart, LayoutDashboard, Utensils, 
   TrendingUp, ShieldCheck, Star, Compass, Apple, Blocks, 
-  Puzzle, Clock, AudioWaveform, BookHeart, MoonStar, 
-  Camera, HeartHandshake, Stethoscope, MessageSquare, Settings2,
-  ChevronLeft, ChevronRight, LogOut
+  Clock, AudioWaveform, BookHeart, MoonStar, 
+  HeartHandshake, Stethoscope, MessageSquare, Settings2,
+  ChevronLeft, ChevronRight, LogOut, PlayCircle, Brain
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -128,14 +128,10 @@ export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user,
                   </div>
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-2 mt-4">
+              <div className="grid grid-cols-2 gap-2 mt-4">
                 <div className="text-center bg-stone-50/80 rounded-xl py-2 border border-stone-100/50">
                   <div className="text-xl font-bold text-emerald-500">{dashboardData?.todayStats?.feedings || 0}</div>
                   <div className="text-[10px] text-stone-500 font-bold uppercase tracking-wider mt-0.5">Feeds</div>
-                </div>
-                <div className="text-center bg-stone-50/80 rounded-xl py-2 border border-stone-100/50">
-                  <div className="text-xl font-bold text-sky-500">{dashboardData?.todayStats?.diapers || 0}</div>
-                  <div className="text-[10px] text-stone-500 font-bold uppercase tracking-wider mt-0.5">Diapers</div>
                 </div>
                 <div className="text-center bg-stone-50/80 rounded-xl py-2 border border-stone-100/50">
                   <div className="text-xl font-bold text-indigo-400">{dashboardData?.todayStats?.sleepHours || 0}h</div>
@@ -150,7 +146,7 @@ export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user,
         <div className={`flex-1 overflow-y-auto no-scrollbar pb-24 ${isCollapsed ? 'p-2' : 'p-4'}`}>
           {!isCollapsed && <div className="text-[11px] font-bold text-stone-400 uppercase tracking-widest mb-3 px-3">Core Care</div>}
           <nav className="space-y-1.5">
-            {navItem('chat', <MessageCircleHeart className="w-4 h-4" />, 'AI Chat', 'text-stone-500 bg-stone-100', 'text-orange-600 bg-orange-100')}
+            {navItem('chat', <MessageCircleHeart className="w-4 h-4" />, 'Chat Saheli', 'text-stone-500 bg-stone-100', 'text-orange-600 bg-orange-100')}
             {navItem('dashboard', <LayoutDashboard className="w-4 h-4" />, 'Dashboard')}
             {navItem('feeding', <Utensils className="w-4 h-4" />, 'Log & Sleep')}
             {navItem('growth', <TrendingUp className="w-4 h-4" />, 'Growth Tracker')}
@@ -165,13 +161,21 @@ export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user,
           <nav className="space-y-1.5">
             {navItem('guide', <Compass className="w-4 h-4" />, 'Parenting Guide')}
             {navItem('diet', <Apple className="w-4 h-4" />, 'Diet Plans')}
-            {navItem('study', <Blocks className="w-4 h-4" />, 'Play Ideas')}
-            {navItem('games', <Puzzle className="w-4 h-4" />, 'Toddler Games')}
+            {navItem('study', <Blocks className="w-4 h-4" />, 'Development Toys')}
             {navItem('routine', <Clock className="w-4 h-4" />, 'Routine Planner')}
             {navItem('cry', <AudioWaveform className="w-4 h-4" />, 'Cry Analyzer', 'text-rose-500 bg-rose-100', 'text-rose-600 bg-rose-100')}
             {navItem('journal', <BookHeart className="w-4 h-4" />, 'Memory Journal')}
-            {navItem('lullaby', <MoonStar className="w-4 h-4" />, 'Sleep & Lullabies')}
-            {navItem('photo', <Camera className="w-4 h-4" />, 'Vision AI')}
+            {navItem('lullaby', <MoonStar className="w-4 h-4" />, 'Soothing Sounds')}
+            <button 
+              onClick={() => { navigate('/reels'); onClose(); }}
+              className={`w-full text-left px-4 py-3 rounded-2xl flex items-center gap-3 text-[15px] transition-all duration-200 group hover:bg-stone-50 border border-transparent ${isCollapsed ? 'justify-center px-0' : ''}`}
+            >
+              <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform text-emerald-600 bg-emerald-100">
+                <PlayCircle className="w-4 h-4" />
+              </div>
+              {!isCollapsed && <span className="font-semibold text-stone-600 group-hover:text-stone-900 truncate">Video Guidance</span>}
+            </button>
+            {navItem('photo', <Brain className="w-4 h-4" />, 'Mind Games')}
           </nav>
           
           {!isCollapsed ? (
