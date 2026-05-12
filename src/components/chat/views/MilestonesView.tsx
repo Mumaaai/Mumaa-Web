@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Plus, Check, ChevronRight, X, Info, Award
+  Plus, Check, ChevronRight, X, Award
 } from 'lucide-react';
 import { api } from '../../../api';
 

@@ -19,11 +19,6 @@ interface VaccinationViewProps {
   babyProfile: any;
 }
 
-const fadeIn = {
-  hidden: { opacity: 0, y: 10 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
-};
-
 const commonVaccines = [
   { name: 'Influenza', desc: 'Annual flu protection' },
   { name: 'COVID-19 Booster', desc: 'Viral protection' },
