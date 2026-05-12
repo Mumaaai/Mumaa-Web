@@ -128,7 +128,7 @@ export default function AIChatView({ user, babyProfile, sessionId, onSessionChan
       const response = await window.puter.ai.chat([
         { 
           role: 'system', 
-          content: 'Generate a short, warm, 2-3 word title for a parenting chat based on the context. If the context is just greetings or too brief to determine a topic, return exactly "New Parenting Chat". No quotes, just the title.' 
+          content: 'Generate a short, warm, 2-3 word title for a parenting chat based on the context. If the context is just greetings or too brief to determine a topic, return exactly "Saheli Session". No quotes, just the title.' 
         },
         { role: 'user', content: `Context:\n${context}` }
       ], { model: 'gpt-4o-mini' });
@@ -172,17 +172,17 @@ export default function AIChatView({ user, babyProfile, sessionId, onSessionChan
         }).catch(err => console.error("Failed to save user message", err));
 
         // Background title handling
-        const isGenericTitle = !sessionTitle || sessionTitle === 'New Chat' || sessionTitle === 'Chat Session' || sessionTitle === 'New Parenting Chat';
+        const isGenericTitle = !sessionTitle || sessionTitle === 'New Chat' || sessionTitle === 'Chat Session' || sessionTitle === 'Saheli Session' || sessionTitle === 'New Parenting Chat';
         if (isGenericTitle) {
           generateTitle(messagesForContext).then(async (properTitle) => {
-            if (properTitle && properTitle !== "New Parenting Chat") {
+            if (properTitle && properTitle !== "Saheli Session" && properTitle !== "New Parenting Chat") {
               setSessionTitle(properTitle);
               await api.put(`/chat/session/${activeSessionId}`, { title: properTitle });
               onHistoryRefresh?.(properTitle, activeSessionId);
             } else if (isNewSession) {
-              setSessionTitle("New Parenting Chat");
-              await api.put(`/chat/session/${activeSessionId}`, { title: "New Parenting Chat" });
-              onHistoryRefresh?.("New Parenting Chat", activeSessionId);
+              setSessionTitle("Saheli Session");
+              await api.put(`/chat/session/${activeSessionId}`, { title: "Saheli Session" });
+              onHistoryRefresh?.("Saheli Session", activeSessionId);
             }
           }).catch(err => console.error("Title generation background error", err));
         } else {
@@ -462,7 +462,7 @@ export default function AIChatView({ user, babyProfile, sessionId, onSessionChan
             <Link 
               to="/reels"
               className="p-3 rounded-full hover:bg-stone-50 text-stone-400 hover:text-emerald-500 transition-all btn-press shrink-0"
-              title="Care Guides (Visual)"
+              title="Video Guidance (Visual)"
             >
               <PlayCircle className="w-6 h-6" />
             </Link>

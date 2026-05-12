@@ -88,7 +88,7 @@ export default function Chat() {
           ...s,
           session_id: sid,
           // Prefer knownTitle if the API still returns a generic one
-          title: (knownTitles[sid] && (s.title === 'Parenting Chat' || s.title === 'New Parenting Chat' || !s.title)) 
+          title: (knownTitles[sid] && (s.title === 'Parenting Chat' || s.title === 'Saheli Session' || s.title === 'New Parenting Chat' || !s.title)) 
             ? knownTitles[sid] 
             : s.title
         };
