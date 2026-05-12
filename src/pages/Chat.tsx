@@ -220,10 +220,12 @@ export default function Chat() {
             if (response && !response.error) {
               const updated = await api.get(`/baby/${user.id}`);
               setBabyProfile(updated);
-              // setIsProfileModalOpen(false); // Modal now handles its own close/transition after save
+            } else {
+              alert(response?.error || "Failed to save profile. Please ensure the backend is deployed and database is updated.");
             }
           } catch (e) {
             console.error("Failed to save profile", e);
+            alert("A network error occurred while saving the profile.");
           }
         }}
         initialData={babyProfile}

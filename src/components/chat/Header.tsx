@@ -19,7 +19,7 @@ const getTabTitle = (tab: TabId, activeSessionTitle?: string) => {
   if (tab === 'chat' && activeSessionTitle) return activeSessionTitle;
   
   switch (tab) {
-    case 'chat': return 'Call Saheli';
+    case 'chat': return 'Chat Saheli';
     case 'dashboard': return 'Dashboard';
     case 'feeding': return 'Log & Sleep';
     case 'growth': return 'Growth Tracker';
@@ -27,13 +27,13 @@ const getTabTitle = (tab: TabId, activeSessionTitle?: string) => {
     case 'milestones': return 'Milestones';
     case 'guide': return 'Parenting Guide';
     case 'diet': return 'Diet Plans';
-    case 'study': return 'Mind Development Toys';
-    case 'games': return 'Mind Development Toys';
+    case 'study': return 'Development Toys';
+    case 'games': return 'Mind Games';
     case 'routine': return 'Routine Planner';
     case 'cry': return 'Cry Analyzer';
     case 'journal': return 'Memory Journal';
     case 'lullaby': return 'Soothing Sounds';
-    case 'photo': return 'Vision AI';
+    case 'photo': return 'Mind Games';
     default: return 'Mumaa AI';
   }
 };

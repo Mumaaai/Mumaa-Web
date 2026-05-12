@@ -52,7 +52,7 @@ export default function HistorySidebar({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-stone-900/10 backdrop-blur-[2px] z-[45] md:hidden"
+            className="fixed inset-0 bg-stone-900/10 backdrop-blur-[2px] z-[45]"
           />
           
           <motion.div

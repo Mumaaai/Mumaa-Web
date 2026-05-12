@@ -6,7 +6,7 @@ import {
   Video, AudioWaveform, MessageCircleHeart, Apple, Clock, 
   Leaf, MessageCircle, Plus, Mail, ShoppingBag,
   MessageSquare, User, Send, Heart, Mic, PlayCircle, 
-  Brain, Volume2, X, Camera
+  Brain, Volume2, X, Camera, Blocks
 } from 'lucide-react';
 
 const fadeIn = {
@@ -110,7 +110,7 @@ export default function Landing() {
 
       <main className="flex-grow pt-20 lg:pt-24">
         {/* Hero Section */}
-        <section id="hero" className="relative max-w-7xl mx-auto px-6 pt-10 pb-24 grid lg:grid-cols-2 gap-12 items-center min-h-[85vh]">
+        <section id="hero" className="relative max-w-[1120px] mx-auto px-6 sm:px-8 pt-10 pb-24 grid lg:grid-cols-2 gap-12 items-center min-h-[85vh]">
           <motion.div 
             variants={staggerContainer}
             initial="hidden"
@@ -274,7 +274,7 @@ export default function Landing() {
                   containerClass: 'hover:border-rose-200 hover:shadow-rose-100/50', bgClass: 'bg-rose-50', iconBg: 'bg-rose-100', iconColor: 'text-rose-500', textHover: 'group-hover:text-rose-500', dotClass: 'bg-rose-400', btnClass: 'gradient-rose text-rose-900 border border-white'
                 },
                 {
-                  title: 'Call Saheli', badge: '24/7 Expert', badgeClass: 'text-indigo-600 bg-indigo-50 border-indigo-100', color: 'indigo', icon: MessageCircleHeart, desc: 'Your 24/7 empathetic assistant covering 20+ categories with Hinglish support.', points: ['20+ Categories', 'Hinglish Chat', 'Context-Aware', 'Expert Guidance'], link: '/auth', linkText: 'Chat Now',
+                  title: 'Chat Saheli', badge: '24/7 Expert', badgeClass: 'text-indigo-600 bg-indigo-50 border-indigo-100', color: 'indigo', icon: MessageCircleHeart, desc: 'Your 24/7 empathetic assistant covering 20+ categories with Hinglish support.', points: ['20+ Categories', 'Hinglish Chat', 'Context-Aware', 'Expert Guidance'], link: '/auth', linkText: 'Chat Now',
                   containerClass: 'hover:border-indigo-200 hover:shadow-indigo-100/50', bgClass: 'bg-indigo-50', iconBg: 'bg-indigo-100', iconColor: 'text-indigo-500', textHover: 'group-hover:text-indigo-500', dotClass: 'bg-indigo-400', btnClass: 'gradient-lavender text-indigo-900 border border-white'
                 },
                 {
@@ -294,11 +294,11 @@ export default function Landing() {
                   containerClass: 'hover:border-sky-200 hover:shadow-sky-100/50', bgClass: 'bg-sky-50', iconBg: 'bg-sky-100', iconColor: 'text-sky-500', textHover: 'group-hover:text-sky-500', dotClass: 'bg-sky-400', btnClass: 'gradient-blue text-sky-900 border border-white'
                 },
                 {
-                  title: 'Mind Development Toys', badge: 'Brain', badgeClass: 'text-violet-600 bg-violet-50 border-violet-100', color: 'violet', icon: Brain, desc: 'Interactive games and toy recommendations scientifically designed to stimulate baby\'s brain development.', points: ['Brain Training', 'Sensory Play', 'Learning Toys', 'Research Based'], link: '/auth', linkText: 'Explore Now',
+                  title: 'Development Toys', badge: 'Physical', badgeClass: 'text-violet-600 bg-violet-50 border-violet-100', color: 'violet', icon: Blocks, desc: 'Age-wise curated toy recommendations that actively support sensory, motor and cognitive development.', points: ['Sensory Play', 'Motor Skills', 'Cognitive Growth', 'Safe Materials'], link: '/auth', linkText: 'Explore Now',
                   containerClass: 'hover:border-violet-200 hover:shadow-violet-100/50', bgClass: 'bg-violet-50', iconBg: 'bg-violet-100', iconColor: 'text-violet-500', textHover: 'group-hover:text-violet-500', dotClass: 'bg-violet-400', btnClass: 'bg-violet-50 hover:bg-violet-100 text-violet-700 border border-violet-200'
                 },
                 {
-                  title: 'Mother Voice Cloning', badge: 'Soothing', badgeClass: 'text-purple-600 bg-purple-50 border-purple-100', color: 'purple', icon: Mic, desc: 'Personalize soothing audio and lullabies using the mother\'s unique voice cloning technology.', points: ['Voice Matching', 'Secure Tech', 'Soothing Audio', 'Mother\'s Voice'], link: '/auth', linkText: 'Clone Voice',
+                  title: 'Voice Cloning', badge: 'Soothing', badgeClass: 'text-purple-600 bg-purple-50 border-purple-100', color: 'purple', icon: Mic, desc: 'Personalize soothing audio and lullabies using unique AI voice cloning technology.', points: ['Voice Matching', 'Secure Tech', 'Soothing Audio', 'Gender Neutral'], link: '/auth', linkText: 'Clone Voice',
                   containerClass: 'hover:border-purple-200 hover:shadow-purple-100/50', bgClass: 'bg-purple-50', iconBg: 'bg-purple-100', iconColor: 'text-purple-500', textHover: 'group-hover:text-purple-500', dotClass: 'bg-purple-400', btnClass: 'bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200'
                 },
                 {
@@ -310,7 +310,7 @@ export default function Landing() {
                   containerClass: 'hover:border-amber-200 hover:shadow-amber-100/50', bgClass: 'bg-amber-50', iconBg: 'bg-amber-100', iconColor: 'text-amber-500', textHover: 'group-hover:text-amber-500', dotClass: 'bg-amber-400', btnClass: 'bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200'
                 },
                 {
-                  title: 'Vision AI', badge: 'Smart Scan', badgeClass: 'text-fuchsia-600 bg-fuchsia-50 border-fuchsia-100', color: 'fuchsia', icon: Camera, desc: 'Instantly identify and learn about baby products, rashes, or development signs.', points: ['Product Scan', 'Safety Check', 'Visual Analysis', 'Instant Info'], link: '/auth', linkText: 'Scan Now',
+                  title: 'Mind Games', badge: 'Cognitive', badgeClass: 'text-fuchsia-600 bg-fuchsia-50 border-fuchsia-100', color: 'fuchsia', icon: Brain, desc: 'Interactive games and activities scientifically designed to stimulate brain development and learning.', points: ['Memory Boost', 'Problem Solving', 'Focus Training', 'Learning Play'], link: '/auth', linkText: 'Play Now',
                   containerClass: 'hover:border-fuchsia-200 hover:shadow-fuchsia-100/50', bgClass: 'bg-fuchsia-50', iconBg: 'bg-fuchsia-100', iconColor: 'text-fuchsia-500', textHover: 'group-hover:text-fuchsia-500', dotClass: 'bg-fuchsia-400', btnClass: 'bg-fuchsia-50 hover:bg-fuchsia-100 text-fuchsia-700 border border-fuchsia-200'
                 },
               ].map((feature, i) => {

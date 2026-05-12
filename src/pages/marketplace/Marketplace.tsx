@@ -114,7 +114,7 @@ export default function Marketplace() {
             </div>
             <div className="flex min-w-0 flex-col leading-none">
               <div className="truncate text-[15px] font-black tracking-tight text-stone-800 min-[360px]:text-lg sm:text-xl">AI MUMAA</div>
-              <span className="mt-0.5 hidden text-[8px] font-bold uppercase tracking-[0.1em] text-orange-500 min-[360px]:block sm:text-[9px]">DUMAMU STORE</span>
+              <span className="mt-0.5 hidden text-[8px] font-bold uppercase tracking-[0.1em] text-orange-500 min-[360px]:block sm:text-[9px]">Mumaa STORE</span>
             </div>
           </Link>
 
