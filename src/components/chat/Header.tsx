@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { User, Sparkles, History, MessageSquarePlus, X, Loader2, Heart } from 'lucide-react';
+import { User, Sparkles, History, MessageSquarePlus, X, Loader2, Heart, ShoppingBag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import type { TabId } from './Sidebar';
 
 interface HeaderProps {
@@ -139,6 +140,14 @@ export default function Header({
               </button>
             </>
           )}
+
+          <Link 
+            to="/marketplace"
+            className="p-2.5 bg-white hover:bg-stone-50 rounded-full transition-all border border-stone-200 btn-press shadow-sm text-stone-600 hover:text-orange-600" 
+            title="Marketplace"
+          >
+            <ShoppingBag className="w-5 h-5" />
+          </Link>
 
           <button 
             onClick={() => setIsTipOpen(true)}
