@@ -33,6 +33,7 @@ export default function Chat() {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isHistorySidebarOpen, setIsHistorySidebarOpen] = useState(false);
   const [knownTitles, setKnownTitles] = useState<Record<string, string>>({});
+  const [dashboardData, setDashboardData] = useState<any>(null);
 
   useEffect(() => {
     const session = localStorage.getItem('mumaa_session');
@@ -44,10 +45,22 @@ export default function Chat() {
       const parsedUser = JSON.parse(session);
       setUser(parsedUser);
       fetchBabyProfile(parsedUser.id);
+      fetchDashboardData(parsedUser.id);
     } catch (e) {
       navigate('/auth');
     }
   }, [navigate]);
+
+  const fetchDashboardData = async (userId: string) => {
+    try {
+      const data = await api.get(`/dashboard/${userId}`);
+      if (data && !data.error) {
+        setDashboardData(data);
+      }
+    } catch (e) {
+      console.error("Failed to fetch dashboard data", e);
+    }
+  };
 
   const fetchBabyProfile = async (userId: string) => {
     try {
@@ -119,8 +132,8 @@ export default function Chat() {
           }}
         />
       );
-      case 'dashboard': return <DashboardView />;
-      case 'feeding': return <FeedingView />;
+      case 'dashboard': return <DashboardView user={user} babyProfile={babyProfile} onTabChange={setActiveTab} />;
+      case 'feeding': return <FeedingView user={user} babyProfile={babyProfile} onActivityLogged={() => fetchDashboardData(user.id)} />;
       case 'growth': return <GrowthView user={user} babyProfile={babyProfile} />;
       case 'vaccination': return <VaccinationView />;
       case 'milestones': return <MilestonesView />;
@@ -169,6 +182,7 @@ export default function Chat() {
         onTabChange={setActiveTab}
         user={user}
         babyProfile={babyProfile}
+        dashboardData={dashboardData}
         onProfileClick={() => setIsProfileModalOpen(true)}
       />
 

@@ -21,6 +21,7 @@ interface SidebarProps {
   onTabChange: (tab: TabId) => void;
   user: any;
   babyProfile: any;
+  dashboardData?: any;
   onProfileClick?: () => void;
 }
 
@@ -39,7 +40,7 @@ const calculateAge = (dob: string) => {
   return `${years} Year${years > 1 ? 's' : ''} Old`;
 };
 
-export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user, babyProfile, onProfileClick }: SidebarProps) {
+export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user, babyProfile, dashboardData, onProfileClick }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const navigate = useNavigate();
@@ -129,15 +130,15 @@ export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user,
               </div>
               <div className="grid grid-cols-3 gap-2 mt-4">
                 <div className="text-center bg-stone-50/80 rounded-xl py-2 border border-stone-100/50">
-                  <div className="text-xl font-bold text-emerald-500">0</div>
+                  <div className="text-xl font-bold text-emerald-500">{dashboardData?.todayStats?.feedings || 0}</div>
                   <div className="text-[10px] text-stone-500 font-bold uppercase tracking-wider mt-0.5">Feeds</div>
                 </div>
                 <div className="text-center bg-stone-50/80 rounded-xl py-2 border border-stone-100/50">
-                  <div className="text-xl font-bold text-sky-500">0</div>
+                  <div className="text-xl font-bold text-sky-500">{dashboardData?.todayStats?.diapers || 0}</div>
                   <div className="text-[10px] text-stone-500 font-bold uppercase tracking-wider mt-0.5">Diapers</div>
                 </div>
                 <div className="text-center bg-stone-50/80 rounded-xl py-2 border border-stone-100/50">
-                  <div className="text-xl font-bold text-indigo-400">0h</div>
+                  <div className="text-xl font-bold text-indigo-400">{dashboardData?.todayStats?.sleepHours || 0}h</div>
                   <div className="text-[10px] text-stone-500 font-bold uppercase tracking-wider mt-0.5">Sleep</div>
                 </div>
               </div>
