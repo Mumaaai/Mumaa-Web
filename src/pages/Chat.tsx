@@ -136,7 +136,7 @@ export default function Chat() {
       case 'feeding': return <FeedingView user={user} babyProfile={babyProfile} onActivityLogged={() => fetchDashboardData(user.id)} />;
       case 'growth': return <GrowthView user={user} babyProfile={babyProfile} />;
       case 'vaccination': return <VaccinationView user={user} babyProfile={babyProfile} />;
-      case 'milestones': return <MilestonesView />;
+      case 'milestones': return <MilestonesView user={user} babyProfile={babyProfile} />;
       case 'guide': return <GuideView />;
       case 'diet': return <DietView />;
       case 'study': return <StudyView />;
