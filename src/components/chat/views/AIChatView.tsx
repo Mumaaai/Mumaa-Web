@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Send, Loader2, User, Plus, Baby, Moon, Utensils } from 'lucide-react';
+import { Sparkles, Send, Loader2, User, Plus, Baby, Moon, Utensils, PlayCircle } from 'lucide-react';
 import { api } from '../../../api';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { Link } from 'react-router-dom';
 
 declare global {
   interface Window {
@@ -457,6 +458,14 @@ export default function AIChatView({ user, babyProfile, sessionId, onSessionChan
             >
               <Plus className={`w-6 h-6 transition-transform duration-300 ${isFabOpen ? 'rotate-45' : ''}`} />
             </button>
+
+            <Link 
+              to="/reels"
+              className="p-3 rounded-full hover:bg-stone-50 text-stone-400 hover:text-emerald-500 transition-all btn-press shrink-0"
+              title="Care Guides (Visual)"
+            >
+              <PlayCircle className="w-6 h-6" />
+            </Link>
             <textarea 
               ref={textareaRef}
               value={input}
