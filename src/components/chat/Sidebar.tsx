@@ -5,7 +5,7 @@ import {
   X, Baby, MessageCircleHeart, LayoutDashboard, Utensils, 
   TrendingUp, ShieldCheck, Star, Compass, Apple, Blocks, 
   Clock, AudioWaveform, BookHeart, MoonStar, 
-  Camera, HeartHandshake, Stethoscope, MessageSquare, Settings2,
+  HeartHandshake, Stethoscope, MessageSquare, Settings2,
   ChevronLeft, ChevronRight, LogOut, PlayCircle, Brain
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';

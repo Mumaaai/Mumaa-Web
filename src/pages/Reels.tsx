@@ -2,7 +2,7 @@ import { useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Heart, Share2, ChevronLeft, 
-  MessageCircle, Volume2, VolumeX, Sparkles, Award, Search, X, 
+  MessageCircle, Volume2, VolumeX, Award, Search, X, 
   Play, Bell, User, ChevronDown
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';

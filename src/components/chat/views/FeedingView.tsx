@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Milk, Baby, MoonStar, Play, Square, 
+  Milk, MoonStar, Play, Square, 
   List, Utensils, History, Clock, Check
 } from 'lucide-react';
 import { api } from '../../../api';

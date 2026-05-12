@@ -6,7 +6,7 @@ import {
   Video, AudioWaveform, MessageCircleHeart, Apple, Clock, 
   Leaf, MessageCircle, Plus, Mail, ShoppingBag,
   MessageSquare, User, Send, Heart, Mic, PlayCircle, 
-  Brain, Volume2, X, Camera, Blocks
+  Brain, Volume2, X, Blocks
 } from 'lucide-react';
 
 const fadeIn = {
