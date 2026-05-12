@@ -1,0 +1,80 @@
+{
+  "hash": "a9b08d8a",
+  "configHash": "5253b935",
+  "lockfileHash": "439a86a6",
+  "browserHash": "b4ee026b",
+  "optimized": {
+    "@react-oauth/google": {
+      "src": "../../node_modules/@react-oauth/google/dist/index.esm.js",
+      "file": "@react-oauth_google.js",
+      "fileHash": "97702bf5",
+      "needsInterop": false
+    },
+    "framer-motion": {
+      "src": "../../node_modules/framer-motion/dist/es/index.mjs",
+      "file": "framer-motion.js",
+      "fileHash": "e71d6bfd",
+      "needsInterop": false
+    },
+    "lucide-react": {
+      "src": "../../node_modules/lucide-react/dist/esm/lucide-react.mjs",
+      "file": "lucide-react.js",
+      "fileHash": "4b232e58",
+      "needsInterop": false
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "434adc2b",
+      "needsInterop": true
+    },
+    "react-markdown": {
+      "src": "../../node_modules/react-markdown/index.js",
+      "file": "react-markdown.js",
+      "fileHash": "8513f450",
+      "needsInterop": false
+    },
+    "react-router-dom": {
+      "src": "../../node_modules/react-router-dom/dist/index.mjs",
+      "file": "react-router-dom.js",
+      "fileHash": "11ed977d",
+      "needsInterop": false
+    },
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "6f5d18a1",
+      "needsInterop": true
+    },
+    "react/jsx-dev-runtime": {
+      "src": "../../node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "fec74c30",
+      "needsInterop": true
+    },
+    "remark-gfm": {
+      "src": "../../node_modules/remark-gfm/index.js",
+      "file": "remark-gfm.js",
+      "fileHash": "4d6d88e3",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "jsx-runtime-CQJc9vR_": {
+      "file": "jsx-runtime-CQJc9vR_.js",
+      "isDynamicEntry": false
+    },
+    "lib-B4jt8Upy": {
+      "file": "lib-B4jt8Upy.js",
+      "isDynamicEntry": false
+    },
+    "react-B35R_oEX": {
+      "file": "react-B35R_oEX.js",
+      "isDynamicEntry": false
+    },
+    "react-dom-cs9xmVw_": {
+      "file": "react-dom-cs9xmVw_.js",
+      "isDynamicEntry": false
+    }
+  }
+}

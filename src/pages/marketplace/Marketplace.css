@@ -1,0 +1,36 @@
+/* Marketplace-specific styles */
+
+.marketplace-page {
+  background-color: #FFF8F3;
+}
+
+/* Hide scrollbar for category pills */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Add to cart button pulse */
+.add-to-cart-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.add-to-cart-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.5s ease;
+}
+
+.add-to-cart-btn:active::after {
+  opacity: 1;
+  transform: scale(2.5);
+  transition: all 0s;
+}
