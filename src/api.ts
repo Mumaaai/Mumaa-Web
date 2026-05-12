@@ -27,5 +27,12 @@ export const api = {
   async get(path: string) {
     const response = await fetch(`${API_URL}${path}`);
     return response.json();
+  },
+  
+  async delete(path: string) {
+    const response = await fetch(`${API_URL}${path}`, {
+      method: 'DELETE',
+    });
+    return response.json();
   }
 };
