@@ -49,37 +49,7 @@ const PRODUCTS: Product[] = [
     id: 'dm-006', name: 'Duke — Smart Guardian', description: 'Alerts when baby cries and plays soothing sounds remotely via app.',
     category: 'safety', price: 3299, comparePrice: 4499, image: '/images/duke.png',
     ageRange: '0-3 years', inStock: true, rating: 4.9, reviewCount: 421, tags: ['smart', 'ai', 'monitor'], color: 'emerald'
-  },
-  {
-    id: 'dm-007', name: 'Organic Baby Balm Kit', description: 'Ayurvedic-inspired moisturizing balm set for sensitive baby skin.',
-    category: 'care', price: 699, comparePrice: 999, image: '/images/pexels-vika-glitter-392079-1648374.jpg',
-    ageRange: '0-5 years', inStock: true, rating: 4.4, reviewCount: 87, tags: ['organic', 'ayurvedic'], color: 'emerald'
-  },
-  {
-    id: 'dm-008', name: 'Baby-Safe Feeding Set', description: 'BPA-free silicone bowls, spoons, and bibs for mess-free meals.',
-    category: 'feeding', price: 899, comparePrice: 1299, image: '/images/unnamed.jpg',
-    ageRange: '6+ months', inStock: true, rating: 4.3, reviewCount: 145, tags: ['bpa-free'], color: 'sky'
-  },
-  {
-    id: 'dm-009', name: 'Mumaa Swaddle Bundle', description: 'Ultra-soft muslin wraps in 3 calming pastel shades, breathable & cozy.',
-    category: 'accessory', price: 1299, comparePrice: 1799, image: '/images/pexels-suresh-photography-922908746-32761033.jpg',
-    ageRange: '0-12 months', inStock: true, rating: 4.7, reviewCount: 203, tags: ['organic', 'bundle'], color: 'rose'
-  },
-  {
-    id: 'dm-010', name: 'Corner Guard Safety Kit', description: '20-piece soft foam corner protectors and outlet covers for baby-proofing.',
-    category: 'safety', price: 499, comparePrice: 799, image: '/images/Gemini_Generated_Image_7en2cs7en2cs7en2.png',
-    ageRange: '6+ months', inStock: true, rating: 4.6, reviewCount: 310, tags: ['safety', 'essential'], color: 'amber'
-  },
-  {
-    id: 'dm-011', name: 'Tummy Time Play Mat', description: 'Stimulating sensory mat with detachable toys for tummy time fun.',
-    category: 'accessory', price: 1599, comparePrice: 2199, image: '/images/photo_6064604666927975870_y.jpg',
-    ageRange: '0-12 months', inStock: true, rating: 4.5, reviewCount: 78, tags: ['sensory', 'development'], color: 'pink'
-  },
-  {
-    id: 'dm-012', name: 'Natural Teething Ring Set', description: 'Chemical-free wooden & silicone teething rings to soothe sore gums.',
-    category: 'care', price: 599, comparePrice: 899, image: '/images/photo_6066598017084624042_y.jpg',
-    ageRange: '3-18 months', inStock: true, rating: 4.8, reviewCount: 267, tags: ['natural', 'teething'], color: 'violet'
-  },
+  }
 ];
 
 const CATEGORIES = [

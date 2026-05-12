@@ -6,7 +6,7 @@ import {
   Video, AudioWaveform, MessageCircleHeart, Apple, Clock, 
   Leaf, MessageCircle, Plus, Mail, ShoppingBag,
   MessageSquare, User, Send, Heart, Mic, PlayCircle, 
-  Brain, Volume2, X
+  Brain, Volume2, X, Camera
 } from 'lucide-react';
 
 const fadeIn = {
@@ -308,6 +308,10 @@ export default function Landing() {
                 {
                   title: 'Traditional Wisdom', badge: 'Heritage', badgeClass: 'text-amber-600 bg-amber-50 border-amber-100', color: 'amber', icon: Leaf, desc: 'Home remedies, Ayurvedic basics and traditional elder wisdom.', points: ['Home Remedies', 'Ayurvedics', 'Elder Guidance', 'Natural Care'], link: '/auth', linkText: 'Explore',
                   containerClass: 'hover:border-amber-200 hover:shadow-amber-100/50', bgClass: 'bg-amber-50', iconBg: 'bg-amber-100', iconColor: 'text-amber-500', textHover: 'group-hover:text-amber-500', dotClass: 'bg-amber-400', btnClass: 'bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200'
+                },
+                {
+                  title: 'Vision AI', badge: 'Smart Scan', badgeClass: 'text-fuchsia-600 bg-fuchsia-50 border-fuchsia-100', color: 'fuchsia', icon: Camera, desc: 'Instantly identify and learn about baby products, rashes, or development signs.', points: ['Product Scan', 'Safety Check', 'Visual Analysis', 'Instant Info'], link: '/auth', linkText: 'Scan Now',
+                  containerClass: 'hover:border-fuchsia-200 hover:shadow-fuchsia-100/50', bgClass: 'bg-fuchsia-50', iconBg: 'bg-fuchsia-100', iconColor: 'text-fuchsia-500', textHover: 'group-hover:text-fuchsia-500', dotClass: 'bg-fuchsia-400', btnClass: 'bg-fuchsia-50 hover:bg-fuchsia-100 text-fuchsia-700 border border-fuchsia-200'
                 },
               ].map((feature, i) => {
                 const Icon = feature.icon;

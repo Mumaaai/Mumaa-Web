@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, User, Baby, Calendar, Heart, Languages, Sparkles, Edit3, Save } from 'lucide-react';
+import { X, User, Baby, Calendar, Heart, Languages, Edit3, Save, Activity, Weight, Users, Stethoscope } from 'lucide-react';
 
 interface BabyProfileModalProps {
   isOpen: boolean;
@@ -21,6 +21,13 @@ export default function BabyProfileModal({ isOpen, onClose, onSave, initialData,
   const [bloodGroup, setBloodGroup] = useState('Unknown');
   const [language, setLanguage] = useState('Hinglish');
   const [aiDetail, setAiDetail] = useState('Balanced');
+  
+  // New Fields
+  const [deliveryType, setDeliveryType] = useState('Normal');
+  const [parentingType, setParentingType] = useState('Dual Parent');
+  const [babyMedical, setBabyMedical] = useState('');
+  const [birthWeight, setBirthWeight] = useState('');
+  const [momCondition, setMomCondition] = useState('');
 
   // Sync state with initialData when modal opens or initialData changes
   useEffect(() => {
@@ -32,6 +39,12 @@ export default function BabyProfileModal({ isOpen, onClose, onSave, initialData,
       setBloodGroup(initialData.blood_group || 'Unknown');
       setLanguage(initialData.preferred_language || 'Hinglish');
       setAiDetail(initialData.ai_detail || 'Balanced');
+      
+      setDeliveryType(initialData.delivery_type || 'Normal');
+      setParentingType(initialData.parenting_type || 'Dual Parent');
+      setBabyMedical(initialData.medical_conditions || '');
+      setBirthWeight(initialData.birth_weight || '');
+      setMomCondition(initialData.mom_condition || '');
       
       if (!initialData.name) {
         setIsEditing(true);
@@ -50,7 +63,12 @@ export default function BabyProfileModal({ isOpen, onClose, onSave, initialData,
       bloodGroup, 
       language, 
       aiDetail, 
-      momName 
+      momName,
+      deliveryType,
+      parentingType,
+      medicalConditions: babyMedical,
+      birthWeight: parseFloat(birthWeight) || 0,
+      momCondition
     });
     setIsEditing(false);
   };
@@ -70,9 +88,9 @@ export default function BabyProfileModal({ isOpen, onClose, onSave, initialData,
       <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${color}`}>
         <Icon className="w-5 h-5" />
       </div>
-      <div>
+      <div className="flex-1 min-w-0">
         <div className="text-[10px] font-black text-stone-400 uppercase tracking-widest">{label}</div>
-        <div className="text-sm font-bold text-stone-800">{value}</div>
+        <div className="text-sm font-bold text-stone-800 truncate">{value || 'None'}</div>
       </div>
     </div>
   );
@@ -125,19 +143,28 @@ export default function BabyProfileModal({ isOpen, onClose, onSave, initialData,
               </div>
             </div>
 
-            <div className="p-8 pt-0 max-h-[70vh] overflow-y-auto no-scrollbar">
+            <div className="p-8 pt-0 max-h-[75vh] overflow-y-auto no-scrollbar">
               {isEditing ? (
                 /* Edit Mode - Form */
                 <div className="space-y-6 pt-4">
                   <div className="space-y-2">
-                    <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Mother's Name</label>
-                    <input 
-                      type="text" 
-                      value={momName}
-                      onChange={(e) => setMomName(e.target.value)}
-                      placeholder="Your name" 
-                      className="w-full bg-stone-50/50 border border-stone-100 rounded-3xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 focus:ring-4 focus:ring-orange-50/50 transition-all placeholder:text-stone-300 shadow-inner" 
-                    />
+                    <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Mother's Name & Condition</label>
+                    <div className="grid grid-cols-2 gap-4">
+                        <input 
+                        type="text" 
+                        value={momName}
+                        onChange={(e) => setMomName(e.target.value)}
+                        placeholder="Your name" 
+                        className="w-full bg-stone-50/50 border border-stone-100 rounded-3xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 transition-all placeholder:text-stone-300 shadow-inner" 
+                        />
+                        <input 
+                        type="text" 
+                        value={momCondition}
+                        onChange={(e) => setMomCondition(e.target.value)}
+                        placeholder="Mom's Health Cond?" 
+                        className="w-full bg-stone-50/50 border border-stone-100 rounded-3xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 transition-all placeholder:text-stone-300 shadow-inner" 
+                        />
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
@@ -148,7 +175,7 @@ export default function BabyProfileModal({ isOpen, onClose, onSave, initialData,
                         value={babyName}
                         onChange={(e) => setBabyName(e.target.value)}
                         placeholder="Baby's name" 
-                        className="w-full bg-stone-50/50 border border-stone-100 rounded-2xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 focus:ring-4 focus:ring-orange-50/50 transition-all placeholder:text-stone-300 shadow-inner" 
+                        className="w-full bg-stone-50/50 border border-stone-100 rounded-2xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 transition-all placeholder:text-stone-300 shadow-inner" 
                       />
                     </div>
                     <div className="space-y-2">
@@ -157,7 +184,7 @@ export default function BabyProfileModal({ isOpen, onClose, onSave, initialData,
                         type="date" 
                         value={babyDOB}
                         onChange={(e) => setBabyDOB(e.target.value)}
-                        className="w-full bg-stone-50/50 border border-stone-100 rounded-2xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 focus:ring-4 focus:ring-orange-50/50 transition-all shadow-inner" 
+                        className="w-full bg-stone-50/50 border border-stone-100 rounded-2xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 transition-all shadow-inner" 
                       />
                     </div>
                   </div>
@@ -176,23 +203,53 @@ export default function BabyProfileModal({ isOpen, onClose, onSave, initialData,
                       </select>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Blood Group</label>
-                      <select 
-                        value={bloodGroup}
-                        onChange={(e) => setBloodGroup(e.target.value)}
-                        className="w-full bg-stone-50/50 border border-stone-100 rounded-2xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 transition-all appearance-none shadow-inner"
-                      >
-                        <option value="Unknown">Unknown</option>
-                        <option value="A+">A+</option>
-                        <option value="A-">A-</option>
-                        <option value="B+">B+</option>
-                        <option value="B-">B-</option>
-                        <option value="O+">O+</option>
-                        <option value="O-">O-</option>
-                        <option value="AB+">AB+</option>
-                        <option value="AB-">AB-</option>
-                      </select>
+                      <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Birth Weight (kg)</label>
+                      <input 
+                        type="number" 
+                        step="0.1"
+                        value={birthWeight}
+                        onChange={(e) => setBirthWeight(e.target.value)}
+                        placeholder="3.2" 
+                        className="w-full bg-stone-50/50 border border-stone-100 rounded-2xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 transition-all placeholder:text-stone-300 shadow-inner" 
+                      />
                     </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                        <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Delivery Type</label>
+                        <select 
+                            value={deliveryType}
+                            onChange={(e) => setDeliveryType(e.target.value)}
+                            className="w-full bg-stone-50/50 border border-stone-100 rounded-2xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 transition-all appearance-none shadow-inner"
+                        >
+                            <option value="Normal">Normal</option>
+                            <option value="C Section">C Section</option>
+                        </select>
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Parenting Type</label>
+                        <select 
+                            value={parentingType}
+                            onChange={(e) => setParentingType(e.target.value)}
+                            className="w-full bg-stone-50/50 border border-stone-100 rounded-2xl px-6 py-5 text-stone-800 font-bold outline-none focus:border-orange-200 transition-all appearance-none shadow-inner"
+                        >
+                            <option value="Dual Parent">Dual Parent</option>
+                            <option value="Single Mom">Single Mom</option>
+                            <option value="Single Dad">Single Dad</option>
+                            <option value="Co-Parenting">Co-Parenting</option>
+                        </select>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Baby Medical Conditions (if any)</label>
+                    <textarea 
+                      value={babyMedical}
+                      onChange={(e) => setBabyMedical(e.target.value)}
+                      placeholder="e.g. Allergies, Jaundice history..." 
+                      className="w-full bg-stone-50/50 border border-stone-100 rounded-2xl px-6 py-4 text-stone-800 font-bold outline-none focus:border-orange-200 transition-all placeholder:text-stone-300 shadow-inner h-20 resize-none" 
+                    />
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
@@ -232,7 +289,7 @@ export default function BabyProfileModal({ isOpen, onClose, onSave, initialData,
                 </div>
               ) : (
                 /* View Mode - Elegant Card */
-                <div className="space-y-4 pt-4">
+                <div className="space-y-4 pt-4 pb-8">
                   <div className="bg-stone-50/80 rounded-[2.5rem] p-8 border border-stone-100 relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-orange-100/30 rounded-full blur-3xl -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-1000" />
                     
@@ -248,7 +305,7 @@ export default function BabyProfileModal({ isOpen, onClose, onSave, initialData,
                     <InfoRow 
                       icon={User} 
                       label="Mother" 
-                      value={initialData?.mom_name || 'Not Set'} 
+                      value={`${initialData?.mom_name}${initialData?.mom_condition ? ` (${initialData.mom_condition})` : ''}`} 
                       color="bg-rose-50 text-rose-500"
                     />
                     <InfoRow 
@@ -264,22 +321,34 @@ export default function BabyProfileModal({ isOpen, onClose, onSave, initialData,
                       color="bg-orange-50 text-orange-500"
                     />
                     <InfoRow 
-                      icon={Sparkles} 
-                      label="Blood Group" 
-                      value={initialData?.blood_group || 'Unknown'} 
+                      icon={Weight} 
+                      label="Birth Weight" 
+                      value={`${initialData?.birth_weight || '--'} kg`} 
                       color="bg-emerald-50 text-emerald-500"
+                    />
+                    <InfoRow 
+                      icon={Activity} 
+                      label="Delivery" 
+                      value={initialData?.delivery_type} 
+                      color="bg-violet-50 text-violet-500"
+                    />
+                    <InfoRow 
+                      icon={Users} 
+                      label="Parenting" 
+                      value={initialData?.parenting_type} 
+                      color="bg-amber-50 text-amber-500"
+                    />
+                    <InfoRow 
+                      icon={Stethoscope} 
+                      label="Med Condition" 
+                      value={initialData?.medical_conditions} 
+                      color="bg-rose-50 text-rose-600"
                     />
                     <InfoRow 
                       icon={Languages} 
                       label="Language" 
                       value={initialData?.preferred_language} 
                       color="bg-indigo-50 text-indigo-500"
-                    />
-                    <InfoRow 
-                      icon={Sparkles} 
-                      label="AI Companion" 
-                      value={`${initialData?.ai_detail} Tone`} 
-                      color="bg-amber-50 text-amber-500"
                     />
                   </div>
 
