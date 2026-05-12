@@ -92,3 +92,56 @@ CREATE TABLE IF NOT EXISTS memory_journal (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (baby_id) REFERENCES babies(id) ON DELETE CASCADE
 );
+
+-- 9. Dumamu Marketplace Products
+CREATE TABLE IF NOT EXISTS dumamu_products (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    description TEXT,
+    category TEXT CHECK( category IN ('toy', 'care', 'accessory', 'feeding', 'safety') ) NOT NULL,
+    price REAL NOT NULL,
+    compare_price REAL,        -- Original price for showing discounts
+    currency TEXT DEFAULT 'INR',
+    image_url TEXT,
+    age_range TEXT,             -- e.g., '0-6 months', '6-12 months'
+    in_stock INTEGER DEFAULT 1,
+    rating REAL DEFAULT 0,
+    review_count INTEGER DEFAULT 0,
+    tags TEXT,                  -- Comma-separated tags
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 10. Shopping Cart
+CREATE TABLE IF NOT EXISTS cart_items (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    product_id TEXT NOT NULL,
+    quantity INTEGER DEFAULT 1,
+    added_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES dumamu_products(id) ON DELETE CASCADE
+);
+
+-- 11. Orders (for future checkout flow)
+CREATE TABLE IF NOT EXISTS orders (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    total_amount REAL NOT NULL,
+    currency TEXT DEFAULT 'INR',
+    status TEXT CHECK( status IN ('pending', 'confirmed', 'shipped', 'delivered', 'cancelled') ) DEFAULT 'pending',
+    shipping_address TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- 12. Order Items
+CREATE TABLE IF NOT EXISTS order_items (
+    id TEXT PRIMARY KEY,
+    order_id TEXT NOT NULL,
+    product_id TEXT NOT NULL,
+    quantity INTEGER NOT NULL,
+    unit_price REAL NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES dumamu_products(id) ON DELETE CASCADE
+);

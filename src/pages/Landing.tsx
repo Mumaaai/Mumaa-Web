@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { 
   Sparkles, Menu, ShieldCheck, ArrowRight, Download, Check, 
   Video, AudioWaveform, MessageCircleHeart, Apple, Clock, 
-  Leaf, MessageCircle, Plus, Mail, 
+  Leaf, MessageCircle, Plus, Mail, ShoppingBag,
   MessageSquare, User, Send, Heart, Mic, PlayCircle, 
   Gamepad2, Brain, Volume2
 } from 'lucide-react';
@@ -66,6 +66,7 @@ export default function Landing() {
             <a className="hover:text-orange-500 transition-colors" href="#hero">Home</a>
             <a className="hover:text-orange-500 transition-colors" href="#features">App Features</a>
             <a className="hover:text-orange-500 transition-colors" href="#toys">Play Family</a>
+            <Link className="hover:text-orange-500 transition-colors" to="/marketplace">Marketplace</Link>
             <a className="hover:text-orange-500 transition-colors" href="#faq-section">FAQ</a>
             <a className="hover:text-orange-500 transition-colors" href="#contact">Contact</a>
           </div>
@@ -98,6 +99,7 @@ export default function Landing() {
             <a href="#hero" onClick={() => setIsMobileMenuOpen(false)} className="block rounded-xl px-3 py-2.5 font-bold text-stone-600 transition-colors hover:bg-orange-50 hover:text-orange-600 sm:px-4 sm:py-3">Home</a>
             <a href="#features" onClick={() => setIsMobileMenuOpen(false)} className="block rounded-xl px-3 py-2.5 font-bold text-stone-600 transition-colors hover:bg-orange-50 hover:text-orange-600 sm:px-4 sm:py-3">App Features</a>
             <a href="#toys" onClick={() => setIsMobileMenuOpen(false)} className="block rounded-xl px-3 py-2.5 font-bold text-stone-600 transition-colors hover:bg-orange-50 hover:text-orange-600 sm:px-4 sm:py-3">Play Family</a>
+            <Link to="/marketplace" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2 rounded-xl px-3 py-2.5 font-bold text-stone-600 transition-colors hover:bg-orange-50 hover:text-orange-600 sm:px-4 sm:py-3"><ShoppingBag className="h-4 w-4" /> Marketplace</Link>
             <a href="#faq-section" onClick={() => setIsMobileMenuOpen(false)} className="block rounded-xl px-3 py-2.5 font-bold text-stone-600 transition-colors hover:bg-orange-50 hover:text-orange-600 sm:px-4 sm:py-3">FAQ</a>
             <div className="mt-2 pt-4 border-t border-stone-100 flex flex-col gap-3">
               <Link to="/auth" className="gradient-peach block rounded-xl px-3 py-2.5 text-center font-bold text-orange-900 shadow-md transition-colors sm:px-4 sm:py-3">Launch Mumaa</Link>
@@ -649,6 +651,7 @@ export default function Landing() {
                       <h4 className="mb-4 text-[11px] font-extrabold uppercase tracking-widest text-stone-800">Platform</h4>
                       <ul className="space-y-3 text-[15px] font-medium text-stone-500">
                           <li><Link className="hover:text-orange-500 transition-colors" to="/auth">AI Chat App</Link></li>
+                          <li><Link className="hover:text-orange-500 transition-colors" to="/marketplace">Dumamu Store</Link></li>
                           <li><a className="hover:text-orange-500 transition-colors" href="/MummA_Cry_Analyzer (2).apk">Download APK</a></li>
                           <li><a className="hover:text-orange-500 transition-colors" href="#features">All Features</a></li>
                       </ul>
