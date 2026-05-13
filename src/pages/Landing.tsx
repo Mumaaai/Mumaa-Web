@@ -428,7 +428,7 @@ export default function Landing() {
                   {/* Dynamic Island */}
                   {/* <div className="absolute top-2 left-1/2 -translate-x-1/2 w-20 h-5 bg-black rounded-full z-20"></div> */}
 
-                  <img src="/public/images/nanny.png" alt="Video Call" className="w-full h-full object-cover" />
+                  <img src="/images/nanny.png" alt="Video Call" className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-orange-900/10 pointer-events-none"></div>
                   
                   {/* Caller UI */}
