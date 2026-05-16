@@ -3,11 +3,20 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { GoogleOAuthProvider } from '@react-oauth/google'
+import { ScaleProvider } from './context/ScaleContext'
+
+const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <GoogleOAuthProvider clientId="776390108864-k41d9jj0snan12qmco02gl0mjkue286s.apps.googleusercontent.com">
-      <App />
-    </GoogleOAuthProvider>
+    <ScaleProvider>
+      {googleClientId ? (
+        <GoogleOAuthProvider clientId={googleClientId}>
+          <App />
+        </GoogleOAuthProvider>
+      ) : (
+        <App />
+      )}
+    </ScaleProvider>
   </StrictMode>,
 )

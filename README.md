@@ -22,6 +22,14 @@ This frontend is optimized for **GitHub Pages**.
 - Assets use relative paths for sub-folder compatibility.
 
 ### Local Development
+Create a local env file first:
+
+```bash
+cp .env.example .env.local
+```
+
+If Google sign-in still reports `origin_mismatch`, add `http://localhost:5174` to the OAuth client's Authorized JavaScript origins in Google Cloud Console.
+
 ```bash
 npm install
 npm run dev

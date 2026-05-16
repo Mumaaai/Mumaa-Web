@@ -4,7 +4,7 @@ import { cors } from 'hono/cors'
 
 type Bindings = {
   DB: D1Database
-  GOOGLE_CLIENT_ID: string
+  GOOGLE_CLIENT_ID?: string
 }
 
 const app = new Hono<{ Bindings: Bindings }>()
@@ -111,6 +111,10 @@ app.post('/auth/google', async (c) => {
   }
 
   try {
+    if (!c.env.GOOGLE_CLIENT_ID) {
+      return c.json({ error: 'Google OAuth is not configured on the backend' }, 500)
+    }
+
     const response = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${id_token}`)
     const payload: any = await response.json()
 
