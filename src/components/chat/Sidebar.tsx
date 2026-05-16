@@ -6,13 +6,13 @@ import {
   TrendingUp, ShieldCheck, Star, Compass, Apple, Blocks, 
   Clock, AudioWaveform, BookHeart, MoonStar, 
   HeartHandshake, Stethoscope, MessageSquare, Settings2,
-  ChevronLeft, ChevronRight, LogOut, PlayCircle, Brain
+  ChevronLeft, ChevronRight, LogOut, PlayCircle, Brain,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export type TabId = 'chat' | 'dashboard' | 'feeding' | 'growth' | 'vaccination' | 'milestones' | 
                     'guide' | 'diet' | 'study' | 'games' | 'routine' | 'cry' | 'journal' | 
-                    'lullaby' | 'photo';
+                    'lullaby' | 'photo' | 'settings';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -176,6 +176,7 @@ export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user,
               {!isCollapsed && <span className="font-semibold text-stone-600 group-hover:text-stone-900 truncate">Video Guidance</span>}
             </button>
             {navItem('photo', <Brain className="w-4 h-4" />, 'Mind Games')}
+            {navItem('settings', <Settings2 className="w-4 h-4" />, 'App Settings')}
           </nav>
           
           {!isCollapsed ? (
@@ -212,7 +213,7 @@ export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user,
           >
             <div className="w-9 h-9 rounded-full bg-stone-200 text-stone-600 flex items-center justify-center shrink-0 group-hover:bg-white transition-colors border border-transparent group-hover:border-stone-200 shadow-sm overflow-hidden">
               {user?.picture ? (
-                <img src={user.picture} alt={user.name} className="w-full h-full object-cover" />
+                <img src={user.picture} alt={user.name} referrerPolicy="no-referrer" className="w-full h-full object-cover shrink-0" />
               ) : (
                 <Settings2 className="w-4 h-4" />
               )}
@@ -249,6 +250,7 @@ export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user,
                 <p className="text-stone-500 text-[11px] font-bold uppercase tracking-wider mb-6">
                   Session will be saved
                 </p>
+
                 <div className="flex flex-col gap-2">
                   <button 
                     onClick={handleLogout}

@@ -19,6 +19,7 @@ import CryView from '../components/chat/views/CryView';
 import JournalView from '../components/chat/views/JournalView';
 import LullabyView from '../components/chat/views/LullabyView';
 import PhotoView from '../components/chat/views/PhotoView';
+import SettingsView from '../components/chat/views/SettingsView';
 import BabyProfileModal from '../components/chat/ProfileSetupModal';
 import HistorySidebar from '../components/chat/HistorySidebar';
 
@@ -139,13 +140,14 @@ export default function Chat() {
       case 'milestones': return <MilestonesView user={user} babyProfile={babyProfile} />;
       case 'guide': return <GuideView />;
       case 'diet': return <DietView />;
-      case 'study': return <StudyView />;
+      case 'study': return <StudyView user={user} babyProfile={babyProfile} />;
       case 'games': return <GamesView />;
       case 'routine': return <RoutineView />;
       case 'cry': return <CryView />;
       case 'journal': return <JournalView />;
       case 'lullaby': return <LullabyView />;
       case 'photo': return <PhotoView />;
+      case 'settings': return <SettingsView />;
       default: return (
         <AIChatView 
           user={user} 
