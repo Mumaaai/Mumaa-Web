@@ -681,7 +681,7 @@ export default function Landing() {
                           <li><Link className="hover:text-orange-500 transition-colors" to="/marketplace">Dumamu Store</Link></li>
                           <li><a className="hover:text-orange-500 transition-colors" href="/MummA_Cry_Analyzer (2).apk">Download APK</a></li>
                           <li><a className="hover:text-orange-500 transition-colors" href="#features">All Features</a></li>
-                          <li><Link className="hover:text-orange-500 transition-colors" to="/opsboard">OpsBoard</Link></li>
+                          <li><a className="hover:text-orange-500 transition-colors" href="https://sumit7739.github.io/opsboard/">OpsBoard</a></li>
                       </ul>
                   </div>
                   <div>

@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
-import opsRoutes from './opsboard'
+
 
 type Bindings = {
   DB: D1Database
@@ -631,9 +631,6 @@ app.delete('/vaccinations/:vaccineId', async (c) => {
   return c.json({ status: 'deleted' })
 })
 
-/**
- * OpsBoard Integration
- */
-app.route('/ops', opsRoutes)
+
 
 export default app
