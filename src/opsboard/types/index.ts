@@ -28,6 +28,7 @@ export interface Task {
   tags?: string;
   drive_links?: string;
   remarks?: string;
+  updated_by?: string;
   created_at: string;
   updated_at: string;
   assignee_name?: string;

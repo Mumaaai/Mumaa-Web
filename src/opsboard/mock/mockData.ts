@@ -8,13 +8,13 @@ export const mockUsers: User[] = [
 ];
 
 export const mockTeams: Team[] = [
-  { id: 't1', name: 'Development', purpose: 'Product engineering' },
-  { id: 't2', name: 'Operations', purpose: 'Coordination & execution' }
+  { id: 't1', name: 'Development', purpose: 'Product engineering', lead_id: '' },
+  { id: 't2', name: 'Operations', purpose: 'Coordination & execution', lead_id: '' }
 ];
 
 export const mockProjects: Project[] = [
-  { id: 'p1', name: 'Website Refresh', description: 'Landing and marketing pages', owner_id: 'u1', status: 'Active', progress: 30 },
-  { id: 'p2', name: 'Ops Migration', description: 'Migrate ops workflows', owner_id: 'u2', status: 'Active', progress: 12 }
+  { id: 'p1', name: 'Website Refresh', description: 'Landing and marketing pages', owner_id: 'u1', status: 'Active', progress: 30, deadline: '' },
+  { id: 'p2', name: 'Ops Migration', description: 'Migrate ops workflows', owner_id: 'u2', status: 'Active', progress: 12, deadline: '' }
 ];
 
 export const mockTasks: Task[] = [

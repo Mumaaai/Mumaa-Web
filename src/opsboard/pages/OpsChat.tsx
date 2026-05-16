@@ -311,7 +311,7 @@ const OpsChat: React.FC = () => {
       const existing = reactions.find((r: any) => r.user_id === currentUser?.id && r.emoji === emoji);
 
       if (existing) {
-        await api.delete(`/ops/chat/messages/${messageId}/reactions`, { data: { emoji } });
+        await api.delete(`/ops/chat/messages/${messageId}/reactions`, { emoji });
         setMessages(messages.map(m => {
           if (m.id === messageId) {
             const nextReactions = reactions.filter((r: any) => !(r.user_id === currentUser?.id && r.emoji === emoji));

@@ -36,10 +36,11 @@ export const api = {
     return response.json();
   },
   
-  async delete(path: string) {
+  async delete(path: string, data?: any) {
     const response = await fetch(`${API_URL}${path}`, {
       method: 'DELETE',
-      headers: this.getHeaders()
+      headers: this.getHeaders(),
+      body: data ? JSON.stringify(data) : undefined
     });
     return response.json();
   }
