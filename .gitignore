@@ -25,3 +25,14 @@ error.md
 *.njsproj
 *.sln
 *.sw?
+.env.local
+.env.*.local
+
+# wrangler files
+.wrangler
+.dev.vars*
+wrangler.jsonc
+docs/wrangler.json
+docs/.assetsignore
+!.dev.vars.example
+!.env.example

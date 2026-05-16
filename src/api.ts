@@ -1,9 +1,9 @@
 // Mumaa API Utility
-export const API_URL = 'https://mumaa-api.srisumit96-1ca.workers.dev';
+export const API_URL = import.meta.env.VITE_API_URL ?? 'https://mumaa-api.srisumit96-1ca.workers.dev';
 
 export const api = {
   getHeaders() {
-    const session = localStorage.getItem('ops_session');
+    const session = localStorage.getItem('mumaa_session');
     const user = session ? JSON.parse(session) : null;
     return {
       'Content-Type': 'application/json',

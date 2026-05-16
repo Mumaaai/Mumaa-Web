@@ -5,6 +5,8 @@ import { ArrowRight, Mail, Lock, User, AlertCircle, Loader2, Heart } from 'lucid
 import { GoogleLogin } from '@react-oauth/google';
 import { api } from '../api';
 
+const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
@@ -266,15 +268,21 @@ export default function Auth() {
                 </div>
 
                 <div className="flex justify-center group/google">
-                  <GoogleLogin
-                    onSuccess={handleGoogleSuccess}
-                    onError={() => setError('Google Login Failed')}
-                    useOneTap
-                    theme="outline"
-                    shape="pill"
-                    size="large"
-                    width="100%"
-                  />
+                  {googleClientId ? (
+                    <GoogleLogin
+                      onSuccess={handleGoogleSuccess}
+                      onError={() => setError('Google Login Failed')}
+                      useOneTap
+                      theme="outline"
+                      shape="pill"
+                      size="large"
+                      width="100%"
+                    />
+                  ) : (
+                    <div className="rounded-full border border-amber-200 bg-amber-50 px-4 py-2 text-xs font-semibold text-amber-800 text-center">
+                      Google sign-in is not configured for this environment.
+                    </div>
+                  )}
                 </div>
               </div>
 
