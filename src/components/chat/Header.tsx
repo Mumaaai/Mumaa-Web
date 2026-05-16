@@ -102,7 +102,7 @@ export default function Header({
         <div className="flex items-center gap-3">
           <button onClick={onMenuClick} className="md:hidden w-10 h-10 rounded-full overflow-hidden flex items-center justify-center text-orange-900 shadow-sm btn-press border border-white">
             {user?.picture ? (
-              <img src={user.picture} alt={user.name} className="w-full h-full object-cover" />
+              <img src={user.picture} alt={user.name} referrerPolicy="no-referrer" className="w-full h-full object-cover shrink-0" />
             ) : (
               <User className="w-5 h-5" />
             )}
