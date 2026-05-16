@@ -6,6 +6,7 @@ import Chat from './pages/Chat';
 import ForgotPassword from './pages/ForgotPassword';
 import Marketplace from './pages/marketplace/Marketplace';
 import Reels from './pages/Reels';
+import OpsMoved from './pages/OpsMoved';
 
 
 function App() {
@@ -19,6 +20,9 @@ function App() {
           <Route path="/chat" element={<Chat />} />
           <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/reels" element={<Reels />} />
+
+          <Route path="/opsboard" element={<OpsMoved />} />
+          <Route path="/opsboard/*" element={<OpsMoved />} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

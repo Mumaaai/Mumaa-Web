@@ -681,7 +681,7 @@ export default function Landing() {
                           <li><Link className="hover:text-orange-500 transition-colors" to="/marketplace">Dumamu Store</Link></li>
                           <li><a className="hover:text-orange-500 transition-colors" href="/MummA_Cry_Analyzer (2).apk">Download APK</a></li>
                           <li><a className="hover:text-orange-500 transition-colors" href="#features">All Features</a></li>
-                          <li><a className="hover:text-orange-500 transition-colors" href="https://sumit7739.github.io/opsboard/">OpsBoard</a></li>
+                          <li><a className="hover:text-orange-500 transition-colors" href="https://sumit7739.github.io/ops/">OpsBoard</a></li>
                       </ul>
                   </div>
                   <div>
@@ -701,7 +701,7 @@ export default function Landing() {
                           <li><a className="hover:text-orange-500 transition-colors" href="#">Data Security</a></li>
                       </ul>
                   </div>
-              </div>
+              </div> 
               <div className="border-t border-stone-200 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
                   <p className="text-stone-400 font-medium text-xs">© 2026 Mumaa AI · All rights reserved.</p>
                   <p className="text-stone-400 font-medium text-xs">Made with <span className="text-rose-500 animate-pulse">♥</span> for parents everywhere</p>
