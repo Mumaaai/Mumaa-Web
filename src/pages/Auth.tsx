@@ -99,7 +99,7 @@ export default function Auth() {
       {/* Navigation */}
       <Link to="/" className="absolute top-8 left-8 z-50 flex items-center gap-3 select-none group bg-white/60 backdrop-blur-xl px-5 py-2.5 rounded-[1.5rem] border border-white shadow-xl shadow-orange-900/5 hover:bg-white hover:scale-105 transition-all">
         <img src="images/MumaaAIlogo.png" alt="Mumaa Logo" className="w-8 h-8 object-cover rounded-full shadow-sm" />
-        <span className="text-xl font-black tracking-tight text-stone-800">MUMAA</span>
+        <span className="text-xl font-black tracking-tight text-stone-800 uppercase">MumaaAI</span>
       </Link>
 
       <div className="flex-1 flex items-center justify-center p-4 md:p-8 relative z-10 w-full max-w-7xl mx-auto">
