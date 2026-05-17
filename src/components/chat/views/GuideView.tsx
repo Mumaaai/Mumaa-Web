@@ -1,6 +1,17 @@
 import React, { useState } from 'react';
 import { BookOpen, Sparkles, Library, Loader2 } from 'lucide-react';
 
+// --- API Types for Future Backend Integration ---
+export interface GuideRequest {
+  topic: string;
+}
+
+export interface GuideResponse {
+  content: string;
+  error?: string;
+}
+// ------------------------------------------------
+
 export default function GuideView() {
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -15,14 +26,22 @@ export default function GuideView() {
 
     try {
       // TODO: Replace with actual backend API call
-      // Example implementation:
-      // const response = await fetch('/api/guide', { 
-      //   method: 'POST', 
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ topic }) 
-      // });
-      // const data = await response.json();
-      // setGuideContent(data.content);
+      /*
+      const payload: GuideRequest = { topic };
+      const response = await fetch('/api/guide', { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload) 
+      });
+      
+      if (!response.ok) throw new Error('Failed to fetch guide');
+      
+      const data: GuideResponse = await response.json();
+      if (data.error) throw new Error(data.error);
+      
+      setGuideContent(data.content);
+      return;
+      */
 
       // Simulated network delay for testing UI
       await new Promise(resolve => setTimeout(resolve, 1500));
