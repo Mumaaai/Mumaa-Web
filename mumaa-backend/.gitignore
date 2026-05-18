@@ -19,6 +19,5 @@ dist/
 .DS_Store
 Thumbs.db
 
-# Other
+# Custom Env
 .env
-
