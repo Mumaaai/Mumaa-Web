@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import Sidebar, { type TabId } from '../components/chat/Sidebar';
 import Header from '../components/chat/Header';
 import { api } from '../api';
@@ -25,7 +25,17 @@ import HistorySidebar from '../components/chat/HistorySidebar';
 
 export default function Chat() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<TabId>('chat');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = (searchParams.get('tab') as TabId) || 'chat';
+
+  const setActiveTab = (tab: TabId) => {
+    setSearchParams(prev => {
+      const newParams = new URLSearchParams(prev);
+      newParams.set('tab', tab);
+      return newParams;
+    });
+  };
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [babyProfile, setBabyProfile] = useState<any>(null);
@@ -139,10 +149,10 @@ export default function Chat() {
       case 'vaccination': return <VaccinationView user={user} babyProfile={babyProfile} />;
       case 'milestones': return <MilestonesView user={user} babyProfile={babyProfile} />;
       case 'guide': return <GuideView />;
-      case 'diet': return <DietView />;
+      case 'diet': return <DietView user={user} babyProfile={babyProfile} />;
       case 'study': return <StudyView user={user} babyProfile={babyProfile} />;
       case 'games': return <GamesView />;
-      case 'routine': return <RoutineView />;
+      case 'routine': return <RoutineView user={user} babyProfile={babyProfile} />;
       case 'cry': return <CryView />;
       case 'journal': return <JournalView />;
       case 'lullaby': return <LullabyView />;

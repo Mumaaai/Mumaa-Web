@@ -1,25 +1,64 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Apple, UtensilsCrossed, Salad, Loader2 } from 'lucide-react';
+import { api } from '../../../api';
 
 // --- API Types for Future Backend Integration ---
 export interface DietPlanRequest {
   target: 'baby' | 'mom';
   dietType: string;
+  userId?: string;
 }
 
 export interface DietPlanResponse {
   content: string;
+  target: 'baby' | 'mom';
+  dietType: string;
   error?: string;
 }
 // ------------------------------------------------
 
-export default function DietView() {
+interface DietViewProps {
+  user: any;
+  babyProfile: any;
+}
+
+export default function DietView({ user, babyProfile }: DietViewProps) {
   const [target, setTarget] = useState<'baby' | 'mom'>('baby');
   const [dietType, setDietType] = useState('Vegetarian');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [dietContent, setDietContent] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchDiet = async () => {
+      try {
+        if (user?.id) {
+          const data = await api.get(`/diet/${user.id}`);
+          if (data && data.content) {
+            setTarget(data.target || 'baby');
+            setDietType(data.dietType || 'Vegetarian');
+            setDietContent(data.content);
+            return;
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch diet plan from backend", err);
+      }
+      
+      // Fallback to local storage
+      const saved = localStorage.getItem('mumaa_dietPlan');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          setTarget(parsed.target);
+          setDietType(parsed.dietType);
+          setDietContent(parsed.content);
+        } catch (e) {}
+      }
+    };
+    fetchDiet();
+  }, [user]);
 
   const dietOptions = [
     { value: 'Vegetarian', label: '🌱 Vegetarian' },
@@ -52,29 +91,37 @@ export default function DietView() {
     setDietContent(null);
 
     try {
-      // TODO: Replace with actual backend API call
-      /* 
-      const payload: DietPlanRequest = { target, dietType };
-      const response = await fetch('/api/diet', { 
-        method: 'POST', 
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload) 
-      });
+      const payload: DietPlanRequest = { target, dietType, userId: user?.id };
       
-      if (!response.ok) throw new Error('Failed to fetch diet plan');
-      
-      const data: DietPlanResponse = await response.json();
-      if (data.error) throw new Error(data.error);
-      
-      setDietContent(data.content);
-      return; 
-      */
+      try {
+        // Try backend API call first
+        const response = await api.post('/diet', payload);
+        if (response && response.content) {
+          setDietContent(response.content);
+          localStorage.setItem('mumaa_dietPlan', JSON.stringify({
+            target,
+            dietType,
+            content: response.content
+          }));
+          setIsLoading(false);
+          return;
+        }
+      } catch (backendErr) {
+        console.error("Backend post failed, falling back to local simulation", backendErr);
+      }
 
-      // Simulated network delay for testing UI
+      // Simulated network delay for fallback
       await new Promise(resolve => setTimeout(resolve, 1500));
       
       // Simulated response
-      setDietContent(`Here is your custom **${dietType}** nutrition plan for **${target === 'baby' ? 'Baby' : 'Mom'}**.\n\n• Morning: Nutrient-rich breakfast.\n• Afternoon: Balanced, energy-boosting lunch.\n• Evening: Light, digestive-friendly dinner.\n\nRemember to stay hydrated!`);
+      const content = `Here is your custom **${dietType}** nutrition plan for **${target === 'baby' ? 'Baby' : 'Mom'}**.\n\n• Morning: Nutrient-rich breakfast.\n• Afternoon: Balanced, energy-boosting lunch.\n• Evening: Light, digestive-friendly dinner.\n\nRemember to stay hydrated!`;
+      
+      setDietContent(content);
+      localStorage.setItem('mumaa_dietPlan', JSON.stringify({
+        target,
+        dietType,
+        content
+      }));
     } catch (err: any) {
       setError(err.message || 'Unable to fetch diet plan. Please try again later.');
     } finally {
