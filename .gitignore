@@ -36,3 +36,6 @@ docs/wrangler.json
 docs/.assetsignore
 !.dev.vars.example
 !.env.example
+
+
+.env
