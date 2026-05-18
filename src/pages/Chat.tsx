@@ -146,7 +146,7 @@ export default function Chat() {
       case 'vaccination': return <VaccinationView user={user} babyProfile={babyProfile} />;
       case 'milestones': return <MilestonesView user={user} babyProfile={babyProfile} />;
       case 'guide': return <GuideView />;
-      case 'diet': return <DietView />;
+      case 'diet': return <DietView user={user} babyProfile={babyProfile} />;
       case 'study': return <StudyView user={user} babyProfile={babyProfile} />;
       case 'games': return <GamesView />;
       case 'routine': return <RoutineView />;
