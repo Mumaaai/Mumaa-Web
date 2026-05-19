@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Sidebar, { type TabId } from '../components/chat/Sidebar';
 import Header from '../components/chat/Header';
 import { api } from '../api';
@@ -25,17 +25,9 @@ import HistorySidebar from '../components/chat/HistorySidebar';
 
 export default function Chat() {
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const activeTab = (searchParams.get('tab') as TabId) || 'chat';
-
-  const setActiveTab = (tab: TabId) => {
-    setSearchParams(prev => {
-      const newParams = new URLSearchParams(prev);
-      newParams.set('tab', tab);
-      return newParams;
-    });
-  };
-
+  const [activeTab, setActiveTab] = useState<TabId>(
+    () => (localStorage.getItem('mumaa_active_tab') as TabId) || 'chat'
+  );
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [babyProfile, setBabyProfile] = useState<any>(null);
@@ -112,9 +104,14 @@ export default function Chat() {
     }
   };
 
+  const handleTabChange = (tab: TabId) => {
+    localStorage.setItem('mumaa_active_tab', tab);
+    setActiveTab(tab);
+  };
+
   const startNewChat = () => {
     setCurrentSessionId(crypto.randomUUID());
-    setActiveTab('chat');
+    handleTabChange('chat');
   };
 
   if (!user) return null;
@@ -143,7 +140,7 @@ export default function Chat() {
           }}
         />
       );
-      case 'dashboard': return <DashboardView user={user} babyProfile={babyProfile} onTabChange={setActiveTab} />;
+      case 'dashboard': return <DashboardView user={user} babyProfile={babyProfile} onTabChange={handleTabChange} />;
       case 'feeding': return <FeedingView user={user} babyProfile={babyProfile} onActivityLogged={() => fetchDashboardData(user.id)} />;
       case 'growth': return <GrowthView user={user} babyProfile={babyProfile} />;
       case 'vaccination': return <VaccinationView user={user} babyProfile={babyProfile} />;
@@ -154,7 +151,7 @@ export default function Chat() {
       case 'games': return <GamesView />;
       case 'routine': return <RoutineView user={user} babyProfile={babyProfile} />;
       case 'cry': return <CryView />;
-      case 'journal': return <JournalView />;
+      case 'journal': return <JournalView user={user} />;
       case 'lullaby': return <LullabyView />;
       case 'photo': return <PhotoView />;
       case 'settings': return <SettingsView />;
@@ -191,7 +188,7 @@ export default function Chat() {
         isOpen={isMobileMenuOpen} 
         onClose={() => setIsMobileMenuOpen(false)} 
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={handleTabChange}
         user={user}
         babyProfile={babyProfile}
         dashboardData={dashboardData}
