@@ -149,7 +149,7 @@ export default function Chat() {
       case 'diet': return <DietView user={user} babyProfile={babyProfile} />;
       case 'study': return <StudyView user={user} babyProfile={babyProfile} />;
       case 'games': return <GamesView />;
-      case 'routine': return <RoutineView />;
+      case 'routine': return <RoutineView user={user} babyProfile={babyProfile} />;
       case 'cry': return <CryView />;
       case 'journal': return <JournalView user={user} />;
       case 'lullaby': return <LullabyView />;
