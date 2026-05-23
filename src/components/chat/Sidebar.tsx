@@ -175,7 +175,7 @@ export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user,
               </div>
               {!isCollapsed && <span className="font-semibold text-stone-600 group-hover:text-stone-900 truncate">Video Guidance</span>}
             </button>
-            {navItem('photo', <Brain className="w-4 h-4" />, 'Mind Games')}
+            {navItem('games', <Brain className="w-4 h-4" />, 'Mind Games')}
             {navItem('settings', <Settings2 className="w-4 h-4" />, 'App Settings')}
           </nav>
           
