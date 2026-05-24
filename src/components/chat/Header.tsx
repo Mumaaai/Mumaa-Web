@@ -33,7 +33,7 @@ const getTabTitle = (tab: TabId, activeSessionTitle?: string) => {
     case 'cry': return 'Cry Analyzer';
     case 'journal': return 'Memory Journal';
     case 'lullaby': return 'Soothing Sounds';
-    case 'photo': return 'Mind Games';
+    case 'photo': return 'Photo Insights';
     default: return 'Mumaa AI';
   }
 };
