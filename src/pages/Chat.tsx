@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Sidebar, { type TabId } from '../components/chat/Sidebar';
 import Header from '../components/chat/Header';
 import { api } from '../api';
+import { MessageCircleHeart, LayoutGrid, TrendingUp, Menu } from 'lucide-react';
 
 import AIChatView from '../components/chat/views/AIChatView';
 import DashboardView from '../components/chat/views/DashboardView';
@@ -20,6 +21,9 @@ import JournalView from '../components/chat/views/JournalView';
 import LullabyView from '../components/chat/views/LullabyView';
 import PhotoView from '../components/chat/views/PhotoView';
 import SettingsView from '../components/chat/views/SettingsView';
+import MomCareView from '../components/chat/views/MomCareView';
+import EmergencyView from '../components/chat/views/EmergencyView';
+import FeedbackView from '../components/chat/views/FeedbackView';
 import BabyProfileModal from '../components/chat/ProfileSetupModal';
 import HistorySidebar from '../components/chat/HistorySidebar';
 
@@ -155,6 +159,9 @@ export default function Chat() {
       case 'lullaby': return <LullabyView />;
       case 'photo': return <PhotoView />;
       case 'settings': return <SettingsView />;
+      case 'momcare': return <MomCareView />;
+      case 'emergency': return <EmergencyView user={user} babyProfile={babyProfile} />;
+      case 'feedback': return <FeedbackView />;
       default: return (
         <AIChatView 
           user={user} 
@@ -216,6 +223,53 @@ export default function Chat() {
         {/* Dynamic Content Container */}
         <div className="flex-1 relative overflow-hidden z-10">
           {renderContent()}
+        </div>
+
+        {/* Mobile Navigation Dock */}
+        <div className="md:hidden border-t border-stone-200/60 bg-white/95 backdrop-blur-xl flex items-center justify-around py-2.5 px-6 shrink-0 z-40 shadow-[0_-4px_24px_-4px_rgba(0,0,0,0.04)]">
+          <button 
+            onClick={() => handleTabChange('chat')}
+            className={`flex flex-col items-center justify-center gap-1 py-1.5 px-5 rounded-2xl transition-all ${
+              activeTab === 'chat' 
+                ? 'bg-orange-50 text-orange-600 font-bold' 
+                : 'text-stone-400 hover:text-stone-600'
+            }`}
+          >
+            <MessageCircleHeart className="w-5 h-5" />
+            <span className="text-[10px] tracking-wide font-medium">Chat</span>
+          </button>
+
+          <button 
+            onClick={() => handleTabChange('dashboard')}
+            className={`flex flex-col items-center justify-center gap-1 py-1.5 px-5 rounded-2xl transition-all ${
+              activeTab === 'dashboard' 
+                ? 'bg-orange-50 text-orange-600 font-bold' 
+                : 'text-stone-400 hover:text-stone-600'
+            }`}
+          >
+            <LayoutGrid className="w-5 h-5" />
+            <span className="text-[10px] tracking-wide font-medium">Home</span>
+          </button>
+
+          <button 
+            onClick={() => handleTabChange('growth')}
+            className={`flex flex-col items-center justify-center gap-1 py-1.5 px-5 rounded-2xl transition-all ${
+              activeTab === 'growth' 
+                ? 'bg-orange-50 text-orange-600 font-bold' 
+                : 'text-stone-400 hover:text-stone-600'
+            }`}
+          >
+            <TrendingUp className="w-5 h-5" />
+            <span className="text-[10px] tracking-wide font-medium">Growth</span>
+          </button>
+
+          <button 
+            onClick={() => setIsMobileMenuOpen(true)}
+            className="flex flex-col items-center justify-center gap-1 py-1.5 px-5 rounded-2xl text-stone-400 hover:text-stone-600 transition-all"
+          >
+            <Menu className="w-5 h-5" />
+            <span className="text-[10px] tracking-wide font-medium">More</span>
+          </button>
         </div>
 
       </div>

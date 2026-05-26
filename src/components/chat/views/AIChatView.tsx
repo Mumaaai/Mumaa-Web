@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Send, Loader2, User, Plus, Baby, Moon, Utensils, PlayCircle } from 'lucide-react';
+import { Sparkles, Send, Loader2, User, Baby, MoonStar, Milk, Thermometer, Footprints, AudioWaveform, Plus, PlayCircle } from 'lucide-react';
 import { api } from '../../../api';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -337,11 +337,50 @@ export default function AIChatView({ user, babyProfile, sessionId, onSessionChan
     setIsFabOpen(false);
   };
 
-  const quickPrompts = [
-    { icon: <Utensils className="w-4 h-4" />, text: "Feeding schedule", prompt: "Can you help me with a feeding schedule?" },
-    { icon: <Moon className="w-4 h-4" />, text: "Sleep tips", prompt: "My baby won't sleep, what should I do?" },
-    { icon: <Baby className="w-4 h-4" />, text: "Milestones", prompt: "What are the normal milestones for their age?" },
-    { icon: <Sparkles className="w-4 h-4" />, text: "Mom's Diet", prompt: "Healthy recipes for a nursing mom" },
+  const gridCards = [
+    { 
+      id: 'feeding', 
+      label: "Feeding", 
+      icon: <Milk className="w-6 h-6" />, 
+      color: 'text-orange-500', 
+      bg: 'bg-orange-50', 
+      borderColor: 'hover:border-orange-200 hover:bg-orange-50/50',
+      prompt: "Can you help me with a feeding schedule?" 
+    },
+    { 
+      id: 'sleep', 
+      label: "Sleep", 
+      icon: <MoonStar className="w-6 h-6" />, 
+      color: 'text-indigo-500', 
+      bg: 'bg-indigo-50', 
+      borderColor: 'hover:border-indigo-200 hover:bg-indigo-50/50',
+      prompt: "My baby won't sleep, what should I do?" 
+    },
+    { 
+      id: 'health', 
+      label: "Health", 
+      icon: <Thermometer className="w-6 h-6" />, 
+      color: 'text-emerald-500', 
+      bg: 'bg-emerald-50', 
+      borderColor: 'hover:border-emerald-200 hover:bg-emerald-50/50',
+      prompt: "What are the essential health tips for my baby?" 
+    },
+    { 
+      id: 'milestones', 
+      label: "Milestones", 
+      icon: <Footprints className="w-6 h-6" />, 
+      color: 'text-rose-500', 
+      bg: 'bg-rose-50', 
+      borderColor: 'hover:border-rose-200 hover:bg-rose-50/50',
+      prompt: "What are the normal milestones for their age?" 
+    },
+  ];
+
+  const suggestionChips = [
+    { label: "🍼 Feeding Help", prompt: "Can you help me with a feeding schedule?" },
+    { label: "😴 Sleep Advice", prompt: "My baby won't sleep, what should I do?" },
+    { label: "🌱 Growth Leaps", prompt: "What are the normal milestones for their age?" },
+    { label: "🍲 Mom's Diet", prompt: "Healthy recipes for a nursing mom" }
   ];
 
   return (
@@ -384,24 +423,24 @@ export default function AIChatView({ user, babyProfile, sessionId, onSessionChan
                 exit={{ opacity: 0, scale: 0.95 }}
                 className="my-auto text-center"
               >
-                <div className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-xl border-4 border-white bg-white rotate-3">
-                  <img src="images/MumaaAIlogo.png" alt="MUMAA Logo" className="w-12 h-12 rounded-full" />
+                <div className="w-28 h-28 rounded-[2rem] bg-white flex items-center justify-center mx-auto mb-8 shadow-xl border-4 border-white rotate-3 hover:rotate-0 transition-transform duration-500">
+                  <img src="images/MumaaAIlogo.png" alt="MUMAA Logo" className="w-16 h-16" />
                 </div>
                 <h3 className="text-4xl font-bold mb-4 tracking-tight text-stone-800">Namaste.</h3>
-                <p className="text-stone-500 text-base max-w-sm mx-auto leading-relaxed mb-12 font-medium">
-                  I am MUMAA, your peaceful parenting companion. How can I support you and your little one today?
+                <p className="text-stone-600 text-sm md:text-base max-w-sm mx-auto leading-relaxed mb-10 font-medium">
+                  I am your peaceful parenting companion. How can I support you and your little one today?
                 </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl mx-auto text-left">
-                  {quickPrompts.map((p, idx) => (
+                <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+                  {gridCards.map((card) => (
                     <button 
-                      key={idx} 
-                      onClick={() => insertAtCursor(p.prompt)}
-                      className="p-4 bg-white/50 border border-stone-200 hover:border-orange-200 hover:bg-white rounded-2xl text-sm font-bold text-stone-600 transition-all flex items-center gap-4 group"
+                      key={card.id} 
+                      onClick={() => insertAtCursor(card.prompt)}
+                      className={`p-5 bg-white border border-stone-100 ${card.borderColor} rounded-3xl text-[15px] font-bold text-stone-700 transition-all flex flex-col items-center justify-center gap-3 btn-press soft-shadow group`}
                     >
-                      <div className="w-10 h-10 rounded-xl bg-stone-100 flex items-center justify-center text-stone-400 group-hover:bg-orange-100 group-hover:text-orange-500 transition-colors shrink-0">
-                        {p.icon}
+                      <div className={`w-12 h-12 rounded-full ${card.bg} flex items-center justify-center ${card.color} group-hover:scale-110 transition-transform shrink-0`}>
+                        {card.icon}
                       </div>
-                      <span>{p.text}</span>
+                      <span>{card.label}</span>
                     </button>
                   ))}
                 </div>
@@ -469,104 +508,106 @@ export default function AIChatView({ user, babyProfile, sessionId, onSessionChan
       </div>
 
       {/* Floating Input Area (Claude-style) */}
-      <div className="w-full max-w-3xl mx-auto px-4 pb-8 pt-2 z-20">
+      <div className="w-full max-w-3xl mx-auto px-4 pb-6 pt-2 z-20">
         <div className="relative group">
           
-          {/* FAB Menu */}
+          {/* Quick Helpers Popover */}
           <AnimatePresence>
             {isFabOpen && (
-              <motion.div 
-                initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                className="absolute left-0 bottom-full mb-4 w-64 bg-white rounded-3xl shadow-2xl border border-stone-100 overflow-hidden"
-              >
-                <div className="p-3 border-b border-stone-50 bg-stone-50/50">
-                  <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest px-2">Quick Helpers</span>
-                </div>
-                <div className="p-2 space-y-1">
-                  {quickPrompts.map((p, idx) => (
-                    <button 
-                      key={idx}
-                      onClick={() => insertAtCursor(p.prompt)}
-                      className="w-full flex items-center gap-3 p-3 hover:bg-orange-50 rounded-2xl transition-colors group text-left"
-                    >
-                      <div className="w-8 h-8 rounded-xl bg-stone-100 group-hover:bg-orange-100 text-stone-400 group-hover:text-orange-500 flex items-center justify-center transition-colors">
-                        {p.icon}
-                      </div>
-                      <span className="text-sm font-bold text-stone-600 group-hover:text-stone-800">{p.text}</span>
-                    </button>
-                  ))}
-                </div>
-              </motion.div>
+              <>
+                <div 
+                  className="fixed inset-0 z-40 bg-transparent"
+                  onClick={() => setIsFabOpen(false)}
+                />
+                <motion.div 
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  className="absolute left-4 bottom-full mb-3 w-64 bg-white rounded-3xl shadow-2xl border border-stone-100 overflow-hidden z-50"
+                >
+                  <div className="p-3 border-b border-stone-50 bg-stone-50/50 flex justify-between items-center">
+                    <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest px-2">Quick Helpers</span>
+                  </div>
+                  <div className="p-2 space-y-1">
+                    {gridCards.map((card, idx) => (
+                      <button 
+                        key={idx}
+                        onClick={() => {
+                          insertAtCursor(card.prompt);
+                          setIsFabOpen(false);
+                        }}
+                        className="w-full flex items-center gap-3 p-2.5 hover:bg-orange-50 rounded-2xl transition-colors group text-left"
+                      >
+                        <div className={`w-7 h-7 rounded-lg bg-stone-50 group-hover:bg-orange-100 ${card.color} flex items-center justify-center transition-colors shrink-0`}>
+                          {/* Clone icon with smaller class */}
+                          {card.id === 'feeding' && <Milk className="w-4 h-4" />}
+                          {card.id === 'sleep' && <MoonStar className="w-4 h-4" />}
+                          {card.id === 'health' && <Thermometer className="w-4 h-4" />}
+                          {card.id === 'milestones' && <Footprints className="w-4 h-4" />}
+                        </div>
+                        <span className="text-xs font-bold text-stone-600 group-hover:text-stone-800">{card.label}</span>
+                      </button>
+                    ))}
+                    <div className="border-t border-stone-100 my-1 pt-1">
+                      <Link 
+                        to="/reels"
+                        onClick={() => setIsFabOpen(false)}
+                        className="w-full flex items-center gap-3 p-2.5 hover:bg-emerald-50 rounded-2xl transition-colors group text-left"
+                      >
+                        <div className="w-7 h-7 rounded-lg bg-stone-50 group-hover:bg-emerald-100 text-emerald-500 flex items-center justify-center transition-colors shrink-0">
+                          <PlayCircle className="w-4 h-4" />
+                        </div>
+                        <span className="text-xs font-bold text-stone-600 group-hover:text-emerald-700">Video Guidance</span>
+                      </Link>
+                    </div>
+                  </div>
+                </motion.div>
+              </>
             )}
           </AnimatePresence>
 
-          {/* Follow-up Suggestions */}
-          <AnimatePresence>
-            {followUpSuggestions.length > 0 && !isLoading && !streamingText && (
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 5 }}
-                className="flex gap-2 overflow-x-auto no-scrollbar pb-3 px-2"
-              >
-                {followUpSuggestions.map((suggestion, i) => (
-                  <button
-                    key={i}
-                    onClick={() => insertAtCursor(suggestion)}
-                    className="whitespace-nowrap px-4 py-2 bg-white/80 backdrop-blur-sm border border-orange-100 rounded-full text-[11px] font-bold text-stone-600 hover:bg-orange-50 hover:border-orange-200 hover:text-orange-600 transition-all shadow-sm active:scale-95"
-                  >
-                    {suggestion}
-                  </button>
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
 
-          <form onSubmit={handleSend} className="bg-white rounded-[2.5rem] border border-stone-200 shadow-2xl shadow-orange-900/5 focus-within:border-orange-300 focus-within:ring-4 focus-within:ring-orange-100/50 transition-all flex items-end gap-2 p-3">
+
+          <form onSubmit={handleSend} className="bg-white rounded-[2rem] border border-stone-200/80 focus-within:border-orange-200 focus-within:ring-4 focus-within:ring-orange-100 transition-all flex items-center gap-1.5 p-1.5 soft-shadow">
             <button 
               type="button" 
               onClick={() => setIsFabOpen(!isFabOpen)}
-              className={`p-3 rounded-full transition-all btn-press shrink-0 ${isFabOpen ? 'bg-orange-100 text-orange-600' : 'hover:bg-stone-50 text-stone-400 hover:text-orange-500'}`}
+              className={`p-2.5 rounded-full transition-all btn-press shrink-0 ${isFabOpen ? 'bg-orange-100 text-orange-600' : 'hover:bg-stone-50 text-stone-400 hover:text-orange-500'}`}
+              title="Quick Helpers"
             >
-              <Plus className={`w-6 h-6 transition-transform duration-300 ${isFabOpen ? 'rotate-45' : ''}`} />
+              <Plus className={`w-5 h-5 transition-transform duration-300 ${isFabOpen ? 'rotate-45' : ''}`} />
             </button>
 
-            <Link 
-              to="/reels"
-              className="p-3 rounded-full hover:bg-stone-50 text-stone-400 hover:text-emerald-500 transition-all btn-press shrink-0"
-              title="Video Guidance (Visual)"
-            >
-              <PlayCircle className="w-6 h-6" />
-            </Link>
             <textarea 
               ref={textareaRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               rows={1} 
-              placeholder="Message Mumaa..." 
-              className="flex-1 bg-transparent border-none outline-none text-stone-800 px-2 py-3 text-[16px] font-medium resize-none max-h-48 placeholder-stone-400 min-h-[48px]"
+              placeholder="Ask Mumaa anything..." 
+              className="flex-1 bg-transparent border-none outline-none text-stone-800 px-2 py-2 text-[14px] font-medium resize-none max-h-24 placeholder-stone-400 min-h-[38px] leading-relaxed self-center"
             ></textarea>
+            
+            <button 
+              type="button" 
+              className="p-2.5 hover:bg-stone-50 text-stone-400 hover:text-orange-500 rounded-full transition-all btn-press shrink-0 self-center"
+              title="Voice Input"
+            >
+              <AudioWaveform className="w-5 h-5" />
+            </button>
+
             <button 
               type="submit" 
               disabled={!input.trim() || isLoading || streamingText.length > 0} 
-              className={`p-3.5 rounded-full transition-all border shadow-sm btn-press shrink-0 ${
+              className={`gradient-peach hover:opacity-90 p-3 rounded-full transition-all text-orange-900 shadow-sm border border-white btn-press shrink-0 flex items-center justify-center self-center ${
                 !input.trim() || isLoading || streamingText.length > 0
-                  ? 'bg-stone-50 text-stone-300 border-stone-100 cursor-not-allowed'
-                  : 'bg-stone-800 text-white border-stone-900 hover:bg-stone-900 shadow-xl'
+                  ? 'opacity-50 cursor-not-allowed'
+                  : ''
               }`}
             >
-              <Send className="w-5 h-5" />
+              <Send className="w-4 h-4" />
             </button>
           </form>
-          
-          <div className="flex justify-center gap-4 mt-3 px-6 overflow-x-auto no-scrollbar whitespace-nowrap">
-            <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest">
-              AI companion for mindful parenting
-            </span>
-          </div>
         </div>
       </div>
     </div>

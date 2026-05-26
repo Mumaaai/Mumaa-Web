@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { User, Sparkles, History, MessageSquarePlus, X, Loader2, Heart, ShoppingBag } from 'lucide-react';
+import { User, Sparkles, X, Loader2, Heart, ShoppingBag, Volume2, MessageSquarePlus, History, MoreVertical } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import type { TabId } from './Sidebar';
@@ -19,7 +19,7 @@ const getTabTitle = (tab: TabId, activeSessionTitle?: string) => {
   if (tab === 'chat' && activeSessionTitle) return activeSessionTitle;
   
   switch (tab) {
-    case 'chat': return 'Chat Saheli';
+    case 'chat': return 'AI Chat';
     case 'dashboard': return 'Dashboard';
     case 'feeding': return 'Log & Sleep';
     case 'growth': return 'Growth Tracker';
@@ -27,7 +27,7 @@ const getTabTitle = (tab: TabId, activeSessionTitle?: string) => {
     case 'milestones': return 'Milestones';
     case 'guide': return 'Parenting Guide';
     case 'diet': return 'Diet Plans';
-    case 'study': return 'Development Toys';
+    case 'study': return 'Play Ideas';
     case 'games': return 'Mind Games';
     case 'routine': return 'Routine Planner';
     case 'cry': return 'Cry Analyzer';
@@ -51,13 +51,14 @@ export default function Header({
   const [isTipOpen, setIsTipOpen] = useState(false);
   const [dailyTip, setDailyTip] = useState<string>("");
   const [isGeneratingTip, setIsGeneratingTip] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const calculateAge = (dob: string) => {
-    if (!dob) return "Newborn";
+    if (!dob) return "0 months";
     const birthDate = new Date(dob);
     const today = new Date();
     let months = (today.getFullYear() - birthDate.getFullYear()) * 12 + (today.getMonth() - birthDate.getMonth());
-    if (months < 1) return "Newborn";
+    if (months < 1) return "0 months";
     if (months < 12) return `${months} months`;
     return `${Math.floor(months / 12)} years`;
   };
@@ -114,15 +115,72 @@ export default function Header({
                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse hidden sm:block" />
               )}
             </div>
-            <p className="text-[11px] text-stone-500 font-semibold tracking-wider uppercase truncate max-w-[150px] sm:max-w-none mt-0.5">
-              {activeTab === 'chat' && activeSessionTitle ? 'Active Session' : `Welcome, ${user?.name?.split(' ')[0] || 'Parent'}`}
+            <p className={`text-[11px] font-bold tracking-wider uppercase truncate max-w-[150px] sm:max-w-none mt-0.5 ${
+              activeTab === 'chat' ? 'text-orange-500 font-bold' : 'text-stone-500'
+            }`}>
+              {activeTab === 'chat' && babyProfile ? (
+                `${babyProfile.name} • ${calculateAge(babyProfile.date_of_birth)}`
+              ) : activeTab === 'chat' && activeSessionTitle ? (
+                'Active Session'
+              ) : (
+                `Welcome, ${user?.name?.split(' ')[0] || 'Parent'}`
+              )}
             </p>
           </div>
         </div>
         
         <div className="flex items-center gap-2 md:gap-3 relative">
-          {activeTab === 'chat' && (
-            <>
+          {/* DESKTOP HEADER ICONS (hidden on mobile, visible on md:flex) */}
+          <div className="hidden md:flex items-center gap-2 md:gap-3">
+            {activeTab === 'chat' && (
+              <>
+                <button 
+                  onClick={onNewChat}
+                  className="p-2.5 bg-white hover:bg-stone-50 rounded-full transition-all border border-stone-200 btn-press shadow-sm text-stone-600 hover:text-orange-600" 
+                  title="New Chat"
+                >
+                  <MessageSquarePlus className="w-5 h-5" />
+                </button>
+                
+                <button 
+                  onClick={onHistoryToggle}
+                  className={`p-2.5 rounded-full transition-all border btn-press shadow-sm ${isHistoryOpen ? 'bg-orange-50 border-orange-200 text-orange-600' : 'bg-white border-stone-200 text-stone-600 hover:text-orange-600'}`} 
+                  title="Chat History"
+                >
+                  <History className="w-5 h-5" />
+                </button>
+              </>
+            )}
+
+            <Link 
+              to="/marketplace"
+              className="p-2.5 bg-white hover:bg-stone-50 rounded-full transition-all border border-stone-200 btn-press shadow-sm text-stone-600 hover:text-orange-600" 
+              title="Marketplace"
+            >
+              <ShoppingBag className="w-5 h-5" />
+            </Link>
+
+            <button 
+              onClick={() => setIsTipOpen(true)}
+              className="p-2.5 bg-white hover:bg-stone-50 rounded-full transition-all border border-stone-200 btn-press shadow-sm text-amber-500" 
+              title="Daily Tip"
+            >
+              <Sparkles className="w-5 h-5" />
+            </button>
+
+            {activeTab === 'chat' && (
+              <button 
+                className="p-2.5 bg-white hover:bg-stone-50 rounded-full transition-all border border-stone-200 btn-press shadow-sm text-stone-500 hover:text-stone-700" 
+                title="Toggle Voice"
+              >
+                <Volume2 className="w-5 h-5" />
+              </button>
+            )}
+          </div>
+
+          {/* MOBILE HEADER ICONS (visible on mobile, hidden on md) */}
+          <div className="flex md:hidden items-center gap-1.5 relative">
+            {activeTab === 'chat' && (
               <button 
                 onClick={onNewChat}
                 className="p-2.5 bg-white hover:bg-stone-50 rounded-full transition-all border border-stone-200 btn-press shadow-sm text-stone-600 hover:text-orange-600" 
@@ -130,32 +188,82 @@ export default function Header({
               >
                 <MessageSquarePlus className="w-5 h-5" />
               </button>
-              
-              <button 
-                onClick={onHistoryToggle}
-                className={`p-2.5 rounded-full transition-all border btn-press shadow-sm ${isHistoryOpen ? 'bg-orange-50 border-orange-200 text-orange-600' : 'bg-white border-stone-200 text-stone-600 hover:text-orange-600'}`} 
-                title="Chat History"
-              >
-                <History className="w-5 h-5" />
-              </button>
-            </>
-          )}
+            )}
 
-          <Link 
-            to="/marketplace"
-            className="p-2.5 bg-white hover:bg-stone-50 rounded-full transition-all border border-stone-200 btn-press shadow-sm text-stone-600 hover:text-orange-600" 
-            title="Marketplace"
-          >
-            <ShoppingBag className="w-5 h-5" />
-          </Link>
+            <button 
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className={`p-2.5 rounded-full transition-all border btn-press shadow-sm ${
+                isDropdownOpen ? 'bg-orange-50 border-orange-200 text-orange-600' : 'bg-white border-stone-200 text-stone-600'
+              }`}
+              title="Menu"
+            >
+              <MoreVertical className="w-5 h-5" />
+            </button>
 
-          <button 
-            onClick={() => setIsTipOpen(true)}
-            className="p-2.5 bg-white hover:bg-stone-50 rounded-full transition-all border border-stone-200 btn-press shadow-sm text-amber-500" 
-            title="Daily Tip"
-          >
-            <Sparkles className="w-5 h-5" />
-          </button>
+            {/* Mobile Dropdown Menu */}
+            <AnimatePresence>
+              {isDropdownOpen && (
+                <>
+                  {/* Backdrop overlay to close the menu on tap */}
+                  <div 
+                    className="fixed inset-0 z-40 bg-transparent"
+                    onClick={() => setIsDropdownOpen(false)}
+                  />
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                    className="absolute right-0 top-full mt-2 w-48 bg-white border border-stone-100 rounded-2xl shadow-xl z-50 p-2 flex flex-col gap-1"
+                  >
+                    {activeTab === 'chat' && (
+                      <button 
+                        onClick={() => {
+                          setIsDropdownOpen(false);
+                          if (onHistoryToggle) onHistoryToggle();
+                        }}
+                        className={`w-full flex items-center gap-3 p-3 rounded-xl transition-colors text-left ${
+                          isHistoryOpen ? 'bg-orange-50 text-orange-600 font-bold' : 'hover:bg-stone-50 text-stone-600'
+                        }`}
+                      >
+                        <History className="w-4 h-4" />
+                        <span className="text-xs">Chat History</span>
+                      </button>
+                    )}
+
+                    <Link 
+                      to="/marketplace"
+                      onClick={() => setIsDropdownOpen(false)}
+                      className="w-full flex items-center gap-3 p-3 hover:bg-stone-50 text-stone-600 rounded-xl transition-colors text-left"
+                    >
+                      <ShoppingBag className="w-4 h-4" />
+                      <span className="text-xs">Marketplace</span>
+                    </Link>
+
+                    <button 
+                      onClick={() => {
+                        setIsDropdownOpen(false);
+                        setIsTipOpen(true);
+                      }}
+                      className="w-full flex items-center gap-3 p-3 hover:bg-stone-50 text-amber-500 rounded-xl transition-colors text-left"
+                    >
+                      <Sparkles className="w-4 h-4" />
+                      <span className="text-xs font-bold">Daily Tip</span>
+                    </button>
+
+                    {activeTab === 'chat' && (
+                      <button 
+                        onClick={() => setIsDropdownOpen(false)}
+                        className="w-full flex items-center gap-3 p-3 hover:bg-stone-50 text-stone-600 rounded-xl transition-colors text-left"
+                      >
+                        <Volume2 className="w-4 h-4" />
+                        <span className="text-xs">Toggle Voice</span>
+                      </button>
+                    )}
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
 
