@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 
 export type TabId = 'chat' | 'dashboard' | 'feeding' | 'growth' | 'vaccination' | 'milestones' | 
                     'guide' | 'diet' | 'study' | 'games' | 'routine' | 'cry' | 'journal' | 
-                    'lullaby' | 'photo' | 'settings';
+                    'lullaby' | 'photo' | 'settings' | 'momcare' | 'emergency' | 'feedback';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -26,18 +26,17 @@ interface SidebarProps {
 }
 
 const calculateAge = (dob: string) => {
-  if (!dob) return "Newborn";
+  if (!dob) return "0 months";
   const birthDate = new Date(dob);
   const today = new Date();
   let months = (today.getFullYear() - birthDate.getFullYear()) * 12 + (today.getMonth() - birthDate.getMonth());
   
   if (months < 1) {
-    const days = Math.floor((today.getTime() - birthDate.getTime()) / (1000 * 3600 * 24));
-    return `${days} Days Old`;
+    return "0 months";
   }
-  if (months < 12) return `${months} Months Old`;
+  if (months < 12) return `${months} months`;
   const years = Math.floor(months / 12);
-  return `${years} Year${years > 1 ? 's' : ''} Old`;
+  return `${years} year${years > 1 ? 's' : ''}`;
 };
 
 export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user, babyProfile, dashboardData, onProfileClick }: SidebarProps) {
@@ -81,14 +80,6 @@ export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user,
 
       {/* Sidebar */}
       <div className={`fixed inset-y-0 left-0 z-50 bg-white border-r border-stone-100 flex flex-col transform transition-all duration-300 ease-in-out md:translate-x-0 md:relative shadow-2xl md:shadow-none ${isOpen ? 'translate-x-0' : '-translate-x-full'} ${isCollapsed ? 'w-[90px]' : 'w-[280px]'}`}>
-        
-        {/* Toggle Collapse Button (Desktop Only) */}
-        <button 
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          className="hidden md:flex absolute -right-4 top-8 w-8 h-8 bg-white border border-stone-200 rounded-full items-center justify-center text-stone-500 hover:text-stone-800 shadow-sm z-50 hover:scale-110 transition-all"
-        >
-          {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-        </button>
 
         {/* Logo Section */}
         <div className={`p-6 border-b border-stone-100 bg-white flex items-center ${isCollapsed ? 'justify-center px-4' : 'justify-between'}`}>
@@ -118,7 +109,7 @@ export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user,
               className="w-full text-left bg-white rounded-2xl p-4 shadow-sm border border-stone-100 hover:border-orange-200 hover:shadow-md transition-all group relative overflow-hidden cursor-pointer"
             >
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                   <Baby className="w-5 h-5 text-orange-400" />
                 </div>
                 <div className="min-w-0">
@@ -128,10 +119,14 @@ export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user,
                   </div>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-2 mt-4">
+              <div className="grid grid-cols-3 gap-2 mt-4">
                 <div className="text-center bg-stone-50/80 rounded-xl py-2 border border-stone-100/50">
                   <div className="text-xl font-bold text-emerald-500">{dashboardData?.todayStats?.feedings || 0}</div>
                   <div className="text-[10px] text-stone-500 font-bold uppercase tracking-wider mt-0.5">Feeds</div>
+                </div>
+                <div className="text-center bg-stone-50/80 rounded-xl py-2 border border-stone-100/50">
+                  <div className="text-xl font-bold text-sky-500">{dashboardData?.todayStats?.diapers || 0}</div>
+                  <div className="text-[10px] text-stone-500 font-bold uppercase tracking-wider mt-0.5">Diapers</div>
                 </div>
                 <div className="text-center bg-stone-50/80 rounded-xl py-2 border border-stone-100/50">
                   <div className="text-xl font-bold text-indigo-400">{dashboardData?.todayStats?.sleepHours || 0}h</div>
@@ -143,10 +138,10 @@ export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user,
         )}
         
         {/* Navigation */}
-        <div className={`flex-1 overflow-y-auto no-scrollbar pb-24 ${isCollapsed ? 'p-2' : 'p-4'}`}>
+        <div className={`flex-1 overflow-y-auto no-scrollbar pb-36 ${isCollapsed ? 'p-2' : 'p-4'}`}>
           {!isCollapsed && <div className="text-[11px] font-bold text-stone-400 uppercase tracking-widest mb-3 px-3">Core Care</div>}
           <nav className="space-y-1.5">
-            {navItem('chat', <MessageCircleHeart className="w-4 h-4" />, 'Chat Saheli', 'text-stone-500 bg-stone-100', 'text-orange-600 bg-orange-100')}
+            {navItem('chat', <MessageCircleHeart className="w-4 h-4" />, 'AI Chat', 'text-stone-500 bg-stone-100', 'text-orange-600 bg-orange-100')}
             {navItem('dashboard', <LayoutDashboard className="w-4 h-4" />, 'Dashboard')}
             {navItem('feeding', <Utensils className="w-4 h-4" />, 'Log & Sleep')}
             {navItem('growth', <TrendingUp className="w-4 h-4" />, 'Growth Tracker')}
@@ -161,7 +156,7 @@ export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user,
           <nav className="space-y-1.5">
             {navItem('guide', <Compass className="w-4 h-4" />, 'Parenting Guide')}
             {navItem('diet', <Apple className="w-4 h-4" />, 'Diet Plans')}
-            {navItem('study', <Blocks className="w-4 h-4" />, 'Development Toys')}
+            {navItem('study', <Blocks className="w-4 h-4" />, 'Play Ideas')}
             {navItem('routine', <Clock className="w-4 h-4" />, 'Routine Planner')}
             {navItem('cry', <AudioWaveform className="w-4 h-4" />, 'Cry Analyzer', 'text-rose-500 bg-rose-100', 'text-rose-600 bg-rose-100')}
             {navItem('journal', <BookHeart className="w-4 h-4" />, 'Memory Journal')}
@@ -184,44 +179,25 @@ export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user,
           ) : <div className="h-6"></div>}
           
           <nav className="space-y-1.5">
-            <button title={isCollapsed ? "Mother's Care" : undefined} className={`w-full text-left py-3 rounded-2xl flex items-center gap-3 text-[15px] transition group hover:bg-rose-50 border border-transparent ${isCollapsed ? 'justify-center px-0' : 'px-4'}`}>
-              <div className="w-8 h-8 rounded-xl bg-rose-100 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                <HeartHandshake className="w-4 h-4 text-rose-500" />
-              </div>
-              {!isCollapsed && <span className="text-rose-700 font-semibold truncate">Mother's Care</span>}
-            </button>
-            <button title={isCollapsed ? "Emergency Info" : undefined} className={`w-full text-left py-3 rounded-2xl flex items-center gap-3 text-[15px] transition group hover:bg-red-50 border border-transparent ${isCollapsed ? 'justify-center px-0' : 'px-4'}`}>
-              <div className="w-8 h-8 rounded-xl bg-red-100 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                <Stethoscope className="w-4 h-4 text-red-500" />
-              </div>
-              {!isCollapsed && <span className="text-red-600 font-semibold truncate">Emergency Info</span>}
-            </button>
-            <button title={isCollapsed ? "Feedback" : undefined} className={`w-full text-left py-3 rounded-2xl flex items-center gap-3 text-[15px] transition group hover:bg-stone-50 border border-transparent ${isCollapsed ? 'justify-center px-0' : 'px-4'}`}>
-              <div className="w-8 h-8 rounded-xl bg-stone-100 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                <MessageSquare className="w-4 h-4 text-stone-500" />
-              </div>
-              {!isCollapsed && <span className="text-stone-600 font-semibold truncate">Feedback</span>}
-            </button>
+            {navItem('momcare', <HeartHandshake className="w-4 h-4" />, "Mother's Care", 'text-rose-500 bg-rose-100', 'text-rose-600 bg-rose-100')}
+            {navItem('emergency', <Stethoscope className="w-4 h-4" />, 'Emergency Info', 'text-red-500 bg-red-100', 'text-red-600 bg-red-100')}
+            {navItem('feedback', <MessageSquare className="w-4 h-4" />, 'Feedback', 'text-stone-500 bg-stone-100', 'text-stone-700 bg-stone-100')}
           </nav>
         </div>
         
-        <div className={`p-5 border-t border-stone-100 bg-white absolute bottom-0 w-full z-10 hidden md:flex flex-col gap-2 ${isCollapsed ? 'px-2' : ''}`}>
+        <div className={`p-5 pb-8 border-t border-stone-100 bg-white absolute bottom-0 w-full z-10 hidden md:flex flex-col gap-2 ${isCollapsed ? 'px-2' : ''}`}>
           <button 
             onClick={() => setIsLogoutModalOpen(true)}
             title={isCollapsed ? "User Settings" : undefined} 
             className={`w-full text-left py-3.5 rounded-2xl bg-stone-50 hover:bg-stone-100 flex items-center gap-3 text-[15px] transition-colors border border-stone-200 group btn-press ${isCollapsed ? 'justify-center px-0' : 'px-4'}`}
           >
             <div className="w-9 h-9 rounded-full bg-stone-200 text-stone-600 flex items-center justify-center shrink-0 group-hover:bg-white transition-colors border border-transparent group-hover:border-stone-200 shadow-sm overflow-hidden">
-              {user?.picture ? (
-                <img src={user.picture} alt={user.name} referrerPolicy="no-referrer" className="w-full h-full object-cover shrink-0" />
-              ) : (
-                <Settings2 className="w-4 h-4" />
-              )}
+              <Settings2 className="w-4 h-4" />
             </div>
             {!isCollapsed && (
               <div className="flex-1 min-w-0">
-                <div className="font-bold truncate text-stone-800">{user?.name || 'User'}</div>
-                <div className="text-[11px] text-stone-500 truncate font-medium uppercase tracking-wider">Account Settings</div>
+                <div className="font-bold truncate text-stone-800">{babyProfile?.name || 'test'}</div>
+                <div className="text-[11px] text-stone-500 truncate font-bold uppercase tracking-wider">SETTINGS</div>
               </div>
             )}
           </button>
