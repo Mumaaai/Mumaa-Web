@@ -501,7 +501,7 @@ export default function Landing() {
                   </div>
 
                   {/* Badge Layer (Fixed to Card) */}
-                  <div className="absolute top-3 right-4 z-30 bg-emerald-50/95 backdrop-blur-sm text-emerald-600 text-[13px] font-bold px-3.5 py-1.5 rounded-full flex items-center gap-1.5 shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-emerald-100/50">
+                  <div className={`absolute top-3 right-4 z-30 ${toy.badge} backdrop-blur-sm text-[13px] font-bold px-3.5 py-1.5 rounded-full flex items-center gap-1.5 shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-white/50`}>
                     <Sparkles className="w-4 h-4" /> AI Inside
                   </div>
 
