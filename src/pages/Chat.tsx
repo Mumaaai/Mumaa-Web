@@ -24,6 +24,10 @@ import SettingsView from '../components/chat/views/SettingsView';
 import MomCareView from '../components/chat/views/MomCareView';
 import EmergencyView from '../components/chat/views/EmergencyView';
 import FeedbackView from '../components/chat/views/FeedbackView';
+import SingleParentingView from '../components/chat/views/SingleParentingView';
+import NutritionAIView from '../components/chat/views/NutritionAIView';
+import VoiceCloningView from '../components/chat/views/VoiceCloningView';
+import TraditionalWisdomView from '../components/chat/views/TraditionalWisdomView';
 import BabyProfileModal from '../components/chat/ProfileSetupModal';
 import HistorySidebar from '../components/chat/HistorySidebar';
 
@@ -162,6 +166,10 @@ export default function Chat() {
       case 'momcare': return <MomCareView />;
       case 'emergency': return <EmergencyView user={user} babyProfile={babyProfile} />;
       case 'feedback': return <FeedbackView />;
+      case 'single-parenting': return <SingleParentingView />;
+      case 'nutrition-ai': return <NutritionAIView />;
+      case 'voice-cloning': return <VoiceCloningView />;
+      case 'traditional-wisdom': return <TraditionalWisdomView />;
       default: return (
         <AIChatView 
           user={user} 

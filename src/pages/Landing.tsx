@@ -80,7 +80,7 @@ export default function Landing() {
             >
               <Video className="w-4 h-4" /> Live Consult
             </a>
-            <Link to="/auth" className="gradient-peach hidden items-center gap-2 rounded-full border border-white px-3.5 py-2 text-[13px] font-bold text-orange-900 shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg sm:flex lg:px-4">
+            <Link to="/auth" className="hidden items-center gap-2 rounded-full border border-rose-200/50 bg-rose-500/10 backdrop-blur-md px-3.5 py-2 text-[13px] font-bold text-rose-500 [text-shadow:0_0_8px_rgba(244,63,94,0.5)] shadow-[0_0_15px_rgba(244,63,94,0.15)] transition-all hover:-translate-y-0.5 hover:shadow-[0_0_20px_rgba(244,63,94,0.3)] hover:bg-rose-500/20 active:scale-95 focus:outline-none focus:ring-4 focus:ring-rose-300/50 sm:flex lg:px-4">
               <Sparkles className="w-4 h-4" /> Launch Mumaa
             </Link>
             <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="rounded-full p-1.5 text-stone-600 transition-colors hover:bg-stone-100 sm:p-2 lg:hidden">
@@ -102,15 +102,15 @@ export default function Landing() {
             <Link to="/marketplace" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2 rounded-xl px-3 py-2.5 font-bold text-stone-600 transition-colors hover:bg-orange-50 hover:text-orange-600 sm:px-4 sm:py-3"><ShoppingBag className="h-4 w-4" /> Marketplace</Link>
             <a href="#faq-section" onClick={() => setIsMobileMenuOpen(false)} className="block rounded-xl px-3 py-2.5 font-bold text-stone-600 transition-colors hover:bg-orange-50 hover:text-orange-600 sm:px-4 sm:py-3">FAQ</a>
             <div className="mt-2 pt-4 border-t border-stone-100 flex flex-col gap-3">
-              <Link to="/auth" className="gradient-peach block rounded-xl px-3 py-2.5 text-center font-bold text-orange-900 shadow-md transition-colors sm:px-4 sm:py-3">Launch Mumaa</Link>
+              <Link to="/auth" className="block rounded-xl border border-rose-200/50 bg-rose-500/10 backdrop-blur-md px-3 py-2.5 text-center font-bold text-rose-500 [text-shadow:0_0_8px_rgba(244,63,94,0.5)] shadow-[0_0_15px_rgba(244,63,94,0.15)] transition-all hover:bg-rose-500/20 hover:shadow-[0_0_20px_rgba(244,63,94,0.3)] active:scale-95 focus:outline-none focus:ring-4 focus:ring-rose-300/50 sm:px-4 sm:py-3">Launch Mumaa</Link>
             </div>
           </motion.div>
         )}
       </nav>
 
-      <main className="flex-grow pt-20 lg:pt-24">
+      <main className="flex-grow pt-16 lg:pt-20">
         {/* Hero Section */}
-        <section id="hero" className="relative max-w-[1120px] mx-auto px-6 sm:px-8 pt-10 pb-24 grid lg:grid-cols-2 gap-12 items-center min-h-[85vh]">
+        <section id="hero" className="relative max-w-[1120px] mx-auto px-6 sm:px-8 pt-4 pb-20 lg:pb-24 grid lg:grid-cols-2 gap-12 items-center min-h-[75vh]">
           <motion.div 
             variants={staggerContainer}
             initial="hidden"
@@ -137,7 +137,7 @@ export default function Landing() {
               Your calm, AI-powered parenting companion. Get expert guidance, softly translate baby cries, track growth, and explore safe physical learning toys.
             </motion.p>
             <motion.div variants={fadeIn} className="flex flex-col gap-3 sm:flex-row">
-              <Link to="/auth" className="gradient-peach flex items-center justify-center gap-2 rounded-full border border-white px-5 py-3 text-[15px] font-bold text-orange-900 shadow-md transition-all hover:-translate-y-1 hover:shadow-xl">
+              <Link to="/auth" className="gradient-peach flex items-center justify-center gap-2 rounded-full border border-white px-5 py-3 text-[15px] font-bold text-orange-900 shadow-md transition-all hover:-translate-y-1 hover:shadow-xl active:scale-95 hover:brightness-105 active:brightness-95 focus:outline-none focus:ring-4 focus:ring-orange-300/60">
                 Enter Workspace <ArrowRight className="w-5 h-5" />
               </Link>
               <a href="MummA_Cry_Analyzer (2).apk" download className="flex items-center justify-center gap-2 rounded-full border border-stone-200 bg-white px-5 py-3 text-[15px] font-bold text-stone-600 shadow-sm transition-all hover:-translate-y-1 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-600">

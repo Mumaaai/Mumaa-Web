@@ -7,12 +7,14 @@ import {
   Clock, AudioWaveform, BookHeart, MoonStar, 
   HeartHandshake, Stethoscope, MessageSquare, Settings2,
   ChevronLeft, ChevronRight, LogOut, PlayCircle, Brain,
+  Users, UtensilsCrossed, Mic, BookOpen
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export type TabId = 'chat' | 'dashboard' | 'feeding' | 'growth' | 'vaccination' | 'milestones' | 
                     'guide' | 'diet' | 'study' | 'games' | 'routine' | 'cry' | 'journal' | 
-                    'lullaby' | 'photo' | 'settings' | 'momcare' | 'emergency' | 'feedback';
+                    'lullaby' | 'photo' | 'settings' | 'momcare' | 'emergency' | 'feedback' |
+                    'single-parenting' | 'nutrition-ai' | 'voice-cloning' | 'traditional-wisdom';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -155,6 +157,10 @@ export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user,
           
           <nav className="space-y-1.5">
             {navItem('guide', <Compass className="w-4 h-4" />, 'Parenting Guide')}
+            {navItem('single-parenting', <Users className="w-4 h-4" />, 'Single Parenting', 'text-stone-500 bg-stone-100 group-hover:text-orange-500 group-hover:bg-orange-100', 'text-orange-600 bg-orange-200')}
+            {navItem('nutrition-ai', <UtensilsCrossed className="w-4 h-4" />, 'Nutrition AI', 'text-stone-500 bg-stone-100 group-hover:text-emerald-500 group-hover:bg-emerald-100', 'text-emerald-600 bg-emerald-200')}
+            {navItem('voice-cloning', <Mic className="w-4 h-4" />, 'Voice Cloning', 'text-stone-500 bg-stone-100 group-hover:text-indigo-500 group-hover:bg-indigo-100', 'text-indigo-600 bg-indigo-200')}
+            {navItem('traditional-wisdom', <BookOpen className="w-4 h-4" />, 'Traditional Wisdom', 'text-stone-500 bg-stone-100 group-hover:text-amber-500 group-hover:bg-amber-100', 'text-amber-600 bg-amber-200')}
             {navItem('diet', <Apple className="w-4 h-4" />, 'Diet Plans')}
             {navItem('study', <Blocks className="w-4 h-4" />, 'Play Ideas')}
             {navItem('routine', <Clock className="w-4 h-4" />, 'Routine Planner')}
