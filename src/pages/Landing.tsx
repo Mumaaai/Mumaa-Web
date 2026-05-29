@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { 
-  Sparkles, Menu, ShieldCheck, ArrowRight, Download, Check, 
-  Video, AudioWaveform, MessageCircleHeart, Apple, Clock, 
+import {
+  Sparkles, Menu, ShieldCheck, ArrowRight, Download, Check,
+  Video, AudioWaveform, MessageCircleHeart, Apple, Clock,
   Leaf, MessageCircle, Plus, Mail, ShoppingBag,
-  MessageSquare, User, Send, Heart, Mic, PlayCircle, 
+  MessageSquare, User, Send, Heart, Mic, PlayCircle,
   Brain, Volume2, X, Blocks
 } from 'lucide-react';
 
@@ -34,6 +34,7 @@ const cardRadius = "rounded-[1.5rem]";
 export default function Landing() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
+  const [addedToys, setAddedToys] = useState<Record<number, boolean>>({});
 
   const toggleFaq = (index: number) => {
     setActiveFaq(activeFaq === index ? null : index);
@@ -46,7 +47,7 @@ export default function Landing() {
 
       {/* Navigation */}
       <nav className="fixed left-0 right-0 z-50 flex flex-col items-center pt-2.5 sm:pt-3">
-        <motion.div 
+        <motion.div
           initial={{ y: -50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
@@ -72,9 +73,9 @@ export default function Landing() {
           </div>
 
           <div className="flex items-center gap-3">
-            <a 
-              href="https://mumaa-vc-one.vercel.app/" 
-              target="_blank" 
+            <a
+              href="https://mumaa-vc-one.vercel.app/"
+              target="_blank"
               rel="noopener noreferrer"
               className="hidden items-center gap-2 rounded-full border border-rose-100 bg-rose-50 px-3.5 py-2 text-[13px] font-bold text-rose-600 transition-all hover:bg-rose-100 md:flex"
             >
@@ -111,7 +112,7 @@ export default function Landing() {
       <main className="flex-grow pt-16 lg:pt-20">
         {/* Hero Section */}
         <section id="hero" className="relative max-w-[1120px] mx-auto px-6 sm:px-8 pt-4 pb-20 lg:pb-24 grid lg:grid-cols-2 gap-12 items-center min-h-[75vh]">
-          <motion.div 
+          <motion.div
             variants={staggerContainer}
             initial="hidden"
             animate="visible"
@@ -198,7 +199,7 @@ export default function Landing() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           variants={staggerContainer}
-          id="trust" 
+          id="trust"
           className="max-w-7xl mx-auto px-6 py-20"
         >
           <motion.div variants={fadeIn} className={sectionHeader}>
@@ -214,7 +215,7 @@ export default function Landing() {
             ].map((stat, idx) => (
               <motion.div
                 variants={fadeIn}
-                key={idx} 
+                key={idx}
                 className="bg-white/80 backdrop-blur rounded-[2.5rem] p-10 border border-white shadow-xl hover:shadow-2xl transition-shadow text-center relative overflow-hidden group"
               >
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-stone-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -254,7 +255,7 @@ export default function Landing() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           variants={staggerContainer}
-          id="features" 
+          id="features"
           className="py-24 relative"
         >
           <div className={pageContainer}>
@@ -405,9 +406,9 @@ export default function Landing() {
                   </div>
                 </div>
                 <div className="mt-8">
-                  <a 
-                    href="https://mumaa-vc-one.vercel.app/" 
-                    target="_blank" 
+                  <a
+                    href="https://mumaa-vc-one.vercel.app/"
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 rounded-xl bg-rose-500 px-4.5 py-2.5 text-sm font-black text-white shadow-lg transition-all hover:-translate-y-1 hover:bg-rose-600 hover:shadow-xl"
                   >
@@ -430,7 +431,7 @@ export default function Landing() {
 
                   <img src="/images/nanny.png" alt="Video Call" className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-orange-900/10 pointer-events-none"></div>
-                  
+
                   {/* Caller UI */}
                   <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[85%] bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20">
                     <div className="flex items-center gap-3 mb-3">
@@ -475,52 +476,94 @@ export default function Landing() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           variants={staggerContainer}
-          id="toys" 
-          className="py-24 relative bg-gradient-to-b from-stone-50 to-white"
+          id="toys"
+          className="pt-12 pb-24 sm:pt-16 relative bg-gradient-to-b from-stone-50 to-white"
         >
           <div className={pageContainer}>
             <motion.div variants={fadeIn} className={sectionHeader}>
               <h2 className={`${sectionTitle} mb-4`}>Meet the <span className="text-orange-500">MumaaAI Play Family</span></h2>
               <p className={sectionLead}>Physical companions powered by our calming AI. From storytellers to logical guides, safe and screen-free.</p>
             </motion.div>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-                    {[
-                        {name: 'Mimi', img: 'mimi.png', color: 'pink', border: 'hover:border-pink-300 hover:shadow-pink-100/50', dot: 'bg-pink-400', badge: 'text-pink-600 bg-pink-50', points: ['Screen-free fun', 'Sleep Companion', 'Voice Cloning', 'Safe WiFi Setup'], desc: 'The perfect starter AI companion. Mimi tells calming stories to comfort your child.'},
-                        {name: 'Simba', img: 'simba.png', color: 'orange', border: 'hover:border-orange-300 hover:shadow-orange-100/50', dot: 'bg-orange-400', badge: 'text-orange-600 bg-orange-50', points: ['Screen-free fun', 'Sleep Guardian', 'Voice Cloning', 'Safe WiFi Setup'], desc: 'A brave lion protector. Roars softly when picked up to guard the bedroom door.'},
-                        {name: 'Prince', img: 'prince.png', color: 'indigo', border: 'hover:border-indigo-300 hover:shadow-indigo-100/50', dot: 'bg-indigo-400', badge: 'text-indigo-600 bg-indigo-50', points: ['Screen-free fun', 'Motion Guide', 'Voice Cloning', 'Safe WiFi Setup'], desc: 'Encourages early crawling! Motivates your little one to chase and move playfully.'},
-                        {name: 'Arnie', img: 'arnie.png', color: 'amber', border: 'hover:border-amber-300 hover:shadow-amber-100/50', dot: 'bg-amber-400', badge: 'text-amber-600 bg-amber-50', points: ['Screen-free fun', 'Sleep Companion', 'Voice Cloning', 'Safe Touch'], desc: 'A soft, huggable friend that glows gently. Plays calming lullabies to help your baby sleep.'},
-                        {name: 'Chichi', img: 'chichi.png', color: 'sky', border: 'hover:border-sky-300 hover:shadow-sky-100/50', dot: 'bg-sky-400', badge: 'text-sky-600 bg-sky-50', points: ['Screen-free fun', 'Musical Play', 'Voice Cloning', 'Safe WiFi Setup'], desc: 'The gentle party starter! Chichi plays peaceful nursery rhymes and spins softly.'},
-                        {name: 'Duke', img: 'duke.png', color: 'emerald', border: 'hover:border-emerald-300 hover:shadow-emerald-100/50', dot: 'bg-emerald-400', badge: 'text-emerald-600 bg-emerald-50', points: ['Screen-free fun', 'Sleep Guardian', 'Voice Cloning', 'Safe WiFi Setup'], desc: 'A smart guardian. Duke alerts you if the baby cries and plays soothing sounds remotely.'},
-                    ].map((toy, i) => (
-                        <motion.div variants={fadeIn} key={i} className={`group relative bg-white border border-stone-100 rounded-[2.5rem] overflow-hidden transition-all duration-500 hover:-translate-y-2 shadow-lg flex flex-col ${toy.border}`}>
-                            <div className="aspect-square bg-stone-100 relative overflow-hidden flex items-center justify-center cursor-pointer">
-                                <img alt={toy.name} className="product-image transition-transform duration-1000 group-hover:scale-110 absolute inset-0 w-full h-full object-cover" src={`/images/${toy.img}`} />
-                                <div className={`absolute top-4 right-4 backdrop-blur text-xs font-bold px-4 py-2 rounded-xl border border-white/50 shadow-md z-10 flex items-center gap-1.5 ${toy.badge}`}>
-                                    <Sparkles className="w-3.5 h-3.5" /> AI Inside
-                                </div>
-                            </div>
-                            <div className="p-8 flex-1 flex flex-col border-t border-stone-100">
-                                <h3 className="text-3xl font-extrabold text-stone-800 mb-4 tracking-tight">{toy.name}</h3>
-                                <p className="text-stone-500 text-[15px] mb-8 font-medium leading-relaxed flex-1">{toy.desc}</p>
-                                <div className="mb-8 grid grid-cols-2 gap-4">
-                                    {toy.points.map((pt, j) => (
-                                        <div key={j} className="flex items-center gap-2 text-sm font-bold text-stone-600">
-                                            <div className={`w-2 h-2 rounded-full ${toy.dot}`}></div>{pt}
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="flex gap-3 h-14 mt-auto">
-                                    <Link className="flex-1" to="/auth">
-                                        <button className="w-full h-full bg-stone-800 border border-stone-800 text-white text-[15px] font-bold rounded-2xl hover:bg-stone-700 transition-colors flex items-center justify-center gap-2 shadow-lg hover:-translate-y-0.5">
-                                            <MessageCircle className="w-5 h-5" /> Chat Mumaa
-                                        </button>
-                                    </Link>
-                                </div>
-                            </div>
-                        </motion.div>
-                    ))}
-                </div>
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+              {[
+                { name: 'Mimi', img: 'mimi.png', color: 'pink', border: 'hover:border-pink-300 hover:shadow-pink-100/50', dot: 'bg-pink-400', badge: 'text-pink-600 bg-pink-50', points: ['Screen-free fun', 'Sleep Companion', 'Voice Cloning', 'Safe WiFi Setup'], desc: 'The perfect starter AI companion. Mimi tells calming stories to comfort your child.' },
+                { name: 'Simba', img: 'simba.png', color: 'orange', border: 'hover:border-orange-300 hover:shadow-orange-100/50', dot: 'bg-orange-400', badge: 'text-orange-600 bg-orange-50', points: ['Screen-free fun', 'Sleep Guardian', 'Voice Cloning', 'Safe WiFi Setup'], desc: 'A brave lion protector. Roars softly when picked up to guard the bedroom door.' },
+                { name: 'Prince', img: 'prince.png', color: 'indigo', border: 'hover:border-indigo-300 hover:shadow-indigo-100/50', dot: 'bg-indigo-400', badge: 'text-indigo-600 bg-indigo-50', points: ['Screen-free fun', 'Motion Guide', 'Voice Cloning', 'Safe WiFi Setup'], desc: 'Encourages early crawling! Motivates your little one to chase and move playfully.' },
+                { name: 'Arnie', img: 'arnie.png', color: 'amber', border: 'hover:border-amber-300 hover:shadow-amber-100/50', dot: 'bg-amber-400', badge: 'text-amber-600 bg-amber-50', points: ['Screen-free fun', 'Sleep Companion', 'Voice Cloning', 'Safe Touch'], desc: 'A soft, huggable friend that glows gently. Plays calming lullabies to help your baby sleep.' },
+                { name: 'Chichi', img: 'chichi.png', color: 'sky', border: 'hover:border-sky-300 hover:shadow-sky-100/50', dot: 'bg-sky-400', badge: 'text-sky-600 bg-sky-50', points: ['Screen-free fun', 'Musical Play', 'Voice Cloning', 'Safe WiFi Setup'], desc: 'The gentle party starter! Chichi plays peaceful nursery rhymes and spins softly.' },
+                { name: 'Duke', img: 'duke.png', color: 'emerald', border: 'hover:border-emerald-300 hover:shadow-emerald-100/50', dot: 'bg-emerald-400', badge: 'text-emerald-600 bg-emerald-50', points: ['Screen-free fun', 'Sleep Guardian', 'Voice Cloning', 'Safe WiFi Setup'], desc: 'A smart guardian. Duke alerts you if the baby cries and plays soothing sounds remotely.' },
+              ].map((toy, i) => (
+                <motion.div variants={fadeIn} key={i} className={`group relative bg-white border border-stone-100 rounded-[2rem] overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-500 h-[520px] sm:h-[550px] w-full flex flex-col`}>
+
+                  {/* Image Layer (Animates on Hover) */}
+                  <div className="absolute inset-0 z-0 transition-all duration-500 ease-in-out group-hover:top-3 group-hover:left-3 group-hover:right-3 group-hover:bottom-[260px] sm:group-hover:bottom-[270px] group-hover:rounded-[1.5rem] overflow-hidden bg-stone-100">
+                    <img alt={toy.name} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" src={`/images/${toy.img}`} />
+                  </div>
+
+                  {/* Badge Layer (Fixed to Card) */}
+                  <div className="absolute top-3 right-4 z-30 bg-emerald-50/95 backdrop-blur-sm text-emerald-600 text-[13px] font-bold px-3.5 py-1.5 rounded-full flex items-center gap-1.5 shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-emerald-100/50">
+                    <Sparkles className="w-4 h-4" /> AI Inside
+                  </div>
+
+                  {/* Blur Overlay (Fades out on Hover) */}
+                  <div className="absolute inset-x-0 bottom-0 h-[80%] bg-gradient-to-t from-rose-50/90 via-rose-50/70 to-transparent backdrop-blur-md [mask-image:linear-gradient(to_top,black_60%,transparent)] z-10 transition-opacity duration-500 ease-in-out group-hover:opacity-0 pointer-events-none"></div>
+
+                  {/* Content Layer */}
+                  <div className="absolute bottom-0 left-0 right-0 z-20 px-4 pb-4 sm:px-5 sm:pb-5 flex flex-col justify-end">
+                    <div className="flex items-center gap-2 mb-2 transform transition-transform duration-500 group-hover:translate-y-0 translate-y-1">
+                      <h3 className="text-xl sm:text-[22px] font-semibold text-stone-900 tracking-tight">{toy.name}</h3>
+                      <div className="w-[18px] h-[18px] rounded-full bg-emerald-500 flex items-center justify-center text-white shadow-sm">
+                        <Check className="w-3 h-3" strokeWidth={4} />
+                      </div>
+                    </div>
+                    <p className="text-stone-500 text-[14px] sm:text-[15px] mb-5 font-medium leading-relaxed line-clamp-2 transform transition-all duration-500 group-hover:translate-y-0 translate-y-1">{toy.desc}</p>
+
+                    <div className="mb-5 grid grid-cols-2 gap-y-3 gap-x-2 transform transition-all duration-500 group-hover:translate-y-0 translate-y-1">
+                      {toy.points.map((pt, j) => (
+                        <div key={j} className="flex items-center gap-2 text-[13px] font-bold text-stone-600">
+                          <div className={`w-1.5 h-1.5 rounded-full ${toy.dot}`}></div>{pt}
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="flex justify-center transform transition-all duration-500 group-hover:translate-y-0 translate-y-1 mt-auto pt-1 w-full">
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setAddedToys(prev => ({ ...prev, [i]: true }));
+                          setTimeout(() => {
+                            setAddedToys(prev => ({ ...prev, [i]: false }));
+                          }, 800);
+                        }}
+                        className={`h-[44px] px-10 text-[14.5px] font-bold rounded-full transition-all duration-300 flex items-center justify-center gap-2.5 border overflow-hidden relative group/btn
+                                            ${addedToys[i]
+                            ? 'bg-emerald-500 border-emerald-400 text-white shadow-[0_0_20px_rgba(16,185,129,0.6)] scale-[1.05]'
+                            : 'bg-orange-50/70 backdrop-blur-md border-orange-200/60 text-orange-600 hover:bg-orange-100/80 hover:border-orange-300 hover:scale-[1.02] active:scale-[0.98] shadow-sm hover:shadow-[0_4px_15px_rgba(249,115,22,0.15)]'
+                          }
+                                        `}
+                      >
+                        {!addedToys[i] && <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-[150%] group-hover/btn:translate-x-[150%] transition-transform duration-700 ease-in-out"></div>}
+
+                        <div className="relative z-10 flex items-center gap-2">
+                          {addedToys[i] ? (
+                            <motion.div initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="flex items-center gap-1.5">
+                              <Check className="w-[18px] h-[18px]" strokeWidth={3} />
+                              <span className="tracking-wide">Added!</span>
+                            </motion.div>
+                          ) : (
+                            <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="flex items-center gap-2">
+                              <ShoppingBag className="w-[18px] h-[18px]" />
+                              <span className="tracking-wide">Add to Cart</span>
+                            </motion.div>
+                          )}
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
             </div>
+          </div>
         </motion.section>
 
         {/* FAQ Section */}
@@ -529,119 +572,119 @@ export default function Landing() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           variants={staggerContainer}
-          id="faq-section" 
+          id="faq-section"
           className="py-24 px-6 relative"
         >
-            <div className="container mx-auto max-w-3xl">
-                <motion.div variants={fadeIn} className="text-center mb-16">
-                    <h2 className="text-4xl md:text-5xl font-extrabold text-stone-800 mb-6">Common Questions</h2>
-                    <p className="text-stone-500 font-medium text-[1.1rem]">Everything you need to know about MUMAA.</p>
+          <div className="container mx-auto max-w-3xl">
+            <motion.div variants={fadeIn} className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-extrabold text-stone-800 mb-6">Common Questions</h2>
+              <p className="text-stone-500 font-medium text-[1.1rem]">Everything you need to know about MUMAA.</p>
+            </motion.div>
+            <div className="space-y-5">
+              {[
+                { q: "Is my baby's data safe and private?", a: "Absolutely. We adhere to strict privacy guidelines. All data (like photos or audio clips) is processed securely on demand and is never used to train external public models without explicit consent. You can delete your logs at any time." },
+                { q: "Do I need a subscription?", a: "MUMAA's core tracking tools, AI chat, and basic cry analysis are completely free. Premium features like advanced detailed vision checks and unlimited generated lullabies may be part of future premium tiers." },
+                { q: "What age is MUMAA suitable for?", a: "MUMAA is primarily designed for expecting mothers and parents of children aged 0 to 7 years. The AI dynamically adapts its advice, diet charts, and play ideas based on the exact age you input in your profile." },
+                { q: "Is the Cry Analyzer medically certified?", a: "Our Cry Translator is a supportive AI tool designed to provide gentle suggestions based on acoustic patterns, but it is not a medical device. Always consult your pediatrician if your baby's crying seems unusual or if they show signs of distress or illness." },
+                { q: "Does it understand Indian languages?", a: "Yes! You can configure the AI Chat and content generators to respond in English, Hindi (Devanagari), or Hinglish. We also specialize in traditional Indian postpartum and weaning diet suggestions." }
+              ].map((faq, index) => (
+                <motion.div variants={fadeIn} key={index} className={`border rounded-[2rem] bg-white overflow-hidden shadow-sm transition-colors duration-300 ${activeFaq === index ? 'border-orange-200 shadow-md ring-4 ring-orange-50' : 'border-stone-200'}`}>
+                  <button onClick={() => toggleFaq(index)} className="w-full flex items-center justify-between p-8 text-left hover:bg-stone-50 transition-colors">
+                    <span className={`font-extrabold text-lg ${activeFaq === index ? 'text-orange-600' : 'text-stone-800'}`}>{faq.q}</span>
+                    <Plus className={`w-6 h-6 transition-transform duration-500 ${activeFaq === index ? 'rotate-45 text-orange-500' : 'text-stone-400'}`} />
+                  </button>
+                  <div className={`overflow-hidden transition-all duration-500 ease-in-out ${activeFaq === index ? 'max-h-[500px] opacity-100 bg-stone-50/50' : 'max-h-0 opacity-0 bg-white'}`}>
+                    <div className="p-8 pt-0 text-stone-500 font-medium text-[15px] leading-relaxed" dangerouslySetInnerHTML={{ __html: faq.a }}></div>
+                  </div>
                 </motion.div>
-                <div className="space-y-5">
-                    {[
-                        { q: "Is my baby's data safe and private?", a: "Absolutely. We adhere to strict privacy guidelines. All data (like photos or audio clips) is processed securely on demand and is never used to train external public models without explicit consent. You can delete your logs at any time." },
-                        { q: "Do I need a subscription?", a: "MUMAA's core tracking tools, AI chat, and basic cry analysis are completely free. Premium features like advanced detailed vision checks and unlimited generated lullabies may be part of future premium tiers." },
-                        { q: "What age is MUMAA suitable for?", a: "MUMAA is primarily designed for expecting mothers and parents of children aged 0 to 7 years. The AI dynamically adapts its advice, diet charts, and play ideas based on the exact age you input in your profile." },
-                        { q: "Is the Cry Analyzer medically certified?", a: "Our Cry Translator is a supportive AI tool designed to provide gentle suggestions based on acoustic patterns, but it is not a medical device. Always consult your pediatrician if your baby's crying seems unusual or if they show signs of distress or illness." },
-                        { q: "Does it understand Indian languages?", a: "Yes! You can configure the AI Chat and content generators to respond in English, Hindi (Devanagari), or Hinglish. We also specialize in traditional Indian postpartum and weaning diet suggestions." }
-                    ].map((faq, index) => (
-                        <motion.div variants={fadeIn} key={index} className={`border rounded-[2rem] bg-white overflow-hidden shadow-sm transition-colors duration-300 ${activeFaq === index ? 'border-orange-200 shadow-md ring-4 ring-orange-50' : 'border-stone-200'}`}>
-                            <button onClick={() => toggleFaq(index)} className="w-full flex items-center justify-between p-8 text-left hover:bg-stone-50 transition-colors">
-                                <span className={`font-extrabold text-lg ${activeFaq === index ? 'text-orange-600' : 'text-stone-800'}`}>{faq.q}</span>
-                                <Plus className={`w-6 h-6 transition-transform duration-500 ${activeFaq === index ? 'rotate-45 text-orange-500' : 'text-stone-400'}`} />
-                            </button>
-                            <div className={`overflow-hidden transition-all duration-500 ease-in-out ${activeFaq === index ? 'max-h-[500px] opacity-100 bg-stone-50/50' : 'max-h-0 opacity-0 bg-white'}`}>
-                                <div className="p-8 pt-0 text-stone-500 font-medium text-[15px] leading-relaxed" dangerouslySetInnerHTML={{ __html: faq.a }}></div>
-                            </div>
-                        </motion.div>
-                    ))}
-                </div>
+              ))}
             </div>
+          </div>
         </motion.section>
 
         {/* Contact Section */}
         <section id="contact" className="py-24 border-t border-stone-200/50 bg-stone-50/50 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-1/3 h-full bg-orange-100/40 blur-[120px] pointer-events-none"></div>
-            <div className="absolute bottom-0 left-0 w-1/3 h-full bg-indigo-100/40 blur-[120px] pointer-events-none"></div>
+          <div className="absolute top-0 right-0 w-1/3 h-full bg-orange-100/40 blur-[120px] pointer-events-none"></div>
+          <div className="absolute bottom-0 left-0 w-1/3 h-full bg-indigo-100/40 blur-[120px] pointer-events-none"></div>
 
-            <div className="container mx-auto px-6 relative z-10 max-w-6xl">
-                <div className="flex flex-col lg:flex-row gap-16 items-center">
-                    <motion.div 
-                      initial="hidden"
-                      whileInView="visible"
-                      viewport={{ once: true }}
-                      variants={fadeIn}
-                      className="flex-1 text-center lg:text-left"
-                    >
-                        <h2 className="text-5xl lg:text-6xl font-extrabold text-stone-800 mb-6">We're Here For You, <br /><span className="text-orange-500">Mama.</span></h2>
-                        <p className="text-stone-500 font-medium text-lg mb-12 leading-relaxed max-w-md mx-auto lg:mx-0">Have a question about the app, need technical help, or just want to share feedback? Send us a note.</p>
+          <div className="container mx-auto px-6 relative z-10 max-w-6xl">
+            <div className="flex flex-col lg:flex-row gap-16 items-center">
+              <motion.div
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={fadeIn}
+                className="flex-1 text-center lg:text-left"
+              >
+                <h2 className="text-5xl lg:text-6xl font-extrabold text-stone-800 mb-6">We're Here For You, <br /><span className="text-orange-500">Mama.</span></h2>
+                <p className="text-stone-500 font-medium text-lg mb-12 leading-relaxed max-w-md mx-auto lg:mx-0">Have a question about the app, need technical help, or just want to share feedback? Send us a note.</p>
 
-                        <div className="space-y-6 inline-flex flex-col text-left">
-                            <div className="flex items-center gap-6 p-5 bg-white rounded-3xl shadow-md border border-white hover:-translate-y-1 transition-transform">
-                                <div className="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-500 border border-orange-100 shadow-inner">
-                                    <Mail className="w-6 h-6" />
-                                </div>
-                                <div>
-                                    <p className="text-[11px] font-bold text-stone-400 uppercase tracking-widest mb-1">Email Us</p>
-                                    <p className="font-extrabold text-stone-700 text-lg">aimumaa1201@gmail.com</p>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-6 p-5 bg-white rounded-3xl shadow-md border border-white hover:-translate-y-1 transition-transform">
-                                <div className="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-500 border border-indigo-100 shadow-inner">
-                                    <MessageSquare className="w-6 h-6" />
-                                </div>
-                                <div>
-                                    <p className="text-[11px] font-bold text-stone-400 uppercase tracking-widest mb-1">Support</p>
-                                    <p className="font-extrabold text-stone-700 text-lg">24/7 AI Chat Companion</p>
-                                </div>
-                            </div>
-                        </div>
-                    </motion.div>
-
-                    <motion.div 
-                      initial={{ opacity: 0, x: 20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.8 }}
-                      className="flex-1 w-full bg-white border border-white p-10 lg:p-12 rounded-[3rem] shadow-2xl"
-                    >
-                        <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-3">
-                                    <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Your Name</label>
-                                    <div className="relative">
-                                        <User className="absolute left-5 top-1/2 -translate-y-1/2 text-stone-400 w-5 h-5" />
-                                        <input required placeholder="Priya Sharma" className="w-full bg-stone-50/50 border border-stone-200 text-stone-800 font-bold pl-14 pr-5 py-4 rounded-2xl focus:outline-none focus:border-orange-300 focus:ring-4 focus:ring-orange-50 transition-all hover:bg-stone-50" />
-                                    </div>
-                                </div>
-                                <div className="space-y-3">
-                                    <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Email Address</label>
-                                    <div className="relative">
-                                        <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-stone-400 w-5 h-5" />
-                                        <input required placeholder="priya@example.com" type="email" className="w-full bg-stone-50/50 border border-stone-200 text-stone-800 font-bold pl-14 pr-5 py-4 rounded-2xl focus:outline-none focus:border-orange-300 focus:ring-4 focus:ring-orange-50 transition-all hover:bg-stone-50" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="space-y-3">
-                                <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">I am interested in</label>
-                                <select className="w-full bg-stone-50/50 border border-stone-200 text-stone-800 font-bold px-6 py-4 rounded-2xl focus:outline-none focus:border-orange-300 focus:ring-4 focus:ring-orange-50 transition-all appearance-none cursor-pointer hover:bg-stone-50">
-                                    <option>General Support</option>
-                                    <option>Feedback on App</option>
-                                    <option>Bug Report</option>
-                                    <option>Partnership</option>
-                                </select>
-                            </div>
-                            <div className="space-y-3">
-                                <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Message</label>
-                                <textarea rows={4} required placeholder="Tell us how we can help..." className="w-full bg-stone-50/50 border border-stone-200 text-stone-800 font-bold px-6 py-5 rounded-2xl focus:outline-none focus:border-orange-300 focus:ring-4 focus:ring-orange-50 transition-all resize-none hover:bg-stone-50"></textarea>
-                            </div>
-                            <button type="submit" className="w-full gradient-peach text-orange-900 font-bold text-lg py-5 rounded-2xl hover:shadow-xl hover:-translate-y-1 transition-all flex items-center justify-center gap-2 shadow-md">
-                                Send Message <Send className="w-5 h-5" />
-                            </button>
-                        </form>
-                    </motion.div>
+                <div className="space-y-6 inline-flex flex-col text-left">
+                  <div className="flex items-center gap-6 p-5 bg-white rounded-3xl shadow-md border border-white hover:-translate-y-1 transition-transform">
+                    <div className="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-500 border border-orange-100 shadow-inner">
+                      <Mail className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <p className="text-[11px] font-bold text-stone-400 uppercase tracking-widest mb-1">Email Us</p>
+                      <p className="font-extrabold text-stone-700 text-lg">aimumaa1201@gmail.com</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-6 p-5 bg-white rounded-3xl shadow-md border border-white hover:-translate-y-1 transition-transform">
+                    <div className="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-500 border border-indigo-100 shadow-inner">
+                      <MessageSquare className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <p className="text-[11px] font-bold text-stone-400 uppercase tracking-widest mb-1">Support</p>
+                      <p className="font-extrabold text-stone-700 text-lg">24/7 AI Chat Companion</p>
+                    </div>
+                  </div>
                 </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+                className="flex-1 w-full bg-white border border-white p-10 lg:p-12 rounded-[3rem] shadow-2xl"
+              >
+                <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                      <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Your Name</label>
+                      <div className="relative">
+                        <User className="absolute left-5 top-1/2 -translate-y-1/2 text-stone-400 w-5 h-5" />
+                        <input required placeholder="Priya Sharma" className="w-full bg-stone-50/50 border border-stone-200 text-stone-800 font-bold pl-14 pr-5 py-4 rounded-2xl focus:outline-none focus:border-orange-300 focus:ring-4 focus:ring-orange-50 transition-all hover:bg-stone-50" />
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Email Address</label>
+                      <div className="relative">
+                        <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-stone-400 w-5 h-5" />
+                        <input required placeholder="priya@example.com" type="email" className="w-full bg-stone-50/50 border border-stone-200 text-stone-800 font-bold pl-14 pr-5 py-4 rounded-2xl focus:outline-none focus:border-orange-300 focus:ring-4 focus:ring-orange-50 transition-all hover:bg-stone-50" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">I am interested in</label>
+                    <select className="w-full bg-stone-50/50 border border-stone-200 text-stone-800 font-bold px-6 py-4 rounded-2xl focus:outline-none focus:border-orange-300 focus:ring-4 focus:ring-orange-50 transition-all appearance-none cursor-pointer hover:bg-stone-50">
+                      <option>General Support</option>
+                      <option>Feedback on App</option>
+                      <option>Bug Report</option>
+                      <option>Partnership</option>
+                    </select>
+                  </div>
+                  <div className="space-y-3">
+                    <label className="text-[11px] font-bold text-stone-400 uppercase tracking-widest ml-2">Message</label>
+                    <textarea rows={4} required placeholder="Tell us how we can help..." className="w-full bg-stone-50/50 border border-stone-200 text-stone-800 font-bold px-6 py-5 rounded-2xl focus:outline-none focus:border-orange-300 focus:ring-4 focus:ring-orange-50 transition-all resize-none hover:bg-stone-50"></textarea>
+                  </div>
+                  <button type="submit" className="w-full gradient-peach text-orange-900 font-bold text-lg py-5 rounded-2xl hover:shadow-xl hover:-translate-y-1 transition-all flex items-center justify-center gap-2 shadow-md">
+                    Send Message <Send className="w-5 h-5" />
+                  </button>
+                </form>
+              </motion.div>
             </div>
+          </div>
         </section>
       </main>
 
@@ -652,61 +695,61 @@ export default function Landing() {
 
       {/* Footer */}
       <footer className="bg-white border-t border-stone-200 text-sm mt-auto z-10">
-          <div className="max-w-7xl mx-auto px-6 pt-20 pb-10">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
-                  <div className="col-span-1 lg:col-span-2">
-                      <a className="flex items-center gap-4 mb-8 select-none" href="#">
-                          <img src="/images/MumaaAIlogo.png" alt="Mumaa Logo" className="w-12 h-12 object-cover rounded-2xl shadow-sm border border-stone-100" />
-                          <span className="text-3xl font-black tracking-tighter text-stone-800 uppercase">MumaaAI</span>
-                      </a>
-                      <p className="text-stone-500 font-medium text-[15px] leading-relaxed max-w-sm mb-8">
-                          India's most calming AI parenting companion. Reassuring insights, secure analysis, and absolute peace of mind.
-                      </p>
-                      <div className="flex items-center gap-4">
-                          <a href="#" className="w-12 h-12 rounded-full bg-stone-50 border border-stone-200 flex items-center justify-center text-stone-400 hover:text-rose-500 hover:border-rose-200 hover:bg-rose-50 transition-all shadow-sm hover:-translate-y-1">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
-                          </a>
-                          <a href="#" className="w-12 h-12 rounded-full bg-stone-50 border border-stone-200 flex items-center justify-center text-stone-400 hover:text-blue-600 hover:border-blue-200 hover:bg-blue-50 transition-all shadow-sm hover:-translate-y-1">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-                          </a>
-                          <a href="#" className="w-12 h-12 rounded-full bg-stone-50 border border-stone-200 flex items-center justify-center text-stone-400 hover:text-sky-500 hover:border-sky-200 hover:bg-sky-50 transition-all shadow-sm hover:-translate-y-1">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
-                          </a>
-                      </div>
-                  </div>
-                  <div>
-                      <h4 className="text-stone-800 font-extrabold mb-6 text-[11px] uppercase tracking-widest">Platform</h4>
-                      <ul className="space-y-4 text-stone-500 font-medium text-[15px]">
-                          <li><Link className="hover:text-orange-500 transition-colors" to="/auth">Call Saheli</Link></li>
-                          <li><Link className="hover:text-orange-500 transition-colors" to="/marketplace">Dumamu Store</Link></li>
-                          <li><a className="hover:text-orange-500 transition-colors" href="/MummA_Cry_Analyzer (2).apk">Download APK</a></li>
-                          <li><a className="hover:text-orange-500 transition-colors" href="#features">All Features</a></li>
-                          <li><a className="hover:text-orange-500 transition-colors" href="https://sumit7739.github.io/ops/">OpsBoard</a></li>
-                      </ul>
-                  </div>
-                  <div>
-                      <h4 className="text-stone-800 font-extrabold mb-6 text-[11px] uppercase tracking-widest">Company</h4>
-                      <ul className="space-y-4 text-stone-500 font-medium text-[15px]">
-                          <li><a className="hover:text-orange-500 transition-colors" href="#trust">About Us</a></li>
-                          <li><a className="hover:text-orange-500 transition-colors" href="#toys">Play Family</a></li>
-                          <li><a className="hover:text-orange-500 transition-colors" href="#contact">Contact Support</a></li>
-                          <li><a className="hover:text-orange-500 transition-colors" href="#">Blog</a></li>
-                      </ul>
-                  </div>
-                  <div>
-                      <h4 className="text-stone-800 font-extrabold mb-6 text-[11px] uppercase tracking-widest">Policies</h4>
-                      <ul className="space-y-4 text-stone-500 font-medium text-[15px]">
-                          <li><a className="hover:text-orange-500 transition-colors" href="#">Privacy Policy</a></li>
-                          <li><a className="hover:text-orange-500 transition-colors" href="#">Terms & Conditions</a></li>
-                          <li><a className="hover:text-orange-500 transition-colors" href="#">Data Security</a></li>
-                      </ul>
-                  </div>
-              </div> 
-              <div className="border-t border-stone-200 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-                  <p className="text-stone-400 font-medium text-xs">© 2026 Mumaa AI · All rights reserved.</p>
-                  <p className="text-stone-400 font-medium text-xs">Made with <span className="text-rose-500 animate-pulse">♥</span> for parents everywhere</p>
+        <div className="max-w-7xl mx-auto px-6 pt-20 pb-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
+            <div className="col-span-1 lg:col-span-2">
+              <a className="flex items-center gap-4 mb-8 select-none" href="#">
+                <img src="/images/MumaaAIlogo.png" alt="Mumaa Logo" className="w-12 h-12 object-cover rounded-2xl shadow-sm border border-stone-100" />
+                <span className="text-3xl font-black tracking-tighter text-stone-800 uppercase">MumaaAI</span>
+              </a>
+              <p className="text-stone-500 font-medium text-[15px] leading-relaxed max-w-sm mb-8">
+                India's most calming AI parenting companion. Reassuring insights, secure analysis, and absolute peace of mind.
+              </p>
+              <div className="flex items-center gap-4">
+                <a href="#" className="w-12 h-12 rounded-full bg-stone-50 border border-stone-200 flex items-center justify-center text-stone-400 hover:text-rose-500 hover:border-rose-200 hover:bg-rose-50 transition-all shadow-sm hover:-translate-y-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><rect width="20" height="20" x="2" y="2" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" x2="17.51" y1="6.5" y2="6.5" /></svg>
+                </a>
+                <a href="#" className="w-12 h-12 rounded-full bg-stone-50 border border-stone-200 flex items-center justify-center text-stone-400 hover:text-blue-600 hover:border-blue-200 hover:bg-blue-50 transition-all shadow-sm hover:-translate-y-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /></svg>
+                </a>
+                <a href="#" className="w-12 h-12 rounded-full bg-stone-50 border border-stone-200 flex items-center justify-center text-stone-400 hover:text-sky-500 hover:border-sky-200 hover:bg-sky-50 transition-all shadow-sm hover:-translate-y-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" /></svg>
+                </a>
               </div>
+            </div>
+            <div>
+              <h4 className="text-stone-800 font-extrabold mb-6 text-[11px] uppercase tracking-widest">Platform</h4>
+              <ul className="space-y-4 text-stone-500 font-medium text-[15px]">
+                <li><Link className="hover:text-orange-500 transition-colors" to="/auth">Call Saheli</Link></li>
+                <li><Link className="hover:text-orange-500 transition-colors" to="/marketplace">Dumamu Store</Link></li>
+                <li><a className="hover:text-orange-500 transition-colors" href="/MummA_Cry_Analyzer (2).apk">Download APK</a></li>
+                <li><a className="hover:text-orange-500 transition-colors" href="#features">All Features</a></li>
+                <li><a className="hover:text-orange-500 transition-colors" href="https://sumit7739.github.io/ops/">OpsBoard</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-stone-800 font-extrabold mb-6 text-[11px] uppercase tracking-widest">Company</h4>
+              <ul className="space-y-4 text-stone-500 font-medium text-[15px]">
+                <li><a className="hover:text-orange-500 transition-colors" href="#trust">About Us</a></li>
+                <li><a className="hover:text-orange-500 transition-colors" href="#toys">Play Family</a></li>
+                <li><a className="hover:text-orange-500 transition-colors" href="#contact">Contact Support</a></li>
+                <li><a className="hover:text-orange-500 transition-colors" href="#">Blog</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-stone-800 font-extrabold mb-6 text-[11px] uppercase tracking-widest">Policies</h4>
+              <ul className="space-y-4 text-stone-500 font-medium text-[15px]">
+                <li><a className="hover:text-orange-500 transition-colors" href="#">Privacy Policy</a></li>
+                <li><a className="hover:text-orange-500 transition-colors" href="#">Terms & Conditions</a></li>
+                <li><a className="hover:text-orange-500 transition-colors" href="#">Data Security</a></li>
+              </ul>
+            </div>
           </div>
+          <div className="border-t border-stone-200 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-stone-400 font-medium text-xs">© 2026 Mumaa AI · All rights reserved.</p>
+            <p className="text-stone-400 font-medium text-xs">Made with <span className="text-rose-500 animate-pulse">♥</span> for parents everywhere</p>
+          </div>
+        </div>
       </footer>
     </div>
   );
