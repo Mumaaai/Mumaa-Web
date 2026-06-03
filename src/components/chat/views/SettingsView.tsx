@@ -20,7 +20,7 @@ export default function SettingsView() {
           className="mb-10"
         >
           <h2 className="text-3xl font-black text-stone-800 tracking-tight mb-2">App Settings</h2>
-          <p className="text-stone-500 font-medium">Personalize your Mumaa AI experience</p>
+          <p className="text-stone-500 font-medium">Personalize your AI Mumaa experience</p>
         </motion.div>
 
         <div className="space-y-6">

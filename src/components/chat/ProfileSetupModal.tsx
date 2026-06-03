@@ -353,7 +353,7 @@ export default function BabyProfileModal({ isOpen, onClose, onSave, initialData,
                   </div>
 
                   <div className="mt-8 text-center">
-                    <p className="text-[10px] text-stone-400 font-bold uppercase tracking-[0.3em]">Mumaa AI • Mindful Parenting</p>
+                    <p className="text-[10px] text-stone-400 font-bold uppercase tracking-[0.3em]">AI Mumaa • Mindful Parenting</p>
                   </div>
                 </div>
               )}

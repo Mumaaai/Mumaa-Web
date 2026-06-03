@@ -58,7 +58,7 @@ export default function Landing() {
               <img src="/images/MumaaAIlogo.png" alt="Mumaa Logo" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
             </div>
             <div className="flex min-w-0 flex-col leading-none">
-              <div className="truncate text-[15px] font-black tracking-tight text-stone-800 min-[360px]:text-lg sm:text-xl uppercase">MumaaAI</div>
+              <div className="truncate text-[15px] font-black tracking-tight text-stone-800 min-[360px]:text-lg sm:text-xl uppercase">AI Mumaa</div>
               <span className="mt-0.5 hidden text-[8px] font-bold uppercase tracking-[0.1em] text-orange-500 min-[360px]:block sm:text-[9px]">A PARENTING COMPANION</span>
             </div>
           </a>
@@ -209,7 +209,7 @@ export default function Landing() {
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:gap-5">
             {[
-              { num: '78%', title: 'Less Midnight Anxiety', desc: 'Mothers using MumaaAI report significantly less panic during late-night crying, thanks to instant, calming AI translations.', color: 'text-emerald-400' },
+              { num: '78%', title: 'Less Midnight Anxiety', desc: 'Mothers using AI Mumaa report significantly less panic during late-night crying, thanks to instant, calming AI translations.', color: 'text-emerald-400' },
               { num: '100K+', title: 'Cry Patterns Analyzed', desc: 'Our acoustic AI models are trained on vast pediatric datasets to accurately and gently distinguish hunger, pain, and sleepiness.', color: 'text-sky-400' },
               { num: '100%', title: 'Camera-Free Privacy', desc: 'We strictly avoid intrusive video monitoring. All vision and audio checks are processed securely, on demand, with your permission.', color: 'text-rose-400' }
             ].map((stat, idx) => (
@@ -481,7 +481,7 @@ export default function Landing() {
         >
           <div className={pageContainer}>
             <motion.div variants={fadeIn} className={sectionHeader}>
-              <h2 className={`${sectionTitle} mb-4`}>Meet the <span className="text-orange-500">MumaaAI Play Family</span></h2>
+              <h2 className={`${sectionTitle} mb-4`}>Meet the <span className="text-orange-500">AI Mumaa Play Family</span></h2>
               <p className={sectionLead}>Physical companions powered by our calming AI. From storytellers to logical guides, safe and screen-free.</p>
             </motion.div>
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
@@ -700,7 +700,7 @@ export default function Landing() {
             <div className="col-span-1 lg:col-span-2">
               <a className="flex items-center gap-4 mb-8 select-none" href="#">
                 <img src="/images/MumaaAIlogo.png" alt="Mumaa Logo" className="w-12 h-12 object-cover rounded-2xl shadow-sm border border-stone-100" />
-                <span className="text-3xl font-black tracking-tighter text-stone-800 uppercase">MumaaAI</span>
+                <span className="text-3xl font-black tracking-tighter text-stone-800 uppercase">AI Mumaa</span>
               </a>
               <p className="text-stone-500 font-medium text-[15px] leading-relaxed max-w-sm mb-8">
                 India's most calming AI parenting companion. Reassuring insights, secure analysis, and absolute peace of mind.
@@ -746,7 +746,7 @@ export default function Landing() {
             </div>
           </div>
           <div className="border-t border-stone-200 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-stone-400 font-medium text-xs">© 2026 Mumaa AI · All rights reserved.</p>
+            <p className="text-stone-400 font-medium text-xs">© 2026 AI Mumaa · All rights reserved.</p>
             <p className="text-stone-400 font-medium text-xs">Made with <span className="text-rose-500 animate-pulse">♥</span> for parents everywhere</p>
           </div>
         </div>

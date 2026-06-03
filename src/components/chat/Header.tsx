@@ -34,7 +34,7 @@ const getTabTitle = (tab: TabId, activeSessionTitle?: string) => {
     case 'journal': return 'Memory Journal';
     case 'lullaby': return 'Soothing Sounds';
     case 'photo': return 'Photo Insights';
-    default: return 'Mumaa AI';
+    default: return 'AI Mumaa';
   }
 };
 
