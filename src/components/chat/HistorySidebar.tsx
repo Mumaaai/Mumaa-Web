@@ -136,7 +136,7 @@ export default function HistorySidebar({
 
             <div className="p-6 bg-stone-50/50 border-t border-stone-100">
               <div className="text-[10px] font-black text-stone-400 uppercase tracking-widest text-center">
-                Mumaa AI Companion
+                AI Mumaa Companion
               </div>
             </div>
           </motion.div>
