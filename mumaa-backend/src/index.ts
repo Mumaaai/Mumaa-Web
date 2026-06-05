@@ -49,7 +49,7 @@ app.use('*', cors({
 }))
 
 // Health check
-app.get('/', (c) => c.json({ message: 'Welcome to Mumaa AI API', status: 'online' }))
+app.get('/', (c) => c.json({ message: 'Welcome to AI Mumaa API', status: 'online' }))
 
 // ─── Mount Routers ────────────────────────────────────────────────────────────
 app.route('/auth',         auth)
