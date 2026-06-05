@@ -7,14 +7,14 @@ import {
   Clock, AudioWaveform, BookHeart, MoonStar, 
   HeartHandshake, Stethoscope, MessageSquare, Settings2,
   ChevronLeft, ChevronRight, LogOut, PlayCircle, Brain,
-  Users, UtensilsCrossed, Mic, BookOpen
+  Users, UtensilsCrossed, Mic, BookOpen, HeartPulse
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export type TabId = 'chat' | 'dashboard' | 'feeding' | 'growth' | 'vaccination' | 'milestones' | 
                     'guide' | 'diet' | 'study' | 'games' | 'routine' | 'cry' | 'journal' | 
                     'lullaby' | 'photo' | 'settings' | 'momcare' | 'emergency' | 'feedback' |
-                    'single-parenting' | 'nutrition-ai' | 'voice-cloning' | 'traditional-wisdom';
+                    'single-parenting' | 'nutrition-ai' | 'voice-cloning' | 'traditional-wisdom' | 'pregnancy';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -157,6 +157,7 @@ export default function Sidebar({ isOpen, onClose, activeTab, onTabChange, user,
           
           <nav className="space-y-1.5">
             {navItem('guide', <Compass className="w-4 h-4" />, 'Parenting Guide')}
+            {navItem('pregnancy', <HeartPulse className="w-4 h-4" />, 'Pregnancy Support', 'text-stone-500 bg-stone-100 group-hover:text-rose-500 group-hover:bg-rose-100', 'text-rose-600 bg-rose-200')}
             {navItem('single-parenting', <Users className="w-4 h-4" />, 'Single Parenting', 'text-stone-500 bg-stone-100 group-hover:text-orange-500 group-hover:bg-orange-100', 'text-orange-600 bg-orange-200')}
             {navItem('nutrition-ai', <UtensilsCrossed className="w-4 h-4" />, 'Nutrition AI', 'text-stone-500 bg-stone-100 group-hover:text-emerald-500 group-hover:bg-emerald-100', 'text-emerald-600 bg-emerald-200')}
             {navItem('voice-cloning', <Mic className="w-4 h-4" />, 'Voice Cloning', 'text-stone-500 bg-stone-100 group-hover:text-indigo-500 group-hover:bg-indigo-100', 'text-indigo-600 bg-indigo-200')}
