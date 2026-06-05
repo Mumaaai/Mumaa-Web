@@ -311,14 +311,14 @@ export default function Landing() {
                   containerClass: 'hover:border-amber-200 hover:shadow-amber-100/50', bgClass: 'bg-amber-50', iconBg: 'bg-amber-100', iconColor: 'text-amber-500', textHover: 'group-hover:text-amber-500', dotClass: 'bg-amber-400', btnClass: 'bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200'
                 },
                 {
-                  title: 'Mind Games', badge: 'Cognitive', badgeClass: 'text-fuchsia-600 bg-fuchsia-50 border-fuchsia-100', color: 'fuchsia', icon: Brain, desc: 'Interactive games and activities scientifically designed to stimulate brain development and learning.', points: ['Memory Boost', 'Problem Solving', 'Focus Training', 'Learning Play'], link: '/auth', linkText: 'Play Now',
+                  title: 'Mind Games', badge: 'Cognitive', badgeClass: 'text-fuchsia-600 bg-fuchsia-50 border-fuchsia-100', color: 'fuchsia', icon: Brain, desc: 'Interactive games and activities designed to stimulate early brain development.', points: ['Memory Boost', 'Problem Solving', 'Focus Training', 'Learning Play'], link: '/auth', linkText: 'Play Now',
                   containerClass: 'hover:border-fuchsia-200 hover:shadow-fuchsia-100/50', bgClass: 'bg-fuchsia-50', iconBg: 'bg-fuchsia-100', iconColor: 'text-fuchsia-500', textHover: 'group-hover:text-fuchsia-500', dotClass: 'bg-fuchsia-400', btnClass: 'bg-fuchsia-50 hover:bg-fuchsia-100 text-fuchsia-700 border border-fuchsia-200'
                 },
               ].map((feature, i) => {
                 const Icon = feature.icon;
 
                 return (
-                  <motion.div variants={fadeIn} key={i} className={`group relative flex flex-col overflow-hidden border border-stone-100 bg-white/80 p-5 shadow-md backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-lg lg:p-6 ${cardRadius} ${feature.containerClass}`}>
+                  <motion.div variants={fadeIn} key={i} className={`group relative flex flex-col h-[360px] lg:h-[380px] overflow-hidden border border-stone-100 bg-white/80 p-5 shadow-md backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-lg lg:p-6 ${cardRadius} ${feature.containerClass}`}>
                     <div className={`absolute top-0 right-0 w-32 h-32 rounded-bl-[4rem] -mr-6 -mt-6 transition-transform duration-700 group-hover:scale-125 opacity-70 ${feature.bgClass}`}></div>
                     <div className={`relative z-10 mb-5 flex h-10 w-10 items-center justify-center rounded-xl border border-white shadow-sm ${feature.iconBg}`}>
                       <Icon className={`h-5 w-5 ${feature.iconColor}`} />
@@ -329,7 +329,7 @@ export default function Landing() {
                       </Link>
                       <span className={`font-bold px-3 py-1.5 rounded-xl text-[10px] uppercase tracking-widest border shadow-sm bg-white ${feature.badgeClass}`}>{feature.badge}</span>
                     </div>
-                    <p className="relative z-10 mb-5 flex-1 text-sm font-medium leading-6 text-stone-500">{feature.desc}</p>
+                    <p className="relative z-10 mb-5 text-sm font-medium leading-6 text-stone-500">{feature.desc}</p>
                     <div className="relative z-10 mb-5 grid grid-cols-2 gap-x-3 gap-y-2">
                       {feature.points.map((pt, j) => (
                         <div key={j} className="flex items-center gap-2 text-[13px] font-bold text-stone-600">
@@ -470,7 +470,95 @@ export default function Landing() {
           </div>
         </section>
 
-        {/* Play Family */}
+        {/* Pregnancy Journey Section */}
+        <section id="pregnancy-journey" className={`${sectionY} relative overflow-hidden bg-transparent`}>
+          <div className={pageContainer}>
+            <div className="relative grid items-center gap-5 overflow-hidden rounded-[1.5rem] border-[1.5px] border-white bg-gradient-to-br from-[#fff5f0] to-[#fdf9f7] p-4 shadow-[0_8px_30px_-6px_rgba(255,118,87,0.15)] sm:p-6 lg:grid-cols-2 lg:gap-7 lg:p-8">
+              
+              {/* Left Column */}
+              <div className="space-y-6">
+                {/* Header */}
+                <div>
+                  <div className="inline-flex items-center gap-2 bg-white px-3 py-1.5 rounded-full shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-stone-100 mb-4">
+                    <span className="text-[13px] font-bold text-stone-700">Hi, Ananya! 👋</span>
+                  </div>
+                  
+                  <h2 className="mb-4 text-[clamp(1.6rem,3vw,2.35rem)] font-black leading-[1.08] tracking-tight text-stone-800">
+                    A happy mom,<br />
+                    <span className="text-[#ff7657]">a healthy baby. 🤍</span>
+                  </h2>
+                  <p className="mb-5 max-w-xl text-[clamp(0.88rem,1.05vw,0.95rem)] font-medium leading-6 text-stone-600">
+                    Personalized care and guidance through every step of your pregnancy.
+                  </p>
+                </div>
+
+                {/* Info Cards */}
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {/* Progress Card */}
+                  <div className="bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-stone-100 flex flex-col relative overflow-hidden transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
+                    <div className="absolute top-6 right-6 w-11 h-11 rounded-full bg-[#fdf3f0] flex items-center justify-center p-1.5 border border-[#ff7657]/10">
+                      <div className="w-full h-full rounded-full bg-[#ff7657]/10 flex items-center justify-center text-[#ff7657] text-lg font-bold">🤰</div>
+                    </div>
+                    <div className="mb-5">
+                      <p className="text-[11px] font-bold text-stone-500 uppercase tracking-widest mb-1">You are</p>
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-[2.75rem] font-black text-[#ff7657] tracking-tighter leading-none">24</span>
+                        <span className="text-[13px] font-bold text-stone-600">weeks</span>
+                      </div>
+                      <p className="text-[13px] font-bold text-stone-800 mt-2">into your pregnancy</p>
+                    </div>
+                    
+                    <div className="mt-auto">
+                      <p className="text-[11px] font-bold text-stone-500 mb-2">16 weeks to go!</p>
+                      <div className="w-full h-2.5 bg-stone-100 rounded-full mb-4 overflow-hidden">
+                        <div className="h-full bg-[#ff7657] w-[60%] rounded-full"></div>
+                      </div>
+                      <Link to="/auth" className="w-full inline-flex items-center justify-between px-4 py-3 bg-emerald-50 text-emerald-700 rounded-xl text-[13px] font-bold hover:bg-emerald-100 transition-colors">
+                        View baby's progress <ArrowRight className="w-4 h-4" />
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* Daily Tip Card */}
+                  <div className="bg-[#fff5f0] rounded-3xl p-6 shadow-[0_8px_30px_rgb(255,118,87,0.06)] border border-orange-100/50 flex flex-col relative overflow-hidden transition-all hover:shadow-[0_8px_30px_rgb(255,118,87,0.12)]">
+                    <p className="text-[10px] font-extrabold text-[#ff7657] uppercase tracking-widest mb-3">Daily Tip</p>
+                    <h3 className="text-[1.35rem] font-extrabold text-stone-800 leading-tight mb-3">
+                      Stay active,<br/>
+                      <span className="text-[#ff7657]">stay happy!</span>
+                    </h3>
+                    <p className="text-[13px] font-medium text-stone-600 leading-relaxed mb-4">
+                      A short walk can boost your mood and improve sleep.
+                    </p>
+                    <Link to="/auth" className="mt-auto self-start inline-flex items-center justify-center px-4 py-2.5 bg-white text-[#ff7657] rounded-xl text-[13px] font-bold shadow-sm border border-orange-100/50 hover:shadow-md transition-shadow gap-2">
+                      Explore Tips <ArrowRight className="w-4 h-4" />
+                    </Link>
+                  </div>
+                </div>
+
+
+              </div>
+
+              {/* Right Column (Image) */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+                className="relative flex justify-center items-center z-10 mix-blend-darken"
+              >
+                <div className="relative w-[min(60vw,230px)] lg:w-[245px] group">
+                  <img 
+                    src="/images/mockup-image.jpg" 
+                    alt="Healthy Pregnancy Mockup" 
+                    className="w-full h-auto object-contain group-hover:scale-[1.02] transition-transform duration-700" 
+                  />
+                </div>
+              </motion.div>
+
+            </div>
+          </div>
+        </section>
+
         <motion.section
           initial="hidden"
           whileInView="visible"
