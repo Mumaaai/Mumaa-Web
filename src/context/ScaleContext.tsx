@@ -10,10 +10,7 @@ const ScaleContext = createContext<ScaleContextType | undefined>(undefined);
 
 export const ScaleProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [dpr, setDpr] = useState(window.devicePixelRatio || 1);
-  const [isCompensated, setIsCompensated] = useState(() => {
-    const saved = localStorage.getItem('mumaa_scale_compensation');
-    return saved !== null ? JSON.parse(saved) : true;
-  });
+  const [isCompensated, setIsCompensated] = useState(false);
 
   const updateScale = useCallback(() => {
     const currentDpr = window.devicePixelRatio || 1;
@@ -37,10 +34,17 @@ export const ScaleProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return () => window.removeEventListener('resize', updateScale);
   }, [updateScale]);
 
+  // Ensure any previously saved preference is removed
+  useEffect(() => {
+    try {
+      localStorage.removeItem('mumaa_scale_compensation');
+    } catch (e) {
+      // ignore (e.g., SSR or privacy settings)
+    }
+  }, []);
+
   const toggleCompensation = () => {
-    const newVal = !isCompensated;
-    setIsCompensated(newVal);
-    localStorage.setItem('mumaa_scale_compensation', JSON.stringify(newVal));
+    setIsCompensated(prev => !prev);
   };
 
   return (
